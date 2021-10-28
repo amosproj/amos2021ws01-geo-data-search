@@ -1,0 +1,60 @@
+TeamMeeting Thursday 28.10.2021 12:30-14:00
+-------------------------------------------
+
+	location: Zoom
+
+	protocoled by: chrisjherm
+
+	Structure:
+		Old Sprint Review
+		Old Sprint Release
+		Old Sprint Retroperspective
+		Organizational matters
+		Feedback from Coach
+		New Sprint Planning
+
+- - - - - - - - - - - - - - - - - - - - - -
+
+	Old Sprint Review:
+		Introduced new swimlanes for organizational matters.
+		Agreed to not review Issues regarding organizational matters.
+		PO pushed done issues to "Organisation Archive".
+		Issue #10 should be assigned to abdelelbehiri. Not possible yet, chrisjherm will handle this.
+		Agreed to use mainly KanbanBoard. #todo at Discord only for other matters.
+		PO's shall remove old todo's from Discord at the end of every sprint.
+		Will decide later, if we need additional boards for sub-teams.
+		For now, we will use labels for FRONTEND/BACKEND/NLP.
+
+	Old Sprint Release:
+		Release-Tag not finished in GitHub. chrisjherm will handle this.
+		Release deadline is every Thursday 12:30.
+
+	Old Sprint Retroperspective:
+		Retro is moderated by our coach.
+		NebiMucaj recommended to offer anonymous feedbacks. No agreement yet.
+		Everyone who cannot participate at Retro, should send their points in advance (Discord #general).
+		If someone entered a negative happiness-index-number earlier, this person should bring this up in the Retro.
+
+	Organizational matters:
+		oliviadargel recommended to update TeamContract handling the absence in meetings (Retro-points in advance).
+		Absence from our weekly TeamMeeting should remain an exception.
+		In contrast to all other meetings, 90 minutes are planned for the weekly TeamMeeting. The time limit of 60 minutes, which is stated in the TeamContract, does not apply.
+
+	Feedback from Coach:
+		The team should elect a ReleaseManager.
+		PO's should prepare issues for the backlog before the Meeting.
+		TeamMeeting should not contain to much detailed technical discussions.
+		The SprintPlanning will take most of the time.
+		Coach should receive the link for the weekly meeting in advance.
+		The team should agree if the PO's should change from time to time.
+		Planning poker: Knowledgeable participants are welcome to give an assessment beforehand in order to identify possible obstacles.
+
+	New Sprint Planning:
+		The complete team was divided into the following sub-teams:
+			Frontend: weribell
+	     	     NLP: oliviadargel, Battlemech, NebiMucaj
+	     	 Backend: Decappi, chrisjherm, numanfidan, abdelelbehiri
+	    We agreed to use DockerContainer for Java/Python. Decappi will set this up.
+	    Backend-team prefered using Java.
+	    We will use JSON as an interface between NLP and Backend.
+	    Only Backend is allowed to communicate with Frontend.
