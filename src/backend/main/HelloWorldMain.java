@@ -7,6 +7,6 @@ public class HelloWorldMain {
         java HelloWorldMain.java
      */
     public static void main(String[] args) {
-        System.out.println("Hello Decappi!");
+        System.out.println("Hello from BACKEND!");
     }
 }

@@ -1,6 +1,6 @@
 FROM openjdk:latest as builder
 WORKDIR /src
-COPY src /src
+COPY . /src
 RUN javac main/HelloWorldMain.java -d /build
 
 FROM openjdk:latest
