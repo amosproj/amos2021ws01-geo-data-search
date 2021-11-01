@@ -11,7 +11,5 @@ services:
       - ./src/nlp:/src
   frontend:
     build: ./src/frontend
-    volumes:
-      - ./src/frontend:/app
     ports:
       - 8080:3000
