@@ -5,11 +5,13 @@ services:
       - ./src/backend:/src
     working_dir: /src
     entrypoint: ["java", "main/HelloWorldMain.java"]
-    ports:
-      - 8080:80
   nlp:
     build: ./src/nlp
     volumes:
       - ./src/nlp:/src
-  #frontend:
-  #...
+  frontend:
+    build: ./src/frontend
+    volumes:
+      - ./src/frontend:/app
+    ports:
+      - 8080:3000
