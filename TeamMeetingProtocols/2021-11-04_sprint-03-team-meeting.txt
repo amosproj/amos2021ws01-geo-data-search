@@ -1,0 +1,54 @@
+TeamMeeting Thursday 04.11.2021 12:30-14:00
+-------------------------------------------
+
+	location: Zoom
+
+	protocoled by: chrisjherm
+
+	Structure:
+		Old Sprint Review
+		Old Sprint Release
+		Old Sprint Retroperspective
+		Organizational matters
+		Feedback from Coach
+		New Sprint Planning
+
+- - - - - - - - - - - - - - - - - - - - - -
+
+	Old Sprint Review:
+		We moved all issues from Awaiting review into the Archives swimlanes
+
+	Old Sprint Release:
+		It was released with no new review after release
+
+	Old Sprint Retroperspective:
+		We used the miro board
+		Takeaways:
+			- Backend: Research interfaces which can be used to get required data: Cureve length/percentage, elevation, pitch, ...
+			- backend should meet extra in the upcoming sprint, at least one in the next two days
+			- Smaller tasks, direct assignment to 1-2 persons
+			- If problems, talk to the team or POs
+			- assign homework task to the sub groups in the team meeting
+
+	Organizational matters:
+		abdelelbehiri will evaluate if he will continue in the project and address the POs about it
+
+	Feedback from Coach:
+		Prioritize issues for the planning and make them first
+		rest of the feedback will come later
+
+	New Sprint Planning:
+		We agreed to fasten this process as much as possible
+		If we have a disagreement, in the end, the highest number wins
+		Sprint Backlog:
+			#48 Provide interface for string input = 2
+			#49 Send user input to backend = 3
+			#41 Receive input string from frontend = SKIPPED for later consultation
+			#42 Send input string to NLP component = SKIPPED for later consultation
+			#39 Receive input string in NLP component = 3
+			#40 Send JSON with processed information = 3
+			#43 Receive JSON from NLP component = SKIPPED for later consultation
+			#46 Receive answer of external DB/API = SKIPPED for later consultation
+			#45 Send request to external DB/API = SKIPPED for later consultation
+			#26 Create a first design revision of the frontend = 5
+			#52 Set up git pipeline for NLP component = 5
