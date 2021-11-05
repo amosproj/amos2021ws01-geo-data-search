@@ -9,9 +9,7 @@ def process_string(string: str) -> str:
         result.query_object = "Mountain"
         result.min_height = "100 m"
     
-    print(result.getjson())
-
-    return ""
+    return result.getjson()
 
 class Query:
     def __init__(self) -> None:
@@ -87,4 +85,4 @@ class Query:
         }
         return json.dumps(dict)
 
-process_string("Finde alle Berge in Berlin die höher als 100m sind")
+print(process_string("Finde alle Berge in Berlin die höher als 100m sind"))
