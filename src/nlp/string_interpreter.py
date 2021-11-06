@@ -1,6 +1,9 @@
 import json
 
 def process_string(string: str) -> str:
+    return get_query(string).getjson()
+
+def get_query(string : str) -> object:
     result = Query()
 
     # hardcoded comparison for testing purposes
@@ -8,8 +11,8 @@ def process_string(string: str) -> str:
         result.location = "Berlin"
         result.query_object = "Mountain"
         result.min_height = "100 m"
-    
-    return result.getjson()
+
+    return result
 
 class Query:
     def __init__(self) -> None:
