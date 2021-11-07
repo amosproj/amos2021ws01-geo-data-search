@@ -1,6 +1,6 @@
-package com.example.backend.controllers;
+package com.geodatasearch.backend.controllers;
 
-import com.example.backend.client.NlpClient;
+import com.geodatasearch.backend.client.NlpClient;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
