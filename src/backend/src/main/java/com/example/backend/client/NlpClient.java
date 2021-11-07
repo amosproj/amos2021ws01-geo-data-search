@@ -1,4 +1,4 @@
-package com.geodatasearch.backend.client;
+package com.example.backend.client;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;

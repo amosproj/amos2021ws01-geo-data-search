@@ -4,11 +4,8 @@ services:
     volumes:
       - ./src/backend:/src
     working_dir: /src
-#    entrypoint: ["java", "main/java/com/geodatasearch/backend/BackendApplication.java"]
-#    entrypoint: "/bin/sh"
-#    command: "/bin/sh"
     ports:
-      - 5000:5000
+      - 5000:8080
   nlp:
     build: ./src/nlp
     volumes:
