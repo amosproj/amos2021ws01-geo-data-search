@@ -1,0 +1,5 @@
+POST http://localhost:5000/backend/post
+Content-Type: application/x-www-form-urlencoded
+
+id=999&value=content
+

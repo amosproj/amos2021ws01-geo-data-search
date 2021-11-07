@@ -10,11 +10,11 @@ import com.example.backend.client.NlpClient;
 @RestController
 @RequestMapping("/backend")
 public class FrontendController {
-    private NlpClient nlpClient;
-
-    public FrontendController(NlpClient nlpClient) {
-        this.nlpClient = nlpClient;
-    }
+//    private NlpClient nlpClient;
+//
+//    public FrontendController(NlpClient nlpClient) {
+//        this.nlpClient = nlpClient;
+//    }
 
     @PostMapping("/post")
     public void printString(@RequestBody String requestBody) {
