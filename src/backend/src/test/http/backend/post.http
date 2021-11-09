@@ -1,4 +1,4 @@
-POST http://localhost:5000/backend/post
+POST http://localhost:5000/backend/user_query
 Content-Type: application/x-www-form-urlencoded
 
 id=999&value=content
