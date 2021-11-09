@@ -10,6 +10,11 @@ services:
     volumes:
       - ./src/nlp:/src
   frontend:
-    build: ./src/frontend
+    build: 
+      context: ./src/frontend
+      args:
+        NEXT_PUBLIC_BACKEND_API_ROOT: http://backend:5000
     ports:
       - 8080:3000
+    environment:
+      - NEXT_PUBLIC_BACKEND_API_ROOT=http://backend:5000
