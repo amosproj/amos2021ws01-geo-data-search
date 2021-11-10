@@ -1,15 +1,8 @@
+version: "3"
 services:
-  backend:
-    build: ./src/backend
-    volumes:
-      - ./src/backend:/src
-    working_dir: /src
-    entrypoint: ["java", "main/HelloWorldMain.java"]
   nlp:
     build: ./src/nlp
     volumes:
       - ./src/nlp:/src
-  frontend:
-    build: ./src/frontend
     ports:
-      - 8080:3000
+      - 8123:8000

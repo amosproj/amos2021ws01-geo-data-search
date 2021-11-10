@@ -1,1 +1,3 @@
 chatette
+uvicorn
+fastapi
