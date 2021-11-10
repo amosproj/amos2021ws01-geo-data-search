@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 @FeignClient(name = "nlp-client", url = "nlp:8000")
 public interface NlpClient {
 
-    @PostMapping("/{request}")
+    @PostMapping("/request/{request}")
     void sendToNlp(@PathVariable(name = "request") String payload);
 }

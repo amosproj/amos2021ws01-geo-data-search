@@ -1,15 +1,14 @@
 services:
   backend:
     build: ./src/backend
-    volumes:
-      - ./src/backend:/src
-    working_dir: /src
     ports:
       - 5000:8080
   nlp:
     build: ./src/nlp
     volumes:
       - ./src/nlp:/src
+    ports:
+      - 4000:8000
   frontend:
     build:
       context: ./src/frontend
