@@ -1,2 +1,3 @@
 chatette
-pytest
+uvicorn
+fastapi
