@@ -1,9 +1,14 @@
+import logging
+
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 
 
-# App title and landing page
+# Logging
+logger = logging.getLogger()
+logging.basicConfig(level=logging.INFO)
 
+# App title and landing page
 app_title = "API for NLP Component"
 app = FastAPI(title=app_title)
 
@@ -24,7 +29,8 @@ async def get_version():
 
 @app.get(
     path="/request/{text}",
-    tags=["Request NLP "]
+    tags=["Request NLP"]
 )
 async def request(text: str):
-    return text
+    logging.info(f"[NLP Component] Received Request: {text}")
+    return "NLP received: " + text
