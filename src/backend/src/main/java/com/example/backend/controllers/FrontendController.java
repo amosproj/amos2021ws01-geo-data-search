@@ -30,8 +30,8 @@ public class FrontendController {
         logger.info(LOG_PREFIX + "New query received! Query = " + query);
         try {
             logger.info(LOG_PREFIX + "Sending data to NLP...");
-            nlpClient.sendToNlp(query);
-            logger.info(LOG_PREFIX + "...SUCCESS!");
+            String response = nlpClient.sendToNlp(query);
+            logger.info(LOG_PREFIX + "...SUCCESS!, response from NLP received:" + response);
         } catch (Throwable t) {
             logger.error(LOG_PREFIX + "...ERROR!" + "\n" + "\t" + t.getMessage() + "\n" + "\t" + "Could not send data to NLP, is the NLP service running? See error above.");
         }
