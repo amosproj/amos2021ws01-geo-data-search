@@ -1,9 +1,4 @@
-FROM openjdk:latest as builder
-WORKDIR /src
-COPY . /src
-RUN javac main/HelloWorldMain.java -d /build
-
 FROM openjdk:latest
-WORKDIR /app
-COPY --from=builder /build/ /app
-ENTRYPOINT ["java", "main.HelloWorldMain"]
+ARG JAR_FILE=target/*.jar
+COPY ${JAR_FILE} app.jar
+ENTRYPOINT ["java","-jar","/app.jar"]

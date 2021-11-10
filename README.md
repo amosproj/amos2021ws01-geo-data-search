@@ -15,3 +15,4 @@
 - `docker-compose run --rm backend <COMMAND>`
 - `docker-compose run --rm backend pwd`
 - `docker-compose run --rm backend java main/HelloWorldMain.java`
+- `docker-compose run --rm nlp python3 helloTest.py`
