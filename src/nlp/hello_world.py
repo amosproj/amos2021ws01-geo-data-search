@@ -1,2 +1,4 @@
-print("Hello from NLP!")
-sleep(99999999)
+from string_interpreter import process_string
+
+# print one example input
+print(process_string("Finde alle Berge in Berlin die höher als 100m sind"))
