@@ -21,8 +21,5 @@ export default function apiClient(
     config.body = JSON.stringify(body);
   }
 
-  return fetch(
-    `${process.env.NEXT_PUBLIC_BACKEND_API_ROOT}${endpoint}`,
-    config
-  );
+  return fetch(`/api${endpoint}`, config);
 }
