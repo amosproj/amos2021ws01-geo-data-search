@@ -13,7 +13,10 @@ app_title = "API for NLP Component"
 app = FastAPI(title=app_title)
 
 
-@app.get("/", include_in_schema=False, response_class=HTMLResponse)
+@app.get("/",
+         include_in_schema=False,
+         response_class=HTMLResponse
+         )
 async def root():
     return f"<html><head><title>{app_title}</title></head><body>" \
            f"Welcome! Open /docs to see API documentation.</body></html>"
@@ -24,6 +27,7 @@ async def root():
     tags=["Version Number"]
 )
 async def get_version():
+    logging.info(f"[NLP Component] Requested current version number")
     return "0.0.1"
 
 
