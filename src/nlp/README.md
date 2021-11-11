@@ -1,6 +1,8 @@
 # NLP Component
 
 ### Run local
-`uvicorn main:app` -> use `--reload` flag during development
+`uvicorn main:app`
+- use `--reload` flag during development
+- use `--host 0.0.0.0` and `--port 8000` to set address and port
 
-see http://127.0.0.1:8000/docs
+- see http://[address]:[port]/docs
