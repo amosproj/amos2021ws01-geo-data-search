@@ -1,3 +1,4 @@
 chatette
 uvicorn
 fastapi
+spacy

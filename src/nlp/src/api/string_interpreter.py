@@ -1,7 +1,12 @@
 import json
+import preprocessor
 
 def process_string(string: str) -> str:
-    return get_query(string).getjson()
+
+    # preprocess string
+    preprocessed = preprocessor.preprocess_string(string)
+
+    return get_query(preprocessed).getjson()
 
 def get_query(string : str) -> object:
     result = Query()
@@ -87,3 +92,8 @@ class Query:
             },
         }
         return json.dumps(dict)
+
+
+if __name__ == "__main__":
+    print(process_string("Test"))
+    
