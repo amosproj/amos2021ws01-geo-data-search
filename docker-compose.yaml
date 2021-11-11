@@ -5,4 +5,4 @@ services:
     volumes:
       - ./src/nlp:/src
     ports:
-      - 8123:80
+      - 8123:8000
