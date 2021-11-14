@@ -36,6 +36,11 @@
             <artifactId>spring-cloud-starter-openfeign</artifactId>
             <version>3.0.5</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <optional>true</optional>
+        </dependency>
     </dependencies>
 
     <build>
@@ -50,6 +55,10 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
+                    <excludeDevtools>false</excludeDevtools>
+                    <layers>
+                        <enabled>true</enabled>
+                    </layers>
                 </configuration>
             </plugin>
         </plugins>
