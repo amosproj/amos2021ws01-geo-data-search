@@ -1,0 +1,49 @@
+TeamMeeting Thursday 11.11.2021 12:30-14:00
+-------------------------------------------
+
+	location: Zoom
+
+	protocoled by: chrisjherm
+
+	Structure:
+		Old Sprint Review
+		Old Sprint Release
+		Old Sprint Retroperspective
+		Organizational matters
+		New Sprint Planning
+		Feedback from Coach
+
+- - - - - - - - - - - - - - - - - - - - - -
+
+	Old Sprint Review:
+		PO Decappi demonstrated the latest backend version
+		See Kanban Board for a more detailed overview
+
+	Old Sprint Release:
+		the latest version was released live by PO Decappi
+
+	Old Sprint Retroperspective:
+		Miro board did not worked so we used GoogleDrive:
+			https://docs.google.com/spreadsheets/d/1RSJhCRnhADVPKeWqalQdaIrGbmhU31N7oWfZQW3OImo/edit#gid=0
+		Take aways:
+			- Reply promptly (if necessary, let them know that you don't have time), Write down the protocol immediately
+			- Maybe we should keep everything as simple as possible. Yes differnt frameworks or programs make life easier but it is only make things easier for the people who know how to use it 
+			- build and share more knowledge about the APIs
+			- Early communication / self tests
+			- Task redistribution and more support for specific tasks
+			- Define the particular interfaces in the tickets
+		See Miro Board for a more detailed overview
+
+	Organizational matters:
+		Backend-member abdelelbehiri will leave the project
+
+	New Sprint Planning:
+		See Kanban Board for a more detailed overview
+		two backend related user stories were not estimated
+
+	Feedback from Coach:
+		Don't move tickets back on the board
+		the POs responded well to feedback
+		the team is following the processes very well
+		Zoom-Meetings should start some minutes before schedule
+		We should keep a better time-slot management during our meetings
