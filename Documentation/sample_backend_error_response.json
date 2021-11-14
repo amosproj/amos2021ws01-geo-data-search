@@ -1,0 +1,7 @@
+{
+  "error": {
+    "type": "system",
+    "message": "NLP has not been found",
+    "trace" : "LOREM IPSUM"
+  }
+}

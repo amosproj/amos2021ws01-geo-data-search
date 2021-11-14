@@ -1,0 +1,11 @@
+{
+  "result" : [
+    {
+      "type": "Mountain",
+      "id": 1234,
+      "lat": "12.25",
+      "lon": "13.49",
+      "name": "Ochsenkopf"
+    }
+  ]
+}
