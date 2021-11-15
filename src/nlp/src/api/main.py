@@ -24,7 +24,7 @@ async def root():
     tags=["Version Number"]
 )
 async def get_version():
-    logging.info(f"[NLP Component] Requested current version number")
+    logging.info("[NLP Component] Requested current version number")
     return "0.0.1"
 
 
