@@ -15,8 +15,8 @@ services:
     build:
       context: ./src/frontend
       args:
-        NEXT_PUBLIC_BACKEND_API_ROOT: http://localhost:5000/backend/user_query
+        BACKEND_API_ROOT: http://localhost:5000/backend/user_query
     ports:
       - 8080:3000
     environment:
-      - NEXT_PUBLIC_BACKEND_API_ROOT=http://localhost:5000/backend/user_query
+      - BACKEND_API_ROOT=http://localhost:5000/backend/user_query

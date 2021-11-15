@@ -11,8 +11,8 @@ FROM node:16-alpine AS builder
 WORKDIR /app
 COPY . .
 COPY --from=deps /app/node_modules ./node_modules
-ARG NEXT_PUBLIC_BACKEND_API_ROOT
-ENV NEXT_PUBLIC_BACKEND_API_ROOT=${NEXT_PUBLIC_BACKEND_API_ROOT}
+ARG BACKEND_API_ROOT
+ENV BACKEND_API_ROOT=${BACKEND_API_ROOT}
 RUN yarn build && yarn install --production --ignore-scripts --prefer-offline
 
 # Production image, copy all the files and run next
