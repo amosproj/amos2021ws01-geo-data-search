@@ -11,6 +11,9 @@
 - `docker compose up frontend` - for Frontend
 - `docker compose up nlp` - for NLP
 
+#### Restarting the backend container (for development)
+- `docker-compose up -d backend --build`
+
 #### Running example commands inside a container
 - `docker-compose run --rm backend <COMMAND>`
 - `docker-compose run --rm backend pwd`
