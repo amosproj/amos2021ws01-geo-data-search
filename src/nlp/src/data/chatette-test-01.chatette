@@ -1,0 +1,58 @@
+
+%[search query]
+   ~[Finde] [mir?] ~[queryObjectscheme]  .
+
+
+~[queryObjectscheme]
+    [@[Anzahl#singular] @[queryObject#singular]|@[Anzahl#plural] @[queryObject#plural]]
+
+
+~[Finde]
+    finde
+    gebe
+    suche
+    zeige
+    liste
+
+@[queryObject#singular]
+    Berg
+    See
+    Wald
+    Route
+    Ort
+    Straße
+@[queryObject#plural]
+    Berge
+    Seen
+    Wälder
+    Routen
+    Orte
+    Straßen
+@[Anzahl#singular]
+    einen
+    ein
+    1 
+@[Anzahl#plural]
+    zwei
+    drei
+    vier
+    fünf
+    sechs
+    sieben
+    acht
+    neun
+    zehn
+    1
+    2
+    3
+    4
+    5
+    6
+    7
+    8
+    9
+    10
+    mehrer
+    einige
+    alle
+    
