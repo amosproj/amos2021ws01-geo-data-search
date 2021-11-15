@@ -3,7 +3,7 @@ type ApiClientConfig = {
   headers?: {
     [key: string]: string;
   };
-  body?: string;
+  body?: URLSearchParams;
 };
 
 export default function apiClient(
@@ -13,13 +13,16 @@ export default function apiClient(
   const config: ApiClientConfig = {
     method: body ? "POST" : "GET",
     headers: {
-      "Content-Type": "application/json",
+      "Content-Type": "application/x-www-form-urlencoded",
     },
   };
 
   if (body) {
-    config.body = JSON.stringify(body);
+    config.body = new URLSearchParams(body);
   }
 
-  return fetch(`/api${endpoint}`, config);
+  return fetch(
+    `/api${endpoint}`,
+    config
+  );
 }

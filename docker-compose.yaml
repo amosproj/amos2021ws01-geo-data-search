@@ -15,8 +15,8 @@ services:
     build:
       context: ./src/frontend
       args:
-        BACKEND_API_ROOT: http://localhost:5000/backend/user_query
+        BACKEND_API_ROOT: http://backend:8080/backend
     ports:
       - 8080:3000
     environment:
-      - BACKEND_API_ROOT=http://localhost:5000/backend/user_query
+      - BACKEND_API_ROOT=http://backend:8080/backend
