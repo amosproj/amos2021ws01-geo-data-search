@@ -11,13 +11,13 @@ import org.springframework.web.bind.annotation.*;
 public class FrontendController {
 
     private final NlpClient nlpClient;
-    private final ApiClient apiClient;
     private final BackendLogger logger = new BackendLogger();
+    private final APIController apiController;
     private final String LOG_PREFIX = "[FRONTEND_CONTROLLER] ";
 
     public FrontendController(NlpClient nlpClient, ApiClient apiClient) {
         this.nlpClient = nlpClient;
-        this.apiClient = apiClient;
+        this.apiController = new APIController(apiClient);
     }
 
     /**
@@ -46,12 +46,10 @@ public class FrontendController {
      *
      * @param answer the output coming from the NLP
      */
-    @PostMapping("/nlp_answer")
+    @GetMapping("/nlp_answer")
     @ResponseBody
-    public void receiveNlpAnswer(@RequestBody NlpAnswer answer) {
+    public HttpResponse receiveNlpAnswer(@RequestBody NlpAnswer answer) {
         logger.info(LOG_PREFIX + "NLP answered!" + "\n" + "\t" + "what = " + answer.getWhat() + "\n" + "\t" + "where = " + answer.getWhere() + "\n" + "\t" + "spec = " + answer.getSpec());
-        // TODO implement sending to API
-        // apiClient.sendToApi(answer);
-        logger.error(LOG_PREFIX + "...ERROR!" + "\n" + "\t" + "Could not send data to API, is the API service running?");
+        return apiController.requestNodeInfo(answer.getSpec());
     }
 }
