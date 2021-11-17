@@ -3,7 +3,7 @@ package com.example.backend.controllers;
 public class Error {
     private final String type = "system";
     private final String message;
-    private final String trace = "";
+    private final String trace = "HERE COME TRACE";
 
     private Error(String message) {
         this.message = message;

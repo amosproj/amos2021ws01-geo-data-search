@@ -45,7 +45,7 @@ public class NlpResponse {
 
     @Override
     public String toString() {
-        return "NlpAnswer{" +
+        return "NlpResponse{" +
                 "location='" + location + '\'' +
                 ", maxDistance='" + maxDistance + '\'' +
                 ", queryObject='" + queryObject + '\'' +

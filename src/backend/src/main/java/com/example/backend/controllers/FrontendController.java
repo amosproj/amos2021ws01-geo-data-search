@@ -4,7 +4,7 @@ import com.example.backend.BackendLogger;
 import com.example.backend.client.ApiClient;
 import com.example.backend.client.NlpClient;
 import com.example.backend.data.NlpResponse;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.example.backend.data.NodeInfo;
 import com.google.gson.Gson;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,12 +14,12 @@ public class FrontendController {
 
     private final NlpClient nlpClient;
     private final BackendLogger logger = new BackendLogger();
-    private final APIController apiController;
+    private final ApiHandler apiHandler;
     private final String LOG_PREFIX = "[FRONTEND_CONTROLLER] ";
 
     public FrontendController(NlpClient nlpClient, ApiClient apiClient) {
         this.nlpClient = nlpClient;
-        this.apiController = new APIController(apiClient);
+        this.apiHandler = new ApiHandler(apiClient);
     }
 
     /**
@@ -35,14 +35,18 @@ public class FrontendController {
             logger.info(LOG_PREFIX + "Sending data to NLP...");
             String nlpResponse = nlpClient.sendToNlp(query);
             logger.info(LOG_PREFIX + "...SUCCESS!, response from NLP received:" + nlpResponse);
-            //TODO replace this with result when implemented
-            //NlpResponse r = new NlpResponse(nlpResponse, , )
+
             Gson g = new Gson();
-            System.out.println("RESPONSE: \n");
+            System.out.println("NLP RESPONSE: \n");
             System.out.println(nlpResponse);
-            System.out.println("JSONIFIED RESPONSE: \n");
+            System.out.println("INTERPRETED NLP RESPONSE: \n");
             System.out.println(g.fromJson(nlpResponse, NlpResponse.class));
 
+            NodeInfo apiResponse = this.apiHandler.requestNodeInfo("1234");
+            System.out.println("INTERPRETED NLP RESPONSE: \n");
+            System.out.println(apiResponse);
+
+            //TODO replace this with result when implemented
             return new ErrorResponse(Error.createError("Not implemented"));
         } catch (Throwable t) {
             logger.error(LOG_PREFIX + "...ERROR!" + "\n" + "\t" + t.getMessage() + "\n" + "\t" + "Could not send data to NLP, is the NLP service running? See error above.");
