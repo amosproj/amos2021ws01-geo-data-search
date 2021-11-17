@@ -1,15 +1,15 @@
 import json
 
 
-def format_chattete_output(file):
-    trainingData = []
+def format_chatette_output(file):
+    training_data = []
     with open(file) as json_file:
         data = json.load(json_file)
-        queryObjects = data["rasa_nlu_data"]["common_examples"]
-        for queryObject in queryObjects:
+        query_objects = data["rasa_nlu_data"]["common_examples"]
+        for query_object in query_objects:
             entities = []
-            for entity in queryObject["entities"]:
+            for entity in query_object["entities"]:
                 entities.append((entity["start"], entity["end"], entity["entity"]))
-            dataObejct = (queryObject["text"], {"entities": entities})
-            trainingData.append(dataObejct)
-    return trainingData
+            data_object = (query_object["text"], {"entities": entities})
+            training_data.append(data_object)
+    return training_data
