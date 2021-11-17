@@ -6,6 +6,10 @@ nlp = spacy.load("de_core_news_sm")
 
 def process_string(string: str) -> str:
 
+    # analyse preprocessed string
+    return get_query(string).get_json()
+
+def preprocess_string(string : str) -> str:
     # analyse string
     tokens = nlp(string)
 
@@ -18,10 +22,12 @@ def process_string(string: str) -> str:
             preprocessed_string += " "
         preprocessed_string += token.lemma_
 
-    # analyse preprocessed string
-    return get_query(preprocessed_string).getjson()
+    return preprocessed_string
 
 def get_query(string : str) -> object:
+
+    string = preprocess_string(string)
+
     result = Query()
 
     # hardcoded comparison for testing purposes
@@ -68,7 +74,7 @@ class Query:
         self.curve_count_left = ""
 
     
-    def getjson(self) -> str:
+    def get_json(self) -> str:
         dict = {
             "location" : self.location,
             "max distance" : self.max_distance,
@@ -105,3 +111,5 @@ class Query:
             },
         }
         return json.dumps(dict)
+
+print(process_string("Finde alle Berge in Berlin die höher als 100m sind"))
