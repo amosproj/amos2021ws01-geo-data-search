@@ -1,15 +1,19 @@
 package com.example.backend.data;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * This is a dummy for testing purposes (and proof of concept)
  */
 public class NlpAnswer {
 
-    private final String what;
-    private final String where;
-    private final String spec;
+    private String what;
+    private String where;
+    private String spec;
 
-    public NlpAnswer(String what, String where, String spec) {
+    public NlpAnswer(@JsonProperty("what") String what,
+                     @JsonProperty("where") String where,
+                     @JsonProperty("spec") String spec) {
         this.what = what;
         this.where = where;
         this.spec = spec;

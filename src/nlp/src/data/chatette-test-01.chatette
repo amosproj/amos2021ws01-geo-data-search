@@ -1,0 +1,96 @@
+
+%[search query]
+   ~[Finde] [mir?] ~[queryObjectscheme] [mit einer?] ~[attribute] [von?] ~[value] [in?] ~[region] 
+
+
+~[queryObjectscheme]
+    [@[queryObjectAmount#singular] @[queryObject#singular]|@[queryObjectAmount#plural] @[queryObject#plural]]
+
+
+~[Finde]
+    finde
+    gebe
+    suche
+    zeige
+    liste
+
+@[queryObject#singular]
+    Berg
+    See
+    Wald
+    Route
+    Ort
+    Straße
+@[queryObject#plural]
+    Berge
+    Seen
+    Wälder
+    Routen
+    Orte
+    Straßen
+@[queryObjectAmount#singular]
+    einen
+    ein
+    1 
+@[queryObjectAmount#plural]
+    zwei
+    drei
+    vier
+    fünf
+    sechs
+    sieben
+    acht
+    neun
+    zehn
+    1
+    2
+    3
+    4
+    5
+    6
+    7
+    8
+    9
+    10
+    mehrer
+    einige
+    alle
+    
+~[attribute]
+    höhe
+    länge
+    breite
+    tiefe
+
+~[value]
+    [mindestens|höchstens|genau] [1|2|3|4|5|6|7|8|] [km|m|kilometer|meter]
+
+~[region]
+    bergen
+    norwegen
+    perth
+    australien
+    reykjavik
+    island
+    helsinki
+    finnland
+    wellington
+    neuseeland
+    zürich
+    schweiz
+    brisbane
+    australien
+    melbourne
+    australien
+    stockholm
+    schweden
+    auckland
+    neuseeland
+    berlin
+    deutschland
+    usa
+    newyorkcity
+    washington
+
+
+
