@@ -2,4 +2,3 @@ chatette
 uvicorn
 fastapi
 spacy
-de_core_news_md
