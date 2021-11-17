@@ -5,6 +5,7 @@ import spacy
 nlp = spacy.load("de_core_news_sm")
 
 
+
 def process_string(string: str) -> str:
 
     # analyse preprocessed string
@@ -78,7 +79,7 @@ class Query:
         self.curve_count_left = ""
 
     def get_json(self) -> str:
-        dict = {
+        dictionary = {
             "location": self.location,
             "max distance": self.max_distance,
             "query object": self.query_object,
@@ -113,4 +114,4 @@ class Query:
                 }
             },
         }
-        return json.dumps(dict)
+        return dictionary

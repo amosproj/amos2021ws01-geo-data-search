@@ -3,7 +3,9 @@ package com.example.backend.controllers;
 import com.example.backend.BackendLogger;
 import com.example.backend.client.ApiClient;
 import com.example.backend.client.NlpClient;
-import com.example.backend.data.NlpAnswer;
+import com.example.backend.data.NlpResponse;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.gson.Gson;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -34,22 +36,17 @@ public class FrontendController {
             String nlpResponse = nlpClient.sendToNlp(query);
             logger.info(LOG_PREFIX + "...SUCCESS!, response from NLP received:" + nlpResponse);
             //TODO replace this with result when implemented
+            //NlpResponse r = new NlpResponse(nlpResponse, , )
+            Gson g = new Gson();
+            System.out.println("RESPONSE: \n");
+            System.out.println(nlpResponse);
+            System.out.println("JSONIFIED RESPONSE: \n");
+            System.out.println(g.fromJson(nlpResponse, NlpResponse.class));
+
             return new ErrorResponse(Error.createError("Not implemented"));
         } catch (Throwable t) {
             logger.error(LOG_PREFIX + "...ERROR!" + "\n" + "\t" + t.getMessage() + "\n" + "\t" + "Could not send data to NLP, is the NLP service running? See error above.");
             return new ErrorResponse(Error.createError(t.getMessage()));
         }
-    }
-
-    /**
-     * Receives the response from NLP and forwards it to the API caller.
-     *
-     * @param answer the output coming from the NLP
-     */
-    @GetMapping("/nlp_answer")
-    @ResponseBody
-    public HttpResponse receiveNlpAnswer(@RequestBody NlpAnswer answer) {
-        logger.info(LOG_PREFIX + "NLP answered!" + "\n" + "\t" + "what = " + answer.getWhat() + "\n" + "\t" + "where = " + answer.getWhere() + "\n" + "\t" + "spec = " + answer.getSpec());
-        return apiController.requestNodeInfo(answer.getSpec());
     }
 }
