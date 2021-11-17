@@ -1,15 +1,41 @@
 import json
+import spacy
+
+# load spacy ml nlp model
+nlp = spacy.load("de_core_news_sm")
+
 
 
 def process_string(string: str) -> str:
+
+    # analyse preprocessed string
     return get_query(string).get_json()
 
 
+def preprocess_string(string: str) -> str:
+    # analyse string
+    tokens = nlp(string)
+
+    # combine lemmata into string
+    preprocessed_string = ""
+
+    for token in tokens:
+        # separate tokens with space
+        if(preprocessed_string != ""):
+            preprocessed_string += " "
+        preprocessed_string += token.lemma_
+
+    return preprocessed_string
+
+
 def get_query(string: str) -> object:
+
+    string = preprocess_string(string)
+
     result = Query()
 
     # hardcoded comparison for testing purposes
-    if string == "Finde alle Berge in Berlin die höher als 100m sind":
+    if string == "Finde all Berg in Berlin der hoch als 100 m sein":
         result.location = "Berlin"
         result.query_object = "Mountain"
         result.min_height = "100 m"
