@@ -33,10 +33,9 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Install spacy module and requirements
       run: |
-       pip list
        cd src/nlp
        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-       pip list
+       python -m spacy download de_core_news_sm
     - name: Test with pytest
       run: |
         python -m pytest

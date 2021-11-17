@@ -1,8 +1,8 @@
 import json
-import de_core_news_md
+import spacy
 
 # load spacy ml nlp model
-nlp = de_core_news_md.load()
+nlp = spacy.load("de_core_news_sm")
 
 def process_string(string: str) -> str:
 

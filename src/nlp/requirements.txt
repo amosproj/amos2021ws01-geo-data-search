@@ -1,4 +1,4 @@
 chatette
 uvicorn
 fastapi
-de_core_news_md
+spacy
