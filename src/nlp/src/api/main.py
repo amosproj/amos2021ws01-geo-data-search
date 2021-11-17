@@ -3,6 +3,8 @@ import logging
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 
+from .string_interpreter import process_string
+
 
 # Logging
 logger = logging.getLogger()
@@ -25,7 +27,7 @@ async def root():
 )
 async def get_version():
     logging.info("[NLP Component] Requested current version number")
-    return "0.0.1"
+    return {"version": "0.0.1"}
 
 
 @app.get(
@@ -34,4 +36,6 @@ async def get_version():
 )
 async def request(text: str):
     logging.info(f"[NLP Component] Received Request: {text}")
-    return "NLP received: " + text
+    text = "Finde alle Berge in Berlin die höher als 100m sind"  # TODO remove
+
+    return process_string(text)
