@@ -2,3 +2,4 @@ chatette
 uvicorn
 fastapi
 spacy
+pytest
