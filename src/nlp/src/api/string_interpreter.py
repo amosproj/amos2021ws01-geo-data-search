@@ -88,4 +88,4 @@ class Query:
                 }
             },
         }
-        return json.dumps(dictionary)
+        return dictionary
