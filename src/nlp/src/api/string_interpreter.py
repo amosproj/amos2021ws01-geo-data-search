@@ -37,7 +37,6 @@ def get_query(string: str) -> object:
         result.location = "Berlin"
         result.query_object = "Mountain"
         result.route_attributes.height.min = 100
-        result.route_attributes.curves.left.count = 5
 
     return result
 
