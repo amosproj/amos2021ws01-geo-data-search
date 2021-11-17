@@ -1,20 +1,31 @@
 import json
-import preprocessor
+import de_core_news_md
+
+# load spacy ml nlp model
+nlp = de_core_news_md.load()
 
 def process_string(string: str) -> str:
 
-    # preprocess string
-    preprocessed = preprocessor.preprocess_string(string)
+    # analyse string
+    tokens = nlp(string)
 
-    return get_query(preprocessed).getjson()
+    # combine lemmata into string
+    preprocessed_string = ""
+    
+    for token in tokens:
+        # separate tokens with space
+        if( preprocessed_string != ""):
+            preprocessed_string += " "
+        preprocessed_string += token.lemma_
+
+    # analyse preprocessed string
+    return get_query(preprocessed_string).getjson()
 
 def get_query(string : str) -> object:
     result = Query()
 
-    print(string)
-
     # hardcoded comparison for testing purposes
-    if string == "Finde alle Berg in Berlin der hoch als 100 m sein":
+    if string == "Finde all Berg in Berlin der hoch als 100 m sein":
         result.location = "Berlin"
         result.query_object = "Mountain"
         result.min_height = "100 m"
@@ -94,8 +105,3 @@ class Query:
             },
         }
         return json.dumps(dict)
-
-
-if __name__ == "__main__":
-    print(process_string("Finde alle Berge in Berlin die höher als 100m sind"))
-    
