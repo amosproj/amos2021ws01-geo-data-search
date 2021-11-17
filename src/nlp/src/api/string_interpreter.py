@@ -11,8 +11,10 @@ def process_string(string: str) -> str:
 def get_query(string : str) -> object:
     result = Query()
 
+    print(string)
+
     # hardcoded comparison for testing purposes
-    if string == "Finde alle Berge in Berlin die höher als 100m sind":
+    if string == "Finde alle Berg in Berlin der hoch als 100 m sein":
         result.location = "Berlin"
         result.query_object = "Mountain"
         result.min_height = "100 m"
@@ -95,5 +97,5 @@ class Query:
 
 
 if __name__ == "__main__":
-    print(process_string("Test"))
+    print(process_string("Finde alle Berge in Berlin die höher als 100m sind"))
     
