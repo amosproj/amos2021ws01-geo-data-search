@@ -1,0 +1,41 @@
+TeamMeeting Thursday 18.11.2021 12:30-14:00
+-------------------------------------------
+
+	location: Zoom
+
+	protocoled by: chrisjherm
+
+	Structure:
+		Old Sprint Review
+		Old Sprint Release
+		Old Sprint Retroperspective
+		Feedback from Coach
+		Organizational matters
+		New Sprint Planning
+
+- - - - - - - - - - - - - - - - - - - - - -
+
+	Old Sprint Review:
+		No noteworthy comments.
+		See Kanban Board for a more detailed overview.
+
+	Old Sprint Release:
+		The latest version was released live by PO Decappi.
+
+	Old Sprint Retroperspective:
+		Takeaways:
+			- Discuss about using cloud-based resources.
+			- Just as in this sprint, maybe a little more communication between the subteam.
+			- Divide issue #22 into issues for specific API.
+
+	Feedback from Coach:
+		Much more positive feelings within the team.
+		Our coach will sit down again with the professor regarding the feedback email.
+
+	Organizational matters:
+		Our coach will inform us, when we should use the happiness index correctly.
+		Release Planing on Monday 8pm. Everyone should take part when possible.
+
+	New Sprint Planning:
+		See Kanban Board for a more detailed overview.
+		We agreed to limit the spring story points to 9 and to pull something from the product backlog instead.
