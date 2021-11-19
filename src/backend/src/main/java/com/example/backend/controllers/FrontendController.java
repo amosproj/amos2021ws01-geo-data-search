@@ -43,7 +43,7 @@ public class FrontendController {
             System.out.println(g.fromJson(nlpResponse, NlpResponse.class));
 
             NodeInfo apiResponse = this.apiHandler.requestNodeInfo("1234");
-            System.out.println("INTERPRETED NLP RESPONSE: \n");
+            System.out.println("INTERPRETED API RESPONSE: \n");
             System.out.println(apiResponse);
 
             //TODO replace this with result when implemented
