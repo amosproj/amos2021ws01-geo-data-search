@@ -1,4 +1,3 @@
-from packages import api
 from api import string_interpreter
 
 
@@ -9,7 +8,7 @@ def test_default_string_interpretation():
 
     assert result.location == "Berlin"
     assert result.query_object == "Mountain"
-    assert result.min_height == "100 m"
+    assert result.route.attributes.height.min == 100
 
 
 def test_no_input():
@@ -17,4 +16,4 @@ def test_no_input():
 
     assert result.location == ""
     assert result.query_object == ""
-    assert result.min_height == ""
+    assert result.route.attributes.height.min == 0
