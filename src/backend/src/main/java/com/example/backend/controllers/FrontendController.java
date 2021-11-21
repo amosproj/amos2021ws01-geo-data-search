@@ -6,7 +6,6 @@ import com.example.backend.client.NlpClient;
 import com.example.backend.data.NlpResponse;
 import com.example.backend.data.NodeInfo;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -37,14 +36,14 @@ public class FrontendController {
             String nlpResponse = nlpClient.sendToNlp(query);
             logInfo("...SUCCESS!, response from NLP received:" + nlpResponse);
 
-            Gson g = new GsonBuilder().serializeNulls().create();
-            logInfo("\nNLP RESPONSE:");
+            Gson g = new Gson();
+            logInfo("NLP RESPONSE:");
             logInfo(nlpResponse);
-            logInfo("\nINTERPRETED NLP RESPONSE:");
+            logInfo("INTERPRETED NLP RESPONSE:");
             logInfo(g.fromJson(nlpResponse, NlpResponse.class).toString());
 
             NodeInfo apiResponse = this.apiHandler.requestNodeInfo("1234");
-            logInfo("\nINTERPRETED NLP RESPONSE:");
+            logInfo("INTERPRETED API RESPONSE:");
             logInfo(apiResponse.toString());
 
             //TODO replace this with result when implemented
