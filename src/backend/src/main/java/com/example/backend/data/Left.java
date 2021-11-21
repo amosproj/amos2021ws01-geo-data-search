@@ -40,9 +40,9 @@ public class Left {
     @Override
     public String toString() {
         return "Left{" +
-                "min=" + min +
-                ", max=" + max +
-                ", count=" + count +
-                '}';
+                "\n\t\t\t\tmin = \"" + min + "\"" +
+                "\n\t\t\t\tmax = \"" + max + "\"" +
+                "\n\t\t\t\tcount = \"" + count + "\"" +
+                "\n\t\t\t\t}";
     }
 }

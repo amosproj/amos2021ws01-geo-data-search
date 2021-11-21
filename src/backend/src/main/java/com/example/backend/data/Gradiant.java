@@ -40,9 +40,9 @@ public class Gradiant {
     @Override
     public String toString() {
         return "Gradiant{" +
-                "min=" + min +
-                ", max=" + max +
-                ", length=" + length +
-                '}';
+                "\n\t\t\tmin = \"" + min + "\"" +
+                "\n\t\t\tmax = \"" + max + "\"" +
+                "\n\t\t\tlength = \"" + length + "\"" +
+                "\n\t\t\t}";
     }
 }

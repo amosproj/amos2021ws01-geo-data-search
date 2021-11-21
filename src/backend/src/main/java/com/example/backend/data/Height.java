@@ -33,8 +33,8 @@ public class Height {
     @Override
     public String toString() {
         return "Height{" +
-                "min=" + min +
-                ", max=" + max +
-                '}';
+                "\n\t\t\tmin = \"" + min + "\"" +
+                "\n\t\t\tmax = \"" + max + "\"" +
+                "\n\t\t\t}";
     }
 }

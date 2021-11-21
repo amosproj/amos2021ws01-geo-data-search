@@ -49,10 +49,10 @@ public class RouteAttributes {
     @Override
     public String toString() {
         return "RouteAttributes{" +
-                "height=" + height +
-                ", length=" + length +
-                ", gradiant=" + gradiant +
-                ", curves=" + curves +
-                '}';
+                "\n\t\theight = " + height +
+                "\n\t\tlength = " + length +
+                "\n\t\tgradiant = " + gradiant +
+                "\n\t\tcurves = " + curves +
+                "\n\t\t}";
     }
 }

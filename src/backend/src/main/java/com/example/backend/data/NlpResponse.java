@@ -9,11 +9,11 @@ public class NlpResponse {
 
     @SerializedName("location")
     private final String location;
-    @SerializedName("max distance")
+    @SerializedName("max_distance")
     private final String maxDistance;
-    @SerializedName("query object")
+    @SerializedName("query_object")
     private final String queryObject;
-    @SerializedName("route attributes")
+    @SerializedName("route_attributes")
     private final RouteAttributes routeAttributes;
 
     public NlpResponse(String location, String maxDistance, String queryObject, RouteAttributes routeAttributes) {
@@ -41,11 +41,11 @@ public class NlpResponse {
 
     @Override
     public String toString() {
-        return "NlpResponse{" +
-                "location='" + location + '\'' +
-                ", maxDistance=" + maxDistance +
-                ", queryObject='" + queryObject + '\'' +
-                ", routeAttributes=" + routeAttributes +
-                '}';
+        return "\nNlpResponse{" +
+                "\n\tlocation = \"" + location + "\"" +
+                "\n\tmaxDistance = \"" + maxDistance + "\"" +
+                "\n\tqueryObject = \"" + queryObject + "\"" +
+                "\n\trouteAttributes = " + routeAttributes +
+                "\n\t}";
     }
 }

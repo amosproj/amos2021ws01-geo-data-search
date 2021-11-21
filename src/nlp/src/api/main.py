@@ -3,8 +3,7 @@ import logging
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 
-from .string_interpreter import process_string
-
+from .string_interpreter import process_string, Query
 
 # Logging
 logger = logging.getLogger()
@@ -32,7 +31,8 @@ async def get_version():
 
 @app.get(
     path="/request/{text}",
-    tags=["Request NLP Component"]
+    tags=["Request NLP Component"],
+    response_model=Query
 )
 async def request(text: str):
     logging.info(f"[NLP Component] Received Request: {text}")

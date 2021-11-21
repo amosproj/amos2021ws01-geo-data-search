@@ -56,11 +56,11 @@ public class Curves {
     @Override
     public String toString() {
         return "Curves{" +
-                "min=" + min +
-                ", max=" + max +
-                ", count=" + count +
-                ", left=" + left +
-                ", right=" + right +
-                '}';
+                "\n\t\t\tmin = \"" + min + "\"" +
+                "\n\t\t\tmax = \"" + max + "\"" +
+                "\n\t\t\tcount = \"" + count + "\"" +
+                "\n\t\t\tleft = " + left +
+                "\n\t\t\tright = " + right +
+                "\n\t\t\t}";
     }
 }
