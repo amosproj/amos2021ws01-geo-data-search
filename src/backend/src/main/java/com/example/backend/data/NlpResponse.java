@@ -3,28 +3,24 @@ package com.example.backend.data;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * This is a dummy for testing purposes (and proof of concept)
+ * The data structure to hold the response from the NLP component.
  */
 public class NlpResponse {
 
+    @SerializedName("location")
     private final String location;
-    @SerializedName("max distance")
+    @SerializedName("max_distance")
     private final String maxDistance;
-    @SerializedName("query object")
+    @SerializedName("query_object")
     private final String queryObject;
-//    @SerializedName("route attributes")
-//    private final String routeAttributes;
+    @SerializedName("route_attributes")
+    private final RouteAttributes routeAttributes;
 
-    public NlpResponse(
-            String location,
-            String maxDistance,
-            String queryObject
-//            String routeAttributes
-    ) {
+    public NlpResponse(String location, String maxDistance, String queryObject, RouteAttributes routeAttributes) {
         this.location = location;
         this.maxDistance = maxDistance;
         this.queryObject = queryObject;
-//        this.routeAttributes = routeAttributes;
+        this.routeAttributes = routeAttributes;
     }
 
     public String getLocation() {
@@ -39,16 +35,17 @@ public class NlpResponse {
         return queryObject;
     }
 
-//    public String getRouteAttributes() {
-//        return routeAttributes;
-//    }
+    public RouteAttributes getRouteAttributes() {
+        return routeAttributes;
+    }
 
     @Override
     public String toString() {
         return "NlpResponse{" +
                 "location='" + location + '\'' +
-                ", maxDistance='" + maxDistance + '\'' +
-                ", queryObject='" + queryObject + '\'' +
+                ", max_distance=" + maxDistance +
+                ", query_object='" + queryObject + '\'' +
+                ", route_attributes=" + routeAttributes +
                 '}';
     }
 }
