@@ -1,38 +1,66 @@
+//Liste Berge mit einer Höhe von mehr|weniger als 500 m
+//Finde eine Stadt die höher liegt als 220m
+//Zeige Wälder in Berlin
+//500m lange Straße mit 30 Linkskurven in ~[region]
+//Zeige Orte über 500m in Brandenburg
+//Finde eine Straße mit einem Anstieg von 9%
 
-%[search query]
-   ~[Finde] [mir?] ~[queryObjectscheme] [mit einer?] ~[attribute] [von?] ~[value] [in?] ~[region] 
+
+%[erhebungen](50)
+   // ~[Finde] [mir?] ~[queryObjectscheme] [mit einer?] ~[attribute] [von?] ~[value] [in?] ~[region]
+   ~[Finde?] @[queryObject#elevation] mit einer Höhe von ~[value] [in ~[region]?]
+   ~[Finde?] ~[value] hohe @[queryObject#elevation] [in ~[region]?]
+
+%[orte](20)
+   ~[Finde?] @[queryObject#place][ der höher liegt als @[amount][ ?][ym|Meter|km]?] [in ~[region]?]
+
+%[routen](100)
+    ~[Finde?][ eine?] @[queryObject#route][ mit einem Anstieg von [@[amount#plural-number]\%|@[amount#plural-numeral] Prozent]?/70][ in ~[region]?]
+    ~[Finde?][ eine?] @[queryObject#route][ in einer Höhe[ von?] @[amount] m?/70][ in ~[region]?]
+    ~[Finde?][ eine?] @[queryObject#route][ mit einer Länge von @[amount] km?/70][ in ~[region]?]
+
+%[routen-test](training:0, testing:20)
+    [~[Finde] mir?][ in ~[region]?][ eine?] @[amount] km[ lange?] @[queryObject#route]
 
 
-~[queryObjectscheme]
-    [@[queryObjectAmount#singular] @[queryObject#singular]|@[queryObjectAmount#plural] @[queryObject#plural]]
+//~[queryObjectscheme]
+//    [@[amount#singular] @[queryObject#singular]|@[amount#plural] @[queryObject#plural]]
 
 
-~[Finde]
+~[&Finde]
     finde
     gebe
-    suche
+    gib
+    such[e?]
     zeige
     liste
 
-@[queryObject#singular]
-    Berg
-    See
-    Wald
-    Route
-    Ort
-    Straße
-@[queryObject#plural]
-    Berge
-    Seen
-    Wälder
-    Routen
-    Orte
-    Straßen
-@[queryObjectAmount#singular]
+@[&queryObject#elevation]
+    Berg[e?]
+    Erhebung[en?]
+    Hügel
+
+@[&queryObject#place]
+    See[n?]
+    Gewässer
+    [Wald|Wälder|Waldflächen]
+    Ort[e?]
+
+@[&queryObject#route]
+    Route[n?]
+    Straße[n?]
+    Weg[e?]
+
+@[amount#singular]
     einen
+    eine
     ein
-    1 
-@[queryObjectAmount#plural]
+    1
+@[amount#plural]
+    @[amount#plural-numeral]
+    @[amount#plural-number]
+
+@[amount#plural-numeral]
     zwei
     drei
     vier
@@ -42,6 +70,8 @@
     acht
     neun
     zehn
+
+@[amount#plural-number]
     1
     2
     3
@@ -52,20 +82,20 @@
     8
     9
     10
-    mehrer
+    mehrere
     einige
     alle
     
-~[attribute]
-    höhe
-    länge
-    breite
-    tiefe
+~[&attribute]
+    Höhe
+    Länge
+    Breite
+    Tiefe
 
 ~[value]
-    [mindestens|höchstens|genau] [1|2|3|4|5|6|7|8|] [km|m|kilometer|meter]
+    [mindestens|höchstens|genau] @[amount] [km|m|kilometer|meter]
 
-~[region]
+~[&region]
     bergen
     norwegen
     perth
@@ -90,7 +120,5 @@
     deutschland
     usa
     newyorkcity
+    NY
     washington
-
-
-
