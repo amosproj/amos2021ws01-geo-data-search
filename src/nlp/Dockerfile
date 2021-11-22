@@ -12,7 +12,8 @@ FROM python:3.9 AS tests_builder
 COPY --from=dep_builder /opt/venv /opt/venv
 ENV PYTHONPATH=/app:/opt/venv
 ENV PATH=/opt/venv/bin:$PATH
-COPY . /app
+WORKDIR /app
+COPY . .
 RUN pip install -e .
 
 FROM python:3.9 AS runner
