@@ -1,9 +1,7 @@
-import codecs
-import json
+import pickle
 import os
-
 from pathlib import Path
-from spacy_formatter import format_chatette_output
+from spacy_formatter import format_chatette_output, convert_data_into_spacy_format
 
 SEP = os.path.sep
 PATH_NLU = f"output{SEP}train{SEP}"
@@ -20,7 +18,7 @@ files = os.listdir(PATH_NLU)
 training_data = []
 for file in files:
     sub_training_data = format_chatette_output(PATH_NLU + file)
-
+    training_data = training_data + sub_training_data
     # write resulting json to file
-    with open(PATH_SPACY + "spacy" + file, "wb") as f:
-        json.dump(sub_training_data, codecs.getwriter("utf-8")(f), ensure_ascii=False)
+
+pickle.dump(training_data, open(PATH_SPACY + "spacy" + file, "wb"))
