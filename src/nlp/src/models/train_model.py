@@ -31,7 +31,7 @@ with nlp.disable_pipes(*other_pipes):
             for text, annotations in batch:
                 # create Example
                 doc = nlp.make_doc(text)
-                example = Example.from_dict(doc, annotations)
+                example = Example.from_dict(doc, {"entities": list(set(annotations["entities"]))})
                 # Update the model
                 nlp.update([example], losses=losses, drop=0.3)
 
