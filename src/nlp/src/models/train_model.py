@@ -1,7 +1,8 @@
-import spacy, random, pickle
-from spacy.util import minibatch, compounding
-from spacy.training.example import Example
+import pickle
+import random
 
+import spacy
+from spacy.training.example import Example
 
 TRAIN_DATA_PATH = "./data/output/spacyoutput.json"
 TRAIN_DATA = pickle.load(open(TRAIN_DATA_PATH, "rb"))
@@ -12,7 +13,7 @@ n_iter = 1
 
 for _, annotations in TRAIN_DATA:
     for ent in annotations.get("entities"):
-        ner.add_label(ent[2])  # Inititalizing optimizerif model is None:
+        ner.add_label(ent[2])  # Inititalizing optimizer if model is None:
 
 optimizer = nlp.create_optimizer()
 other_pipes = [pipe for pipe in nlp.pipe_names if pipe != "ner"]
