@@ -12,7 +12,7 @@
    ~[Finde?] ~[value] hohe @[queryObject#elevation] [in ~[region]?]
 
 %[orte](20)
-   ~[Finde?] @[queryObject#place][ der höher liegt als @[amount][ ?][ym|Meter|km]?] [in ~[region]?]
+   ~[Finde?] @[queryObject#place][ der höher liegt als @[amount] [m|Meter|km]?] [in ~[region]?]
 
 %[routen](100)
     ~[Finde?][ eine?] @[queryObject#route][ mit einem Anstieg von [@[amount#plural-number]\%|@[amount#plural-numeral] Prozent]?/70][ in ~[region]?]
