@@ -1,96 +1,33 @@
-
-%[search query]
-   ~[Finde] [mir?] ~[queryObjectscheme] [mit einer?] ~[attribute] [von?] ~[value] [in?] ~[region] 
-
-
-~[queryObjectscheme]
-    [@[queryObjectAmount#singular] @[queryObject#singular]|@[queryObjectAmount#plural] @[queryObject#plural]]
-
-
-~[Finde]
-    finde
-    gebe
-    suche
-    zeige
-    liste
-
-@[queryObject#singular]
-    Berg
-    See
-    Wald
-    Route
-    Ort
-    Straße
-@[queryObject#plural]
-    Berge
-    Seen
-    Wälder
-    Routen
-    Orte
-    Straßen
-@[queryObjectAmount#singular]
-    einen
-    ein
-    1 
-@[queryObjectAmount#plural]
-    zwei
-    drei
-    vier
-    fünf
-    sechs
-    sieben
-    acht
-    neun
-    zehn
-    1
-    2
-    3
-    4
-    5
-    6
-    7
-    8
-    9
-    10
-    mehrer
-    einige
-    alle
-    
-~[attribute]
-    höhe
-    länge
-    breite
-    tiefe
-
-~[value]
-    [mindestens|höchstens|genau] [1|2|3|4|5|6|7|8|] [km|m|kilometer|meter]
-
-~[region]
-    bergen
-    norwegen
-    perth
-    australien
-    reykjavik
-    island
-    helsinki
-    finnland
-    wellington
-    neuseeland
-    zürich
-    schweiz
-    brisbane
-    australien
-    melbourne
-    australien
-    stockholm
-    schweden
-    auckland
-    neuseeland
-    berlin
-    deutschland
-    usa
-    newyorkcity
-    washington
+// Example sentences:
+//Liste Berge mit einer Höhe von mehr|weniger als 500 m
+//Finde eine Stadt die höher liegt als 220m
+//Zeige Wälder in Berlin
+//TODO: 500m lange Straße mit 30 Linkskurven in ~[region]
+//Zeige Orte über 500m in Brandenburg
+//Finde eine Straße mit einem Anstieg von 9%
 
 
+// Training sentences
+%[erhebungen](50)
+   // ~[Finde] [mir?] ~[queryObjectscheme] [mit einer?] ~[attribute] [von?] ~[value] [in?] ~[region]
+   ~[Finde?] @[queryObject#elevation] mit einer Höhe von ~[value] [in ~[region]?]
+   ~[Finde?] ~[value] hohe @[queryObject#elevation] [in ~[region]?]
 
+%[orte](20)
+   ~[Finde?] @[queryObject#place][ der höher liegt als @[amount] [m|Meter|km]?] [in ~[region]?]
+
+%[routen](100)
+    ~[Finde?][ eine?] @[queryObject#route][ mit einem Anstieg von [@[amount#plural-number]\%|@[amount#plural-numeral] Prozent]?/70][ in ~[region]?]
+    ~[Finde?][ eine?] @[queryObject#route][ in einer Höhe[ von?] @[amount] m?/70][ in ~[region]?]
+    ~[Finde?][ eine?] @[queryObject#route][ mit einer Länge von @[amount] km?/70][ in ~[region]?]
+
+
+// Test sentences
+%[routen-test](training:0, testing:20)
+    [~[Finde] mir?][ in ~[region]?][ eine?] @[amount] km[ lange?] @[queryObject#route]
+
+
+// imports
+|chatette-slots/aliases.chatette
+|chatette-slots/amount.chatette
+|chatette-slots/queryObject.chatette
