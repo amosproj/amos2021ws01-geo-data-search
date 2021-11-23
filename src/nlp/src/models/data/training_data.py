@@ -1,7 +1,8 @@
-import pickle
 import os
+import pickle
 from pathlib import Path
-from spacy_formatter import format_chatette_output, convert_data_into_spacy_format
+
+from spacy_formatter import format_chatette_output
 
 SEP = os.path.sep
 PATH_NLU = f"output{SEP}train{SEP}"

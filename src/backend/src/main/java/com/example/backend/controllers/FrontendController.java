@@ -15,7 +15,7 @@ public class FrontendController {
     private final NlpClient nlpClient;
     private final BackendLogger logger = new BackendLogger();
     private final ApiHandler apiHandler;
-    private final String LOG_PREFIX = "[FRONTEND_CONTROLLER] ";
+    private static final String LOG_PREFIX = "FRONTEND_CONTROLLER";
 
     public FrontendController(NlpClient nlpClient, ApiClient apiClient) {
         this.nlpClient = nlpClient;
@@ -30,27 +30,35 @@ public class FrontendController {
     @PostMapping("/user_query")
     @ResponseBody
     public HttpResponse receiveQueryFromFrontend(@RequestBody String query) {
-        logger.info(LOG_PREFIX + "New query received! Query = " + query);
+        logInfo("New query received! Query = " + query);
         try {
-            logger.info(LOG_PREFIX + "Sending data to NLP...");
+            logInfo("Sending data to NLP...");
             String nlpResponse = nlpClient.sendToNlp(query);
-            logger.info(LOG_PREFIX + "...SUCCESS!, response from NLP received:" + nlpResponse);
+            logInfo("...SUCCESS!, response from NLP received:" + nlpResponse);
 
             Gson g = new Gson();
-            System.out.println("NLP RESPONSE: \n");
-            System.out.println(nlpResponse);
-            System.out.println("INTERPRETED NLP RESPONSE: \n");
-            System.out.println(g.fromJson(nlpResponse, NlpResponse.class));
+            logInfo("NLP RESPONSE:");
+            logInfo(nlpResponse);
+            logInfo("INTERPRETED NLP RESPONSE:");
+            logInfo(g.fromJson(nlpResponse, NlpResponse.class).toString());
 
             NodeInfo apiResponse = this.apiHandler.requestNodeInfo("1234");
-            System.out.println("INTERPRETED NLP RESPONSE: \n");
-            System.out.println(apiResponse);
+            logInfo("INTERPRETED API RESPONSE:");
+            logInfo(apiResponse.toString());
 
             //TODO replace this with result when implemented
             return new ErrorResponse(Error.createError("Not implemented"));
         } catch (Throwable t) {
-            logger.error(LOG_PREFIX + "...ERROR!" + "\n" + "\t" + t.getMessage() + "\n" + "\t" + "Could not send data to NLP, is the NLP service running? See error above.");
+            logError("...ERROR!" + "\n" + "\t" + t.getMessage() + "\n" + "\t" + "Could not send data to NLP, is the NLP service running? See error above.");
             return new ErrorResponse(Error.createError(t.getMessage()));
         }
+    }
+
+    private void logInfo(String logMsg) {
+        logger.info(LOG_PREFIX, logMsg);
+    }
+
+    private void logError(String logMsg) {
+        logger.error(LOG_PREFIX, logMsg);
     }
 }
