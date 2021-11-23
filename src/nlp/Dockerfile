@@ -1,4 +1,4 @@
-FROM python:3.9 AS dep_builder
+FROM python:3.9 AS builder
 
 RUN pip install --upgrade pip
 RUN python3 -m venv /opt/venv
@@ -7,18 +7,11 @@ ENV PATH="/opt/venv/bin:$PATH"
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 RUN python -m spacy download de_core_news_sm
-
-FROM python:3.9 AS tests_builder
-COPY --from=dep_builder /opt/venv /opt/venv
-ENV PYTHONPATH=/app:/opt/venv
-ENV PATH=/opt/venv/bin:$PATH
-WORKDIR /app
-COPY . .
-RUN pip install -e .
+RUN echo "/app/src" > /opt/venv/lib/python3.9/site-packages/easy-install.pth
+RUN echo "/app/src" > /opt/venv/lib/python3.9/site-packages/nameless.egg-link
 
 FROM python:3.9 AS runner
-COPY --from=tests_builder /opt/venv /opt/venv
+COPY --from=builder /opt/venv /opt/venv
 ENV PYTHONPATH=/app:/opt/venv
 ENV PATH=/opt/venv/bin:$PATH
 WORKDIR /app
-COPY --from=tests_builder /app /app
