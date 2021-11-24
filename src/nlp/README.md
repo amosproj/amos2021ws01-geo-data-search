@@ -5,8 +5,8 @@
     ├── ...
     ├── src                    
     │   ├── api                 # Server related files 
-    │   ├── models              # NER model releated files
-    │   │   ├── data            # files for generating data sets
+    │   ├── models              # NER model related files
+    │   │   ├── data            # files for generating data set
     │   │   ├── training        # trained model
     │   │   ├── train_model.py  # script for training model
     │   │
@@ -21,7 +21,7 @@ see http://127.0.0.1:8000/docs
 
 ## Named Entity Recognition (NER) Model
 
-### Generate Data Sets
+### Generate Data Set
 Run script training_data.py to generate a training data set:
 
 ```
@@ -30,7 +30,7 @@ $ python training_data.py
 ```
 This script generates the training data set in NLU format in the directory data/output/train. In a following step, the generated output will be converted in spacy format and saved in the directory data/output.
 
-### Train A NER model 
+### Train NER model 
 
 Run train_model.py to train a NER model:
 
