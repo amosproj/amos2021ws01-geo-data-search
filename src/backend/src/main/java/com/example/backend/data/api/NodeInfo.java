@@ -1,4 +1,5 @@
-package com.example.backend.data;
+package com.example.backend.data.api;
+import com.example.backend.data.ApiResult;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.xml.bind.annotation.XmlRootElement;

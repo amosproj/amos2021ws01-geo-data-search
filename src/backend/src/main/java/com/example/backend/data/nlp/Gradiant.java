@@ -1,17 +1,20 @@
-package com.example.backend.data;
+package com.example.backend.data.nlp;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Height {
+public class Gradiant {
 
     @SerializedName("min")
     private final String min;
     @SerializedName("max")
     private final String max;
+    @SerializedName("length")
+    private final String length;
 
-    public Height(String min, String max) {
+    public Gradiant(String min, String max, String length) {
         this.min = min;
         this.max = max;
+        this.length = length;
     }
 
     public String getMin() {
@@ -22,19 +25,24 @@ public class Height {
         return max;
     }
 
+    public String getLength() {
+        return length;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Height height = (Height) o;
-        return min == height.min && max == height.max;
+        Gradiant gradiant = (Gradiant) o;
+        return min == gradiant.min && max == gradiant.max && length == gradiant.length;
     }
 
     @Override
     public String toString() {
-        return "Height{" +
+        return "Gradiant{" +
                 "\n\t\t\tmin = \"" + min + "\"" +
                 "\n\t\t\tmax = \"" + max + "\"" +
+                "\n\t\t\tlength = \"" + length + "\"" +
                 "\n\t\t\t}";
     }
 }

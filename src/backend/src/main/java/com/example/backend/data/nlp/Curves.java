@@ -1,4 +1,4 @@
-package com.example.backend.data;
+package com.example.backend.data.nlp;
 
 import com.google.gson.annotations.SerializedName;
 

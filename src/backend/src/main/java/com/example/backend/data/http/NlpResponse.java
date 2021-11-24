@@ -1,6 +1,7 @@
-package com.example.backend.data;
+package com.example.backend.data.http;
 
-import com.example.backend.controllers.HttpResponse;
+import com.example.backend.data.HttpResponse;
+import com.example.backend.data.nlp.RouteAttributes;
 import com.google.gson.annotations.SerializedName;
 
 /**

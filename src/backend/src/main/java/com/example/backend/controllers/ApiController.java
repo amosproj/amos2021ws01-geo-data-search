@@ -1,20 +1,20 @@
 package com.example.backend.controllers;
 
-import com.example.backend.BackendLogger;
-import com.example.backend.client.ApiClient;
-import com.example.backend.data.NodeInfo;
+import com.example.backend.helpers.BackendLogger;
+import com.example.backend.clients.ApiClient;
+import com.example.backend.data.api.NodeInfo;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/backend")
-public class ApiHandler {
+public class ApiController {
 
     private final ApiClient apiClient;
     private final BackendLogger logger = new BackendLogger();
     private static final String LOG_PREFIX = "API_CONTROLLER";
     private static final String dummyNodeID = "305293190";
 
-    public ApiHandler(ApiClient apiClient) {
+    public ApiController(ApiClient apiClient) {
         this.apiClient = apiClient;
     }
 

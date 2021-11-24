@@ -1,8 +1,8 @@
-package com.example.backend.data;
+package com.example.backend.data.nlp;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Right {
+public class Left {
 
     @SerializedName("min")
     private final String min;
@@ -11,7 +11,7 @@ public class Right {
     @SerializedName("count")
     private final String count;
 
-    public Right(String min, String max, String count) {
+    public Left(String min, String max, String count) {
         this.min = min;
         this.max = max;
         this.count = count;
@@ -33,13 +33,13 @@ public class Right {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Right right = (Right) o;
-        return min == right.min && max == right.max && count == right.count;
+        Left left = (Left) o;
+        return min == left.min && max == left.max && count == left.count;
     }
 
     @Override
     public String toString() {
-        return "Right{" +
+        return "Left{" +
                 "\n\t\t\t\tmin = \"" + min + "\"" +
                 "\n\t\t\t\tmax = \"" + max + "\"" +
                 "\n\t\t\t\tcount = \"" + count + "\"" +

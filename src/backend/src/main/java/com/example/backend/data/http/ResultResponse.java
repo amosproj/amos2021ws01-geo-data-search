@@ -1,6 +1,7 @@
-package com.example.backend.controllers;
+package com.example.backend.data.http;
 
 import com.example.backend.data.ApiResult;
+import com.example.backend.data.HttpResponse;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
