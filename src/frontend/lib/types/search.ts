@@ -1,7 +1,7 @@
 export type SearchError = {
   type: string;
   message: string;
-  trace: string;
+  trace?: string;
 };
 
 export type SearchResult = {

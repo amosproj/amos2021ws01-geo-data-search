@@ -3,7 +3,7 @@ type Props = {
 };
 
 const ErrorMessage = ({ message }: Props) => {
-  return <p className="text-red-500 mb-2">{message}</p>;
+  return <p className="text-red-500 mb-2 whitespace-pre-wrap">{message}</p>;
 };
 
 export default ErrorMessage;

@@ -13,7 +13,7 @@ const SearchInput = ({ value, onChange, placeholder }: Props) => {
 
   return (
     <input
-      className="border-solid border-gray-500 border rounded p-2"
+      className="border-solid border-gray-500 border rounded p-2 w-full"
       name="searchValue"
       type="text"
       placeholder={placeholder}
