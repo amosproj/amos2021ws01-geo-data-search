@@ -9,4 +9,7 @@ public interface NlpClient {
 
     @GetMapping("/request/{request}")
     String sendToNlp(@PathVariable(name = "request") String payload);
+
+    @GetMapping("/version/")
+    String fetchNlpVersion();
 }

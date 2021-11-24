@@ -1,6 +1,5 @@
 package com.example.backend.data.http;
 
-import com.example.backend.data.http.NlpResponse;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.json.JSONException;
@@ -42,7 +41,7 @@ public class NlpResponseTest {
 
         // act
         Gson gson = new GsonBuilder().serializeNulls().create();
-        NlpResponse sut = gson.fromJson(nlpAnswerString, NlpResponse.class);
+        NlpQueryResponse sut = gson.fromJson(nlpAnswerString, NlpQueryResponse.class);
 
         // assert
         // this is not a good style to put more than one assertion into one test, but it should be enough for our purposes

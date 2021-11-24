@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * The data structure to hold the response from the NLP component.
  */
-public class NlpResponse implements HttpResponse {
+public class NlpQueryResponse implements HttpResponse {
 
     @SerializedName("location")
     private final String location;
@@ -18,7 +18,7 @@ public class NlpResponse implements HttpResponse {
     @SerializedName("route_attributes")
     private final RouteAttributes routeAttributes;
 
-    public NlpResponse(String location, String maxDistance, String queryObject, RouteAttributes routeAttributes) {
+    public NlpQueryResponse(String location, String maxDistance, String queryObject, RouteAttributes routeAttributes) {
         this.location = location;
         this.maxDistance = maxDistance;
         this.queryObject = queryObject;
