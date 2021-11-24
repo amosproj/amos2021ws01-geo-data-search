@@ -35,5 +35,3 @@ bin/
 # MacOS
 .DS_Store
 
-# Raw Training Data
-output/

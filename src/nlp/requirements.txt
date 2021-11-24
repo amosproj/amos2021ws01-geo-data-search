@@ -1,5 +1,5 @@
 chatette
 uvicorn
 fastapi
-spacy
+spacy==3.2.0
 pytest
