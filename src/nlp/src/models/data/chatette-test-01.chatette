@@ -1,124 +1,33 @@
+// Example sentences:
 //Liste Berge mit einer Höhe von mehr|weniger als 500 m
 //Finde eine Stadt die höher liegt als 220m
 //Zeige Wälder in Berlin
-//500m lange Straße mit 30 Linkskurven in ~[region]
+//TODO: 500m lange Straße mit 30 Linkskurven in ~[region]
 //Zeige Orte über 500m in Brandenburg
 //Finde eine Straße mit einem Anstieg von 9%
 
 
+// Training sentences
 %[erhebungen](50)
    // ~[Finde] [mir?] ~[queryObjectscheme] [mit einer?] ~[attribute] [von?] ~[value] [in?] ~[region]
    ~[Finde?] @[queryObject#elevation] mit einer Höhe von ~[value] [in ~[region]?]
    ~[Finde?] ~[value] hohe @[queryObject#elevation] [in ~[region]?]
 
 %[orte](20)
-   ~[Finde?] @[queryObject#place][ der höher liegt als @[amount][ ?][ym|Meter|km]?] [in ~[region]?]
+   ~[Finde?] @[queryObject#place][ der höher liegt als @[amount] [m|Meter|km]?] [in ~[region]?]
 
 %[routen](100)
     ~[Finde?][ eine?] @[queryObject#route][ mit einem Anstieg von [@[amount#plural-number]\%|@[amount#plural-numeral] Prozent]?/70][ in ~[region]?]
     ~[Finde?][ eine?] @[queryObject#route][ in einer Höhe[ von?] @[amount] m?/70][ in ~[region]?]
     ~[Finde?][ eine?] @[queryObject#route][ mit einer Länge von @[amount] km?/70][ in ~[region]?]
 
+
+// Test sentences
 %[routen-test](training:0, testing:20)
     [~[Finde] mir?][ in ~[region]?][ eine?] @[amount] km[ lange?] @[queryObject#route]
 
 
-//~[queryObjectscheme]
-//    [@[amount#singular] @[queryObject#singular]|@[amount#plural] @[queryObject#plural]]
-
-
-~[&Finde]
-    finde
-    gebe
-    gib
-    such[e?]
-    zeige
-    liste
-
-@[&queryObject#elevation]
-    Berg[e?]
-    Erhebung[en?]
-    Hügel
-
-@[&queryObject#place]
-    See[n?]
-    Gewässer
-    [Wald|Wälder|Waldflächen]
-    Ort[e?]
-
-@[&queryObject#route]
-    Route[n?]
-    Straße[n?]
-    Weg[e?]
-
-@[amount#singular]
-    einen
-    eine
-    ein
-    1
-@[amount#plural]
-    @[amount#plural-numeral]
-    @[amount#plural-number]
-
-@[amount#plural-numeral]
-    zwei
-    drei
-    vier
-    fünf
-    sechs
-    sieben
-    acht
-    neun
-    zehn
-
-@[amount#plural-number]
-    1
-    2
-    3
-    4
-    5
-    6
-    7
-    8
-    9
-    10
-    mehrere
-    einige
-    alle
-    
-~[&attribute]
-    Höhe
-    Länge
-    Breite
-    Tiefe
-
-~[value]
-    [mindestens|höchstens|genau] @[amount] [km|m|kilometer|meter]
-
-~[&region]
-    bergen
-    norwegen
-    perth
-    australien
-    reykjavik
-    island
-    helsinki
-    finnland
-    wellington
-    neuseeland
-    zürich
-    schweiz
-    brisbane
-    australien
-    melbourne
-    australien
-    stockholm
-    schweden
-    auckland
-    neuseeland
-    berlin
-    deutschland
-    usa
-    newyorkcity
-    NY
-    washington
+// imports
+|chatette-slots/aliases.chatette
+|chatette-slots/amount.chatette
+|chatette-slots/queryObject.chatette
