@@ -1,5 +1,6 @@
-package com.example.backend.controllers;
+package com.example.backend.data.http;
 
+import com.example.backend.data.HttpResponse;
 import org.springframework.stereotype.Component;
 
 @Component

@@ -1,6 +1,6 @@
-package com.example.backend.client;
+package com.example.backend.clients;
 
-import com.example.backend.data.NodeInfo;
+import com.example.backend.data.api.NodeInfo;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

@@ -1,4 +1,4 @@
-package com.example.backend;
+package com.example.backend.helpers;
 
 
 import java.sql.Timestamp;

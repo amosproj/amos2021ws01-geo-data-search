@@ -1,8 +1,12 @@
-package com.example.backend.data;
+package com.example.backend.data.api;
+import com.example.backend.data.ApiResult;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 import javax.xml.bind.annotation.XmlRootElement;
 
+@ResponseBody
 @XmlRootElement
-public class NodeInfo {
+public class NodeInfo implements ApiResult {
     String id;
     String visible;
     String version;
@@ -23,6 +27,42 @@ public class NodeInfo {
         this.uid = uid;
         this.lat = lat;
         this.lon = lon;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getVisible() {
+        return visible;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public String getChangeSet() {
+        return changeSet;
+    }
+
+    public String getTimeStamp() {
+        return timeStamp;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public String getLat() {
+        return lat;
+    }
+
+    public String getLon() {
+        return lon;
     }
 
     @Override
