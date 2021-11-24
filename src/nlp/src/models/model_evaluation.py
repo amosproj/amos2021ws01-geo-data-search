@@ -1,10 +1,14 @@
 import pickle
+import sys
 
 import spacy
 from spacy.training import Example
 
-# load spacy ml nlp model
-nlp = spacy.load("./training")  # TODO catch Exception if model isn't trained locally
+# try tp load local ml nlp model
+try:
+    nlp = spacy.load("./training")
+except IOError:
+    sys.exit("ML model was not trained locally")
 
 examples = []
 data = pickle.load(open("./data/output/spacyoutput.json", "rb"))  # TODO use test data instead of training
