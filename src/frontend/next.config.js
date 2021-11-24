@@ -11,6 +11,9 @@ module.exports = {
         ]
       : [];
   },
+  env: { 
+    ENVIRONMENT: process.env.ENVIRONMENT,
+  },
   reactStrictMode: true,
   swcMinify: false,
 };

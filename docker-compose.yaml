@@ -16,7 +16,9 @@ services:
       context: ./src/frontend
       args:
         BACKEND_API_ROOT: http://backend:8080/backend
+        ENVIRONMENT: development
     ports:
       - 8080:3000
     environment:
       - BACKEND_API_ROOT=http://backend:8080/backend
+      - ENVIRONMENT=development
