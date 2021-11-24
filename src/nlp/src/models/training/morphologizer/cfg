@@ -1,4 +1,5 @@
 {
+  "extend":false,
   "labels_morph":{
     "POS=PUNCT":"",
     "Case=Nom|Gender=Masc|Number=Sing|POS=PROPN":"Case=Nom|Gender=Masc|Number=Sing",
@@ -1342,5 +1343,6 @@
     "Case=Nom|Gender=Fem|POS=PROPN":96,
     "Gender=Neut|Number=Plur|POS=PROPN":96,
     "Gender=Masc|Number=Sing|POS=PRON|PronType=Ind":95
-  }
+  },
+  "overwrite":true
 }
