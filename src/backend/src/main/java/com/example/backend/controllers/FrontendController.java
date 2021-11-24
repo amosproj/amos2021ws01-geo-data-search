@@ -44,10 +44,10 @@ public class FrontendController {
 
             NodeInfo apiResponse = this.apiHandler.requestNodeInfo("1234");
             logInfo("INTERPRETED API RESPONSE:");
-            logInfo(apiResponse.toString());
 
-            //TODO replace this with result when implemented
-            return new ErrorResponse(Error.createError("Not implemented"));
+            ResultResponse apiResultResponse = new ResultResponse();
+            apiResultResponse.putApiResult(apiResponse);
+            return apiResultResponse;
         } catch (Throwable t) {
             logError("...ERROR!" + "\n" + "\t" + t.getMessage() + "\n" + "\t" + "Could not send data to NLP, is the NLP service running? See error above.");
             return new ErrorResponse(Error.createError(t.getMessage()));

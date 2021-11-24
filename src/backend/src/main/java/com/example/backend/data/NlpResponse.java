@@ -1,11 +1,12 @@
 package com.example.backend.data;
 
+import com.example.backend.controllers.HttpResponse;
 import com.google.gson.annotations.SerializedName;
 
 /**
  * The data structure to hold the response from the NLP component.
  */
-public class NlpResponse {
+public class NlpResponse implements HttpResponse {
 
     @SerializedName("location")
     private final String location;
