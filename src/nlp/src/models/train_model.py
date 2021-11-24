@@ -4,7 +4,7 @@ import random
 import spacy
 from spacy.training.example import Example
 
-TRAIN_DATA_PATH = "./data/output/spacyoutput.json"
+TRAIN_DATA_PATH = "./data/output/train_output.json"
 TRAIN_DATA = pickle.load(open(TRAIN_DATA_PATH, "rb"))
 
 nlp = spacy.load("de_core_news_sm")
