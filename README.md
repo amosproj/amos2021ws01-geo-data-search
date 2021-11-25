@@ -1,5 +1,10 @@
 # Geo Data Search (AMOS WS 2021/22)
 
+## Mission
+Our project mission is to achieve an interpretation of buzzword user queries in German through a web interface concerning location, length, height (difference) of public routes, places and regions. Multiple results, routes or places, matching the user query as close as possible will be displayed in a list as well as in a map. The software should be usable from desktop web browsers and be intuitive - an option to get examples for possible inputs in the web interface will be provided nevertheless.
+
+
+## Build instructions
 #### Running on a local machine
 - install docker: https://docs.docker.com/get-docker/
 - install docker-compose: https://docs.docker.com/compose/install/
