@@ -36,6 +36,6 @@ Run train_model.py to train a NER model:
 
 ```
 $ cd src/models/
-$ python training_data.py
+$ python train_model.py
 ```
 In this script, an existing NER model will be trained with training data and thus extended the model with custom labels.
