@@ -21,6 +21,11 @@
     ~[Finde?][ eine?] @[queryObject#route][ in einer Höhe[ von?] @[amount] m?/70][ in ~[region]?]
     ~[Finde?][ eine?] @[queryObject#route][ mit einer Länge von @[amount] km?/70][ in ~[region]?]
 
+%[buzzwords](50)
+    @[queryObject#route] Länge @[amount#plural-number] Steigung @[amount#plural-number] \%
+    @[queryObject#route] Steigung @[amount#plural-number] \% Länge @[amount#plural-number]
+    ~[Finde?][ eine?] @[queryObject#route] [nahe|ab|bei|in der Nähe von] ~[region]
+
 
 // Test sentences
 %[routen-test](training:0, testing:20)

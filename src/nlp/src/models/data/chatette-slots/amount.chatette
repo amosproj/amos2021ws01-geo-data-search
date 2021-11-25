@@ -23,7 +23,6 @@
     alle
 
 @[amount#plural-number]
-    1
     2
     3
     4
@@ -33,3 +32,4 @@
     8
     9
     10
+    500
