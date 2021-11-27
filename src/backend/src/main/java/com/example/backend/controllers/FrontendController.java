@@ -1,12 +1,13 @@
 package com.example.backend.controllers;
 
-import com.example.backend.data.*;
-import com.example.backend.data.api.NodeInfo;
-import com.example.backend.data.http.*;
-import com.example.backend.data.http.Error;
-import com.example.backend.helpers.BackendLogger;
 import com.example.backend.clients.ApiClient;
 import com.example.backend.clients.NlpClient;
+import com.example.backend.data.api.HereApiGeocodeResponse;
+import com.example.backend.data.HttpResponse;
+import com.example.backend.data.api.NodeInfo;
+import com.example.backend.data.http.Error;
+import com.example.backend.data.http.*;
+import com.example.backend.helpers.BackendLogger;
 import com.google.gson.Gson;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,10 +22,12 @@ public class FrontendController {
     private final BackendLogger logger = new BackendLogger();
     private final ApiController apiController;
     private static final String LOG_PREFIX = "FRONTEND_CONTROLLER";
+    private final HereApiRestService rs;
 
-    public FrontendController(NlpClient nlpClient, ApiClient apiClient) {
+    public FrontendController(NlpClient nlpClient, ApiClient apiClient, HereApiRestService rs) {
         this.nlpClient = nlpClient;
         this.apiController = new ApiController(apiClient);
+        this.rs = rs;
     }
 
     /**
@@ -41,15 +44,20 @@ public class FrontendController {
             String nlpResponse = nlpClient.sendToNlp(query);
             logInfo("...SUCCESS!, response from NLP received:" + nlpResponse);
 
-            Gson g = new Gson();
             logInfo("NLP RESPONSE:");
             logInfo(nlpResponse);
             logInfo("INTERPRETED NLP RESPONSE:");
-            logInfo(g.fromJson(nlpResponse, NlpQueryResponse.class).toString());
+            logInfo(new Gson().fromJson(nlpResponse, NlpQueryResponse.class).toString());
 
             NodeInfo apiResponse = this.apiController.requestNodeInfo("1234");
+            String hereApiResponseAsString = rs.getPostsPlainJSON("autobahn+berlin+innsbrucker+platz");
+            HereApiGeocodeResponse hereApiGeocodeResponse = new Gson().fromJson(hereApiResponseAsString, HereApiGeocodeResponse.class);
+
             logInfo("INTERPRETED API RESPONSE:");
+            logInfo("OSM:");
             logInfo(apiResponse.toString());
+            logInfo("HERE:");
+            logInfo(hereApiGeocodeResponse.toString());
 
             ArrayList<FakeResult> fakeResults = new ArrayList<>();
             fakeResults.add(FakeResult.createResult());
