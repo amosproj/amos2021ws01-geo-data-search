@@ -39,7 +39,6 @@ jobs:
         pip install -e .
     - name: Test api with pytest
       run: |
-        ls
         # change to tests directory
-        cd tests/api
+        cd src/nlp/tests/api
         python -m pytest
