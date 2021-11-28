@@ -27,7 +27,7 @@ const AboutModal = ({ open, onClose }: AboutModalProps) => {
   const { data } = useSWR<VersionResponse>(`/api/version`, fetcher);
 
   return (
-    <Modal title="About" onClose={onClose} open={open}>
+    <Modal title="Geo Data Search" onClose={onClose} open={open}>
       <p className="font-bold">Versions:</p>
 
       <ul className="">
