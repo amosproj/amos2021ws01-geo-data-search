@@ -1,10 +1,22 @@
+import sys
 from typing import Optional
 
 import spacy
 from pydantic.dataclasses import dataclass
 
 # load spacy ml nlp model
-nlp = spacy.load("de_core_news_sm")
+nlp_default = spacy.load("de_core_news_sm")
+
+# load custom ml ner model
+try:
+    # this path is valid when this class is run locally
+    ner_model = spacy.load("../models/training")
+except IOError:
+    try:
+        # this path is valid when the class is called from src/tests/api/test_string_interpreter.py
+        ner_model = spacy.load("../../src/models/training")
+    except IOError:
+        sys.exit("ML model was not trained locally")
 
 
 def process_string(string: str) -> object:
@@ -12,34 +24,40 @@ def process_string(string: str) -> object:
     return get_query(string)
 
 
-def preprocess_string(string: str) -> str:
-    # analyse string
-    tokens = nlp(string)
-
-    # combine lemmata into string
-    preprocessed_string = ""
-
-    for token in tokens:
-        # separate tokens with space
-        if preprocessed_string != "":
-            preprocessed_string += " "
-        preprocessed_string += token.lemma_
-    return preprocessed_string
-
-
 def get_query(string: str) -> object:
-    string = preprocess_string(string)
+    tokens = nlp_default(string)
 
     result = Query()
 
-    # hardcoded comparison for testing purposes
-    if string == "Finde all Berg in Berlin der hoch als 100 m sein":
-        result.location = "Berlin"
-        result.query_object = "Mountain"
-        result.route_attributes.height.min = 100
+    for token in tokens:
+        # save found location
+        if token.ent_type_ == "LOC":
+            if result.location != "":
+                result.location += ", "
+            result.location += token.lemma_
+
+    tokens = ner_model(string)
+    for token in tokens:
+        # save query object
+        if token.ent_type_ == "queryObject":
+            result.query_object = get_synonym(token.lemma_)
+        # save min height
+        if token.ent_type_ == "amount":
+            # make sure an int was found
+            if not str(token.lemma_).isnumeric():
+                continue
+
+            # todo: extract which attribute the amount is specifying
+            result.route_attributes.height.min = int(token.lemma_)
+        print(token.lemma_, ":", token.ent_type_)
 
     return result
 
+
+def get_synonym(string : str) -> str:
+    if string == "Berg":
+        return "Mountain"
+    return string
 
 @dataclass
 class BaseAttributes:
