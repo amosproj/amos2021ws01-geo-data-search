@@ -9,9 +9,14 @@ nlp_default = spacy.load("de_core_news_sm")
 
 # load custom ml ner model
 try:
+    # this path is valid when this class is run locally
     ner_model = spacy.load("../models/training")
 except IOError:
-    sys.exit("ML model was not trained locally")
+    try:
+        # this path is valid when the class is called from src/tests/api/test_string_interpreter.py
+        ner_model = spacy.load("../../src/models/training")
+    except IOError:
+        sys.exit("ML model was not trained locally")
 
 
 def process_string(string: str) -> object:

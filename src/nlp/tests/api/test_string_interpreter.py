@@ -2,6 +2,7 @@ import sys
 
 from api.string_interpreter import get_query
 
+
 def test_default_string_interpretation():
     result = get_query(
         "Finde alle Berge in Berlin die höher als 100m sind"
