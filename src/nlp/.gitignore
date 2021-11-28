@@ -3,3 +3,7 @@
 
 # Raw Training Data
 output/
+
+# Python specific
+nameless.egg-info/
+.pytest_cache
