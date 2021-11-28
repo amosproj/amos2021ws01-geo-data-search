@@ -4,7 +4,7 @@ import SearchInput from './SearchInput';
 import ErrorMessage from './ErrorMessage';
 import { SearchQueryResponse, SearchResult, SearchError } from '@lib/types/search';
 import SearchListResult from './SearchListResult';
-import { isDevelopment, sampleSearchResults } from '@lib/config';
+import { isDevelopment } from '@lib/config';
 
 const SearchView = () => {
   const [searchValue, setSearchValue] = useState('');
@@ -73,24 +73,12 @@ const SearchView = () => {
           >
             Submit
           </button>
-
-          <button
-            className="bg-yellow-500 text-white rounded px-5 ml-2 flex-shrink-0 disabled:opacity-70 disabled:cursor-default"
-            type="button"
-            disabled={searchTermEmpty}
-            onClick={() => {
-              setErrorData(null);
-              setResults(sampleSearchResults);
-            }}
-          >
-            Get fake results
-          </button>
         </div>
 
         {results &&
           (results.length > 0 ? (
             <ul className="mt-8">
-              {sampleSearchResults.map((result) => (
+              {results.map((result) => (
                 <SearchListResult key={result.id} result={result} />
               ))}
             </ul>
