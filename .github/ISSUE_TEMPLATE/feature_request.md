@@ -14,5 +14,6 @@ about: Suggest new feature (using user story)
 * ...
 
 ## Definition of done
-* Added only after week 5
-* The same for all features
+* Code was reviewed by another person
+* GitHub CI runs successfully
+* Feature is merged into main branch
