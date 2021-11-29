@@ -10,7 +10,7 @@ logger = logging.getLogger()
 logging.basicConfig(level=logging.INFO)
 
 
-def train(train_data_path="./data/output/train_output.json", base_model=spacy.load("de_core_news_sm"), n_iter=5):
+def train(train_data_path="./data/output/train_output.json", base_model=spacy.load("de_core_news_sm"), n_iter=5, model_path="./training/"):
     train_data = pickle.load(open(train_data_path, "rb"))
     logger.debug("[NLP Component][TRAIN MODEL] Loaded dataset from " + train_data_path)
 
@@ -38,5 +38,5 @@ def train(train_data_path="./data/output/train_output.json", base_model=spacy.lo
                     base_model.update([example], losses=losses, drop=0.3)
     logger.debug("[NLP COMPONENT][TRAIN MODEL] Finished training NER model")
     base_model.meta["name"] = "trained_model"  # rename model
-    base_model.to_disk("./training/")
-    logger.info("[NLP COMPONENT][TRAIN MODEL] Saved trained model")
+    base_model.to_disk(model_path)
+    logger.info("[NLP COMPONENT][TRAIN MODEL] Saved trained model to " + model_path)
