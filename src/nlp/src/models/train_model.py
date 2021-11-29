@@ -1,39 +1,42 @@
+import logging
 import pickle
 import random
 
 import spacy
 from spacy.training.example import Example
 
-TRAIN_DATA_PATH = "./data/output/train_output.json"
-TRAIN_DATA = pickle.load(open(TRAIN_DATA_PATH, "rb"))
+# Logging
+logger = logging.getLogger()
+logging.basicConfig(level=logging.INFO)
 
-nlp = spacy.load("de_core_news_sm")
-ner = nlp.get_pipe("ner")
-n_iter = 1
 
-for _, annotations in TRAIN_DATA:
-    for ent in annotations.get("entities"):
-        ner.add_label(ent[2])  # Inititalizing optimizer if model is None:
+def train(train_data_path="./data/output/train_output.json", base_model=spacy.load("de_core_news_sm"), n_iter=5):
+    train_data = pickle.load(open(train_data_path, "rb"))
+    logger.debug("[NLP Component][TRAIN MODEL] Loaded dataset from " + train_data_path)
 
-optimizer = nlp.create_optimizer()
-other_pipes = [pipe for pipe in nlp.pipe_names if pipe != "ner"]
+    ner = base_model.get_pipe("ner")
+    for _, annotations in train_data:
+        for ent in annotations.get("entities"):
+            ner.add_label(ent[2])  # Initializing optimizer if model is None:
+    optimizer = base_model.create_optimizer()
+    other_pipes = [pipe for pipe in base_model.pipe_names if pipe != "ner"]
+    # adding a named entity label
+    ner = base_model.get_pipe("ner")
+    with base_model.disable_pipes(*other_pipes):
+        logger.debug("[NLP COMPONENT][TRAIN MODEL] Start training")
+        for itn in range(n_iter):
+            random.shuffle(train_data)
+            losses = {}
 
-# adding a named entity label
-ner = nlp.get_pipe("ner")
-
-with nlp.disable_pipes(*other_pipes):
-    for itn in range(n_iter):
-        random.shuffle(TRAIN_DATA)
-        losses = {}
-
-        # batch the examples and iterate over them
-        for batch in spacy.util.minibatch(TRAIN_DATA, size=50):
-            for text, annotations in batch:
-                # create Example
-                doc = nlp.make_doc(text)
-                example = Example.from_dict(doc, {"entities": list(set(annotations["entities"]))})
-                # Update the model
-                nlp.update([example], losses=losses, drop=0.3)
-
-nlp.meta["name"] = "trained_model"  # rename model
-nlp.to_disk("./training/")
+            # batch the examples and iterate over them
+            for batch in spacy.util.minibatch(train_data, size=50):
+                for text, annotations in batch:
+                    # create Example
+                    doc = base_model.make_doc(text)
+                    example = Example.from_dict(doc, {"entities": list(set(annotations["entities"]))})
+                    # Update the model
+                    base_model.update([example], losses=losses, drop=0.3)
+    logger.debug("[NLP COMPONENT][TRAIN MODEL] Finished training NER model")
+    base_model.meta["name"] = "trained_model"  # rename model
+    base_model.to_disk("./training/")
+    logger.info("[NLP COMPONENT][TRAIN MODEL] Saved trained model")
