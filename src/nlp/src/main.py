@@ -1,4 +1,10 @@
-from api.string_interpreter import process_string
+from models.data.training_data import generate_data
+from models.train_model import train
 
-# print one example input
-print(process_string("Finde alle Berge in Berlin die höher als 100m sind"))
+
+# generate training data with Chatette
+generate_data("./models/data")
+
+# train model with spaCy
+train(train_data_path="./models/data/output/train_output.json", model_path="./models/training")
+
