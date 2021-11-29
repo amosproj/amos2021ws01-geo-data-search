@@ -1,8 +1,11 @@
+import pathlib
 import sys
 from typing import Optional
 
 import spacy
 from pydantic.dataclasses import dataclass
+
+current_dir = pathlib.Path(__file__).parent.resolve()
 
 # load spacy ml nlp model
 nlp_default = spacy.load("de_core_news_sm")
@@ -10,13 +13,9 @@ nlp_default = spacy.load("de_core_news_sm")
 # load custom ml ner model
 try:
     # this path is valid when this class is run locally
-    ner_model = spacy.load("../models/training")
-except IOError:
-    try:
-        # this path is valid when the class is called from src/tests/api/test_string_interpreter.py
-        ner_model = spacy.load("../../src/models/training")
-    except IOError:
-        sys.exit("ML model was not trained locally")
+    ner_model = spacy.load(f"{current_dir}/../models/training/")
+except IOError as error:
+    sys.exit(str(error) + "\nML model was not trained locally")
 
 
 def process_string(string: str) -> object:
