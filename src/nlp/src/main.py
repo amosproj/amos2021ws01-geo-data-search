@@ -6,5 +6,5 @@ from models.train_model import train
 generate_data("./models/data")
 
 # train model with spaCy
-train(train_data_path="./models/data/output/train_output.json")
+train(train_data_path="./models/data/output/train_output.json", model_path="./models/training")
 

@@ -13,11 +13,13 @@ SEP = os.path.sep
 
 
 def generate_data(chatette_path="") -> None:
-    if chatette_path != "" and chatette_path[-1] != SEP:
+    output_path = ""
+    if chatette_path not in ["", "."] and chatette_path[-1] != SEP:
         chatette_path += SEP
+        output_path = f" -o {chatette_path}output/"
 
     # run Chatette
-    os.system(f"python -m chatette {chatette_path}chatette-test-01.chatette")
+    os.system(f"python -m chatette {chatette_path}chatette-test-01.chatette{output_path}")
 
     # bring rasa format into spacy format
     parse_data("train", chatette_path)
