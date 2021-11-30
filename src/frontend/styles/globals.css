@@ -2,6 +2,19 @@
   outline: none;
 }
 
+html, body, #__next {
+  height: 100%;
+}
+
+body {
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+#root, #__next {
+  isolation: isolate;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

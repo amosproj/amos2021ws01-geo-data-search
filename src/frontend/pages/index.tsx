@@ -1,15 +1,16 @@
-import type { NextPage } from 'next';
-import React from 'react';
-import SearchView from '@components/SearchView';
-import Layout from '@components/Layout';
+import type { NextPage } from "next";
+import React from "react";
+import SearchLayout from "@components/SearchLayout";
+import Head from "next/head";
 
 const Home: NextPage = () => {
   return (
-    <Layout>
-      <h1 className="text-3xl font-bold">Geo Data Search</h1>
-
-      <SearchView />
-    </Layout>
+    <>
+      <Head>
+        <title>Geo Data Search</title>
+      </Head>
+      <SearchLayout />
+    </>
   );
 };
 

@@ -1,13 +1,19 @@
-import React, { FormEvent, useState } from 'react';
-import apiClient from '@lib/api-client';
-import SearchInput from './SearchInput';
-import ErrorMessage from './ErrorMessage';
-import { SearchQueryResponse, SearchResult, SearchError } from '@lib/types/search';
-import SearchListResult from './SearchListResult';
-import { isDevelopment, sampleSearchResults } from '@lib/config';
+import React, { FormEvent, useState } from "react";
+import apiClient from "@lib/api-client";
+import SearchInput from "./SearchInput";
+import ErrorMessage from "./ErrorMessage";
+import {
+  SearchQueryResponse,
+  SearchResult,
+  SearchError,
+} from "@lib/types/search";
+import SearchListResult from "./SearchListResult";
+import { isDevelopment } from "@lib/config";
+import { SearchIcon } from "@heroicons/react/outline";
+import Spinner from "./Spinner";
 
 const SearchView = () => {
-  const [searchValue, setSearchValue] = useState('');
+  const [searchValue, setSearchValue] = useState("");
   const [errorData, setErrorData] = useState<SearchError | null>(null);
   const [results, setResults] = useState<SearchResult[] | null>(null);
   const [loading, setLoading] = useState(false);
@@ -20,7 +26,7 @@ const SearchView = () => {
       setErrorData(null);
       setResults(null);
 
-      const response = await apiClient('/user_query', {
+      const response = await apiClient("/user_query", {
         body: {
           query: searchValue,
         },
@@ -28,7 +34,7 @@ const SearchView = () => {
 
       if (response.ok) {
         const { result, error }: SearchQueryResponse = await response.json();
-        console.log('Search result', result);
+        console.log("Search result", result);
 
         if (error) {
           setErrorData(error);
@@ -36,22 +42,22 @@ const SearchView = () => {
           setResults(result);
         } else {
           setErrorData({
-            type: 'system',
-            message: 'Got empty response from the API',
+            type: "system",
+            message: "Got empty response from the API",
           });
         }
       } else {
         setErrorData({
-          type: 'client',
-          message: 'Looks like the server is down',
+          type: "client",
+          message: "Looks like the server is down",
           trace: new Error(`${response.status} ${response.statusText}`).stack,
         });
       }
     } catch (err) {
-      console.error('Search error', err);
+      console.error("Search error", err);
       setErrorData({
-        type: 'client',
-        message: 'Something went wrong',
+        type: "client",
+        message: "Something went wrong",
         trace: new Error().stack,
       });
     } finally {
@@ -59,38 +65,20 @@ const SearchView = () => {
     }
   };
 
-  const searchTermEmpty = searchValue.trim().length === 0;
-
   return (
-    <div className="my-8">
+    <div className="my-4">
       <form onSubmit={getSearchSuggestions}>
-        <div className="flex mb-4">
-          <SearchInput placeholder="Search" value={searchValue} onChange={setSearchValue} />
-          <button
-            className="bg-blue-500 text-white rounded px-5 ml-2 disabled:opacity-70 disabled:cursor-default"
-            type="submit"
-            disabled={searchTermEmpty}
-          >
-            Submit
-          </button>
-
-          <button
-            className="bg-yellow-500 text-white rounded px-5 ml-2 flex-shrink-0 disabled:opacity-70 disabled:cursor-default"
-            type="button"
-            disabled={searchTermEmpty}
-            onClick={() => {
-              setErrorData(null);
-              setResults(sampleSearchResults);
-            }}
-          >
-            Get fake results
-          </button>
-        </div>
+        <SearchInput
+          placeholder="Search"
+          value={searchValue}
+          onChange={setSearchValue}
+          loading={loading}
+        />
 
         {results &&
           (results.length > 0 ? (
             <ul className="mt-8">
-              {sampleSearchResults.map((result) => (
+              {results.map((result) => (
                 <SearchListResult key={result.id} result={result} />
               ))}
             </ul>
@@ -98,7 +86,9 @@ const SearchView = () => {
             <p className="mb-2">No results found</p>
           ))}
 
-        {errorData?.message && <ErrorMessage message={`Error: ${errorData.message}`} />}
+        {errorData?.message && (
+          <ErrorMessage message={`Error: ${errorData.message}`} />
+        )}
         {isDevelopment && errorData?.trace && (
           <ErrorMessage message={`Trace: ${errorData.trace}`} />
         )}
