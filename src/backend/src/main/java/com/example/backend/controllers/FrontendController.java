@@ -32,6 +32,8 @@ public class FrontendController {
 
     /**
      * Receives the query from Frontend and forwards it to NLP
+     * Receives the response from NLP and forwards it to OSM/HERE API
+     * Receives the response from OSM/HERE API and logs it
      *
      * @param query the input coming from the Frontend
      */
@@ -39,34 +41,57 @@ public class FrontendController {
     @ResponseBody
     public HttpResponse handleQueryRequest(@RequestBody String query) {
         logInfo("New query received! Query = " + query);
+
         try {
             logInfo("Sending data to NLP...");
             String nlpResponse = nlpClient.sendToNlp(query);
             logInfo("...SUCCESS!, response from NLP received:" + nlpResponse);
-
             logInfo("NLP RESPONSE:");
             logInfo(nlpResponse);
             logInfo("INTERPRETED NLP RESPONSE:");
             logInfo(new Gson().fromJson(nlpResponse, NlpQueryResponse.class).toString());
-
-            NodeInfo apiResponse = this.apiController.requestNodeInfo("1234");
-            String hereApiResponseAsString = rs.getPostsPlainJSON("autobahn+berlin+innsbrucker+platz");
-            HereApiGeocodeResponse hereApiGeocodeResponse = new Gson().fromJson(hereApiResponseAsString, HereApiGeocodeResponse.class);
-
-            logInfo("INTERPRETED API RESPONSE:");
-            logInfo("OSM:");
-            logInfo(apiResponse.toString());
-            logInfo("HERE:");
-            logInfo(hereApiGeocodeResponse.toString());
-
-            ArrayList<FakeResult> fakeResults = new ArrayList<>();
-            fakeResults.add(FakeResult.createResult());
-
-            return new ResultResponse(fakeResults);
         } catch (Throwable throwable) {
-            logError("...ERROR!" + "\n" + "\t" + throwable.getMessage() + "\n" + "\t" + "Could not send data to NLP, is the NLP service running? See error above.");
-            return new ErrorResponse(Error.createError(throwable.getMessage(), Arrays.toString(throwable.getStackTrace())));
+            return handleError(throwable);
         }
+
+        NodeInfo apiResponse;
+        try {
+            apiResponse = getOsmApiResponse("1234");
+        } catch (Throwable throwable) {
+            return handleError(throwable);
+        }
+
+        HereApiGeocodeResponse hereApiGeocodeResponse;
+        try {
+            hereApiGeocodeResponse = getApiGeocodeResponse("autobahn+berlin+innsbrucker+platz");
+        } catch (Throwable throwable) {
+            return handleError(throwable);
+        }
+
+        logInfo("INTERPRETED API RESPONSE:");
+        logInfo("OSM:");
+        logInfo(apiResponse.toString());
+        logInfo("HERE:");
+        logInfo(hereApiGeocodeResponse.toString());
+
+        ArrayList<FakeResult> fakeResults = new ArrayList<>();
+        fakeResults.add(FakeResult.createResult());
+
+        return new ResultResponse(fakeResults);
+    }
+
+    private ErrorResponse handleError(Throwable throwable) {
+        logError("...ERROR!" + "\n" + "\t" + throwable.getMessage());
+        return new ErrorResponse(Error.createError(throwable.getMessage(), Arrays.toString(throwable.getStackTrace())));
+    }
+
+    private HereApiGeocodeResponse getApiGeocodeResponse(String query) {
+        String hereApiResponseAsString = rs.getPostsPlainJSON(query);
+        return new Gson().fromJson(hereApiResponseAsString, HereApiGeocodeResponse.class);
+    }
+
+    private NodeInfo getOsmApiResponse(String nodeId) {
+        return this.apiController.requestNodeInfo(nodeId);
     }
 
     @GetMapping("/version")
