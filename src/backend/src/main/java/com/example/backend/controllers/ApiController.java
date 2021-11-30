@@ -1,9 +1,10 @@
 package com.example.backend.controllers;
 
-import com.example.backend.helpers.BackendLogger;
 import com.example.backend.clients.ApiClient;
 import com.example.backend.data.api.NodeInfo;
-import org.springframework.web.bind.annotation.*;
+import com.example.backend.helpers.BackendLogger;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/backend")

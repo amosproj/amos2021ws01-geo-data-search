@@ -1,12 +1,13 @@
 package com.example.backend.controllers;
 
-import com.example.backend.data.*;
-import com.example.backend.data.api.NodeInfo;
-import com.example.backend.data.http.*;
-import com.example.backend.data.http.Error;
-import com.example.backend.helpers.BackendLogger;
 import com.example.backend.clients.ApiClient;
 import com.example.backend.clients.NlpClient;
+import com.example.backend.data.api.HereApiGeocodeResponse;
+import com.example.backend.data.HttpResponse;
+import com.example.backend.data.api.NodeInfo;
+import com.example.backend.data.http.Error;
+import com.example.backend.data.http.*;
+import com.example.backend.helpers.BackendLogger;
 import com.google.gson.Gson;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,14 +22,18 @@ public class FrontendController {
     private final BackendLogger logger = new BackendLogger();
     private final ApiController apiController;
     private static final String LOG_PREFIX = "FRONTEND_CONTROLLER";
+    private final HereApiRestService rs;
 
-    public FrontendController(NlpClient nlpClient, ApiClient apiClient) {
+    public FrontendController(NlpClient nlpClient, ApiClient apiClient, HereApiRestService rs) {
         this.nlpClient = nlpClient;
         this.apiController = new ApiController(apiClient);
+        this.rs = rs;
     }
 
     /**
      * Receives the query from Frontend and forwards it to NLP
+     * Receives the response from NLP and forwards it to OSM/HERE API
+     * Receives the response from OSM/HERE API and logs it
      *
      * @param query the input coming from the Frontend
      */
@@ -36,29 +41,57 @@ public class FrontendController {
     @ResponseBody
     public HttpResponse handleQueryRequest(@RequestBody String query) {
         logInfo("New query received! Query = " + query);
+
         try {
             logInfo("Sending data to NLP...");
             String nlpResponse = nlpClient.sendToNlp(query);
             logInfo("...SUCCESS!, response from NLP received:" + nlpResponse);
-
-            Gson g = new Gson();
             logInfo("NLP RESPONSE:");
             logInfo(nlpResponse);
             logInfo("INTERPRETED NLP RESPONSE:");
-            logInfo(g.fromJson(nlpResponse, NlpQueryResponse.class).toString());
-
-            NodeInfo apiResponse = this.apiController.requestNodeInfo("1234");
-            logInfo("INTERPRETED API RESPONSE:");
-            logInfo(apiResponse.toString());
-
-            ArrayList<FakeResult> fakeResults = new ArrayList<>();
-            fakeResults.add(FakeResult.createResult());
-
-            return new ResultResponse(fakeResults);
+            logInfo(new Gson().fromJson(nlpResponse, NlpQueryResponse.class).toString());
         } catch (Throwable throwable) {
-            logError("...ERROR!" + "\n" + "\t" + throwable.getMessage() + "\n" + "\t" + "Could not send data to NLP, is the NLP service running? See error above.");
-            return new ErrorResponse(Error.createError(throwable.getMessage(), Arrays.toString(throwable.getStackTrace())));
+            return handleError(throwable);
         }
+
+        NodeInfo apiResponse;
+        try {
+            apiResponse = getOsmApiResponse("1234");
+        } catch (Throwable throwable) {
+            return handleError(throwable);
+        }
+
+        HereApiGeocodeResponse hereApiGeocodeResponse;
+        try {
+            hereApiGeocodeResponse = getApiGeocodeResponse("autobahn+berlin+innsbrucker+platz");
+        } catch (Throwable throwable) {
+            return handleError(throwable);
+        }
+
+        logInfo("INTERPRETED API RESPONSE:");
+        logInfo("OSM:");
+        logInfo(apiResponse.toString());
+        logInfo("HERE:");
+        logInfo(hereApiGeocodeResponse.toString());
+
+        ArrayList<FakeResult> fakeResults = new ArrayList<>();
+        fakeResults.add(FakeResult.createResult());
+
+        return new ResultResponse(fakeResults);
+    }
+
+    private ErrorResponse handleError(Throwable throwable) {
+        logError("...ERROR!" + "\n" + "\t" + throwable.getMessage());
+        return new ErrorResponse(Error.createError(throwable.getMessage(), Arrays.toString(throwable.getStackTrace())));
+    }
+
+    private HereApiGeocodeResponse getApiGeocodeResponse(String query) {
+        String hereApiResponseAsString = rs.getPostsPlainJSON(query);
+        return new Gson().fromJson(hereApiResponseAsString, HereApiGeocodeResponse.class);
+    }
+
+    private NodeInfo getOsmApiResponse(String nodeId) {
+        return this.apiController.requestNodeInfo(nodeId);
     }
 
     @GetMapping("/version")
