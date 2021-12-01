@@ -2,6 +2,7 @@ package com.example.backend.controllers;
 
 import com.example.backend.clients.ApiClient;
 import com.example.backend.data.api.NodeInfo;
+import com.example.backend.data.api.OSMSearchResult;
 import com.example.backend.helpers.BackendLogger;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,6 +28,10 @@ public class ApiController {
         logInfo("SUCCESS!, response from API received:" + apiXMLResponse);
         //TODO replace this with result when implemented
         return apiXMLResponse;
+    }
+
+    public OSMSearchResult querySearch(String query){
+        return apiClient.querySearch(query);
     }
 
     private void logInfo(String logMsg) {
