@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class HereApiGeocodeResponse implements ApiResult {
+public class HereApiGeocodeResponse {
 
     @SerializedName("items")
     List<Item> items;
