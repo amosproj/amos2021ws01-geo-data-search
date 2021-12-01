@@ -16,7 +16,7 @@ def generate_data(chatette_path="") -> None:
     output_path = ""
     if chatette_path not in ["", "."] and chatette_path[-1] != SEP:
         chatette_path += SEP
-        output_path = f" -o {chatette_path}output/"
+        output_path = f" -o {chatette_path}output{SEP}"
 
     # run Chatette
     os.system(f"python -m chatette {chatette_path}chatette-test-01.chatette{output_path}")
