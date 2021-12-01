@@ -36,6 +36,5 @@ async def get_version():
 )
 async def request(text: str):
     logging.info(f"[NLP Component] Received Request: {text}")
-    text = "Finde alle Berge in Berlin die höher als 100m sind"  # TODO remove
 
     return process_string(text)
