@@ -20,6 +20,7 @@ public class ApiController {
         this.apiClient = apiClient;
     }
 
+    @Deprecated(since = "Requesting node info with NodeID is not working for now.")
     public NodeInfo requestNodeInfo(String nodeID) {
         logInfo("Request Info for node:" + nodeID + " from API");
         logInfo("Sending data to API...");

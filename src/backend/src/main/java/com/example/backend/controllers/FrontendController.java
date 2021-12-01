@@ -57,13 +57,6 @@ public class FrontendController {
             return handleError(throwable);
         }
 
-        NodeInfo apiResponse;
-        try {
-            apiResponse = getOsmApiResponse("1234");
-        } catch (Throwable throwable) {
-            return handleError(throwable);
-        }
-
         OSMQuery osmQuery = createDummySearchQuery();
         logInfo("OSM Search Query: ");
         logInfo(osmQuery.toQuery());
@@ -81,7 +74,7 @@ public class FrontendController {
 
         logInfo("INTERPRETED API RESPONSE:");
         logInfo("OSM:");
-        logInfo(apiResponse.toString());
+        logInfo(osmResults.toString());
         logInfo("HERE:");
         logInfo(hereApiGeocodeResponse.toString());
 
