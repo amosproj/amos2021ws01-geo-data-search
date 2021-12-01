@@ -63,7 +63,7 @@ public class FrontendController {
         } catch (Throwable throwable) {
             return handleError(throwable);
         }
-*/
+
         OSMQuery osmQuery = createDummySearchQuery();
         logInfo("OSM Search Query: ");
         logInfo(osmQuery.toQuery());
