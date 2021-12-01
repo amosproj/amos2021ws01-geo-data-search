@@ -1,3 +1,4 @@
+import os
 import pathlib
 import sys
 from typing import Optional
@@ -7,15 +8,24 @@ from pydantic.dataclasses import dataclass
 
 current_dir = pathlib.Path(__file__).parent.resolve()
 
+# get os specific file separator
+SEP = os.path.sep
+
 # load spacy ml nlp model
 nlp_default = spacy.load("de_core_news_sm")
 
+
+def load_custom_ner_model():
+    try:
+        # this path is valid when this class is run locally
+        model = spacy.load(f"{current_dir}{SEP}..{SEP}models{SEP}training{SEP}")
+        return model
+    except IOError as error:
+        sys.exit(str(error) + "\nML model was not trained locally")
+
+
 # load custom ml ner model
-try:
-    # this path is valid when this class is run locally
-    ner_model = spacy.load(f"{current_dir}/../models/training/")
-except IOError as error:
-    sys.exit(str(error) + "\nML model was not trained locally")
+ner_model = load_custom_ner_model()
 
 
 def process_string(string: str) -> object:
@@ -53,10 +63,11 @@ def get_query(string: str) -> object:
     return result
 
 
-def get_synonym(string : str) -> str:
+def get_synonym(string: str) -> str:
     if string == "Berg":
         return "Mountain"
     return string
+
 
 @dataclass
 class BaseAttributes:
