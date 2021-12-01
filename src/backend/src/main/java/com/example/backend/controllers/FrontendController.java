@@ -2,9 +2,12 @@ package com.example.backend.controllers;
 
 import com.example.backend.clients.ApiClient;
 import com.example.backend.clients.NlpClient;
+import com.example.backend.data.ApiResult;
 import com.example.backend.data.api.HereApiGeocodeResponse;
 import com.example.backend.data.HttpResponse;
 import com.example.backend.data.api.NodeInfo;
+import com.example.backend.data.api.OSMQuery;
+import com.example.backend.data.api.OSMSearchResult;
 import com.example.backend.data.http.Error;
 import com.example.backend.data.http.*;
 import com.example.backend.helpers.BackendLogger;
@@ -60,6 +63,14 @@ public class FrontendController {
         } catch (Throwable throwable) {
             return handleError(throwable);
         }
+*/
+        OSMQuery osmQuery = createDummySearchQuery();
+        logInfo("OSM Search Query: ");
+        logInfo(osmQuery.toQuery());
+
+        OSMSearchResult osmResults = apiController.querySearch(osmQuery.toQuery());
+        logInfo("Search results: ");
+        logInfo(osmResults.toString());
 
         HereApiGeocodeResponse hereApiGeocodeResponse;
         try {
@@ -74,10 +85,17 @@ public class FrontendController {
         logInfo("HERE:");
         logInfo(hereApiGeocodeResponse.toString());
 
-        ArrayList<FakeResult> fakeResults = new ArrayList<>();
-        fakeResults.add(FakeResult.createResult());
+        ArrayList<ApiResult> results = new ArrayList<>();
+        results.addAll(osmResults.getSearchResults());
 
-        return new ResultResponse(fakeResults);
+        return new ResultResponse(results);
+    }
+
+    private OSMQuery createDummySearchQuery() {
+        OSMQuery osmQuery = new OSMQuery();
+        osmQuery.setAmenity("restaurant");
+        osmQuery.setArea("Mitte");
+        return osmQuery;
     }
 
     private ErrorResponse handleError(Throwable throwable) {
