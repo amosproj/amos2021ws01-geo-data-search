@@ -5,20 +5,20 @@ import com.google.gson.annotations.SerializedName;
 public class Length {
 
     @SerializedName("min")
-    private final String min;
+    private final Integer min;
     @SerializedName("max")
-    private final String max;
+    private final Integer max;
 
-    public Length(String min, String max) {
+    public Length(Integer min, Integer max) {
         this.min = min;
         this.max = max;
     }
 
-    public String getMin() {
+    public Integer getMin() {
         return min;
     }
 
-    public String getMax() {
+    public Integer getMax() {
         return max;
     }
 
@@ -27,14 +27,14 @@ public class Length {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Length length = (Length) o;
-        return min == length.min && max == length.max;
+        return min.equals(length.min) && max.equals(length.max);
     }
 
     @Override
     public String toString() {
         return "Length{" +
-                "\n\t\t\tmin = \"" + min + "\"" +
-                "\n\t\t\tmax = \"" + max + "\"" +
+                "\n\t\t\tmin = " + min +
+                "\n\t\t\tmax = " + max +
                 "\n\t\t\t}";
     }
 }

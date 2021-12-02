@@ -5,27 +5,27 @@ import com.google.gson.annotations.SerializedName;
 public class Gradiant {
 
     @SerializedName("min")
-    private final String min;
+    private final Integer min;
     @SerializedName("max")
-    private final String max;
+    private final Integer max;
     @SerializedName("length")
-    private final String length;
+    private final Integer length;
 
-    public Gradiant(String min, String max, String length) {
+    public Gradiant(Integer min, Integer max, Integer length) {
         this.min = min;
         this.max = max;
         this.length = length;
     }
 
-    public String getMin() {
+    public Integer getMin() {
         return min;
     }
 
-    public String getMax() {
+    public Integer getMax() {
         return max;
     }
 
-    public String getLength() {
+    public Integer getLength() {
         return length;
     }
 
@@ -34,15 +34,15 @@ public class Gradiant {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Gradiant gradiant = (Gradiant) o;
-        return min == gradiant.min && max == gradiant.max && length == gradiant.length;
+        return min.equals(gradiant.min) && max.equals(gradiant.max) && length.equals(gradiant.length);
     }
 
     @Override
     public String toString() {
         return "Gradiant{" +
-                "\n\t\t\tmin = \"" + min + "\"" +
-                "\n\t\t\tmax = \"" + max + "\"" +
-                "\n\t\t\tlength = \"" + length + "\"" +
+                "\n\t\t\tmin = " + min +
+                "\n\t\t\tmax = " + max +
+                "\n\t\t\tlength = " + length +
                 "\n\t\t\t}";
     }
 }
