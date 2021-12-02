@@ -34,3 +34,19 @@ Currently, in the container for the NLP Component a preparation script has to be
 2. `cd src`
 3. `python main.py`
 4. Restart the nlp container
+
+## Test instructions
+
+### Backend
+To run the tests make sure the backend container is running and do the following steps:
+1. Open terminal in backend container
+2. Change the current working directory to /src:
+```
+$ cd src
+```
+3. Use `mvn test` to run the tests:
+```
+$ mvn test
+```
+
+
