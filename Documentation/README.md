@@ -1,5 +1,11 @@
-Build, user, and technical documentation
-Software architecture description
+# Documentation
+The project documentation can be found in the Wiki:
+
+* [User Documentation](https://github.com/amosproj/amos2021ws01-geo-data-search/wiki/User-Documentation)
+* [Design Documentation](https://github.com/amosproj/amos2021ws01-geo-data-search/wiki/Design-Documentation)
+* [Build Documentation](https://github.com/amosproj/amos2021ws01-geo-data-search/wiki/Build-Documentation)
+
+
 
 ## Backend code structure
 

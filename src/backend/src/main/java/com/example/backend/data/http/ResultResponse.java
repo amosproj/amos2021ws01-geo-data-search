@@ -1,5 +1,6 @@
 package com.example.backend.data.http;
 
+import com.example.backend.data.ApiResult;
 import com.example.backend.data.HttpResponse;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -8,13 +9,13 @@ import java.util.ArrayList;
 @ResponseBody
 public class ResultResponse implements HttpResponse {
 
-    ArrayList<FakeResult> result;
+    ArrayList<ApiResult> result;
 
-    public ResultResponse(ArrayList<FakeResult> result) {
+    public ResultResponse(ArrayList<ApiResult> result) {
         this.result = result;
     }
 
-    public ArrayList<FakeResult> getResult() {
+    public ArrayList<ApiResult> getResult() {
         return result;
     }
 }
