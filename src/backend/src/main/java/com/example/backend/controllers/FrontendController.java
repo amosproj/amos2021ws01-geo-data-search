@@ -43,8 +43,13 @@ public class FrontendController {
     @PostMapping("/user_query")
     @ResponseBody
     public HttpResponse handleQueryRequest(@RequestBody String query) {
-        logInfo("New query received! Query = " + query);
+        logInfo("New query received! Query = \"" + query + "\"");
 
+        // TODO Replace this work-around with something useful
+        query = query.replace('+', ' ');
+        query = query.replace("query=", "");
+        logInfo("WORK AROUND! Query = \"" + query + "\"");
+        NlpQueryResponse nqr;
         try {
             logInfo("Sending data to NLP...");
             String nlpResponse = nlpClient.sendToNlp(query);
@@ -52,7 +57,8 @@ public class FrontendController {
             logInfo("NLP RESPONSE:");
             logInfo(nlpResponse);
             logInfo("INTERPRETED NLP RESPONSE:");
-            logInfo(new Gson().fromJson(nlpResponse, NlpQueryResponse.class).toString());
+            nqr = new Gson().fromJson(nlpResponse, NlpQueryResponse.class);
+            logInfo(nqr.toString());
         } catch (Throwable throwable) {
             return handleError(throwable);
         }
@@ -67,7 +73,8 @@ public class FrontendController {
 
         HereApiGeocodeResponse hereApiGeocodeResponse;
         try {
-            hereApiGeocodeResponse = getApiGeocodeResponse("autobahn+berlin+innsbrucker+platz");
+            // TODO Remove this hard coded nqr.getLocation()
+            hereApiGeocodeResponse = getApiGeocodeResponse(nqr.getLocation());
         } catch (Throwable throwable) {
             return handleError(throwable);
         }
