@@ -27,3 +27,10 @@ Our project mission is to achieve an interpretation of buzzword user queries in 
 - `docker-compose run --rm backend pwd`
 - `docker-compose run --rm backend java main/HelloWorldMain.java`
 - `docker-compose run --rm nlp python3 helloTest.py`
+
+## At first execution of NLP Container
+Currently, in the container for the NLP Component a preparation script has to be executed, otherwise the NLP container does not respond.
+1. Open terminal in nlp container
+2. `cd src`
+3. `python main.py`
+4. Restart the nlp container
