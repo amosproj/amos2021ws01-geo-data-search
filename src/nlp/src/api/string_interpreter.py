@@ -57,7 +57,8 @@ def get_query(string: str) -> object:
 
             # check if parameters were found
             if param_2 == "height":
-                if param_1 == "min":
+                # select min parameter by default
+                if param_1 == "min" or param_1 == "":
                     result.route_attributes.height.min = number
                 elif param_1 == "max":
                     result.route_attributes.height.max = number
@@ -83,10 +84,17 @@ def get_query_parameters(origin : spacy.tokens.token.Token) -> (str, str):
     for dep in dependencies:
         lemma = str(dep.lemma_).lower()
 
-        if param_1 == "" and lemma == "mindestens":
-            param_1 = "min"
-        elif param_2 == "" and lemma == "höhe":
-            param_2 = "height"
+        # extract parameter 1
+        if param_1 == "":
+            if lemma == "mindestens":
+                param_1 = "min"
+            elif lemma == "maximal":
+                param_1 = "max"
+
+        # extract parameter 2
+        if param_2 == "":
+            if lemma == "hoch" or lemma == "höhe":
+                param_2 = "height"
 
     return param_1, param_2
 
@@ -190,5 +198,4 @@ class Query:
 
         self.route_attributes = RouteAttributes()
 
-print(process_string("Finde alle Berge in Berlin mit einer Höhe von mindestens 100 Metern"))
-# print(process_string("Finde eine Strecke in Italien mit mindestens 10km länge in einer lage über 1000m mit einem Anteil von 500m Linkskurven mit einem Anteil von 600m Steigung über 7%"))
+print(get_query("Finde eine Strecke in Italien mit mindestens 10km länge in einer lage über 1000m mit einem Anteil von 500m Linkskurven mit einem Anteil von 600m Steigung über 7% auf einer Höhe von maximal 10000 Metern"))
