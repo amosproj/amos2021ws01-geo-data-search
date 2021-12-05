@@ -15,3 +15,5 @@ COPY --from=builder /opt/venv /opt/venv
 ENV PYTHONPATH=/app:/opt/venv
 ENV PATH=/opt/venv/bin:$PATH
 WORKDIR /app
+ADD . .
+RUN python src/main.py
