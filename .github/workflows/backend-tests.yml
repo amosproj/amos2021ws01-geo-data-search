@@ -18,5 +18,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: build backend
         run: DOCKER_BUILDKIT=1 docker compose up -d --build backend
+      - name: run tests
+        run: docker build --target maven_test -f src/backend/Dockerfile src/backend
       - name: check the container is still running
         run: sleep 5 && docker compose exec backend echo healthy
