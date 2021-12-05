@@ -1,9 +1,16 @@
+import logging
+import os
 import pathlib
 import sys
 from typing import Optional
 
 import spacy
 from pydantic.dataclasses import dataclass
+
+from .utils import get_synonyms
+
+# get os specific file separator
+SEP = os.path.sep
 
 current_dir = pathlib.Path(__file__).parent.resolve()
 
@@ -13,9 +20,12 @@ nlp_default = spacy.load("de_core_news_sm")
 # load custom ml ner model
 try:
     # this path is valid when this class is run locally
-    ner_model = spacy.load(f"{current_dir}/../models/training/")
+    ner_model = spacy.load(f"{current_dir}{SEP}..{SEP}models{SEP}training{SEP}")
 except IOError as error:
     sys.exit(str(error) + "\nML model was not trained locally")
+
+# get synonyms for keywords from chatette file
+synonyms = get_synonyms()
 
 
 def process_string(string: str) -> object:
@@ -39,7 +49,7 @@ def get_query(string: str) -> object:
     for token in tokens:
         # save query object
         if token.ent_type_ == "queryObject":
-            result.query_object = get_synonym(token.lemma_)
+            result.query_object = get_keyword(token.lemma_)
         # save min height
         if token.ent_type_ == "amount":
             # make sure an int was found
@@ -53,10 +63,16 @@ def get_query(string: str) -> object:
     return result
 
 
-def get_synonym(string : str) -> str:
-    if string == "Berg":
-        return "Mountain"
-    return string
+def get_keyword(string: str) -> str:
+    default_keyword = ""  # TODO define default queryObject
+    for keyword in synonyms:
+        if string in synonyms[keyword]:
+            return keyword
+
+    logging.warning(f"[NLP COMPONENT][STRING INTERPRETER] Couldn't find a matching keyword for {string}, "
+                    f"using default keyword {default_keyword}")
+    return default_keyword
+
 
 @dataclass
 class BaseAttributes:
