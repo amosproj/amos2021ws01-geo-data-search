@@ -50,7 +50,7 @@ public class HereApiKey {
             hereApiKey = UNKNOWN_API_KEY;
         } catch (NullPointerException e) {
             logger.error(CLASS_PREFIX, "Could not find \"" + HERE_API_KEY_FILE_NAME + "\"!");
-            logger.error(CLASS_PREFIX, "Make sure, the file is in the correct directory: \"backend\\src\\main\\resources\"");
+            logger.error(CLASS_PREFIX, "Make sure, the file is in the correct directory: \"src\\backend\\src\\main\\resources\"");
             hereApiKey = UNKNOWN_API_KEY;
         }
     }
