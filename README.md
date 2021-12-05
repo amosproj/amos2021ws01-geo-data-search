@@ -48,5 +48,3 @@ $ cd src
 ```
 $ mvn test
 ```
-
-
