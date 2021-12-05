@@ -1,6 +1,7 @@
 import pathlib
 import sys
 from typing import Optional
+from synonyms import check_synonym
 
 import spacy
 from pydantic.dataclasses import dataclass
@@ -54,7 +55,7 @@ def get_query(string: str) -> object:
 
             # extract query parameters
             param_1, param_2 = get_query_parameters(token)
-
+            print("Einheit für amount " + token.text + ": " + check_unit(token))
             # check if parameters were found
             if param_2 == "height":
                 # select min parameter by default
@@ -63,16 +64,16 @@ def get_query(string: str) -> object:
                 elif param_1 == "max":
                     result.route_attributes.height.max = number
 
-
     return result
 
 
-def get_synonym(string : str) -> str:
+def get_synonym(string: str) -> str:
     if string == "Berg":
         return "Mountain"
     return string
 
-def get_query_parameters(origin : spacy.tokens.token.Token) -> (str, str):
+
+def get_query_parameters(origin: spacy.tokens.token.Token) -> (str, str):
     """
     :param origin token which requires the attribute it is referring to
     :return query attributes found in sting. Example: min height
@@ -98,7 +99,8 @@ def get_query_parameters(origin : spacy.tokens.token.Token) -> (str, str):
 
     return param_1, param_2
 
-def get_depencies(origin : spacy.tokens.token.Token) -> [spacy.tokens.token.Token]:
+
+def get_depencies(origin: spacy.tokens.token.Token) -> [spacy.tokens.token.Token]:
     """
     :param origin token which requires its closest dependencies
     :return tokens ordered by proximity to origin
@@ -117,7 +119,6 @@ def get_depencies(origin : spacy.tokens.token.Token) -> [spacy.tokens.token.Toke
 
         # add current token to results
         results.append(current_token)
-
         # add children to discovery queue, if it wasnt discovered already
         for child in current_token.children:
             if child not in discovery_queue and child not in results:
@@ -129,6 +130,18 @@ def get_depencies(origin : spacy.tokens.token.Token) -> [spacy.tokens.token.Toke
             discovery_queue.append(current_head)
 
     return results
+
+
+def check_unit(amount_token: spacy.tokens.token.Token) -> str:
+    """
+    :param amount_token the token which is checked for a unit
+    :return unit, if token has a unit, otherwise an empty string
+    """
+    if hasattr(amount_token, "head"):
+        if amount_token.dep_ == "nk":
+            synonym = check_synonym("unit", amount_token.head)
+            return synonym
+    return ""
 
 
 @dataclass
@@ -198,4 +211,9 @@ class Query:
 
         self.route_attributes = RouteAttributes()
 
-print(get_query("Finde eine Strecke in Italien mit mindestens 10km länge in einer lage über 1000m mit einem Anteil von 500m Linkskurven mit einem Anteil von 600m Steigung über 7% auf einer Höhe von maximal 10000 Metern"))
+
+print(
+    get_query(
+        "Finde eine Strecke in Italien mit mindestens 10 meilen länge in einer lage über 1000 meter mit einem Anteil von 500 kilometer Linkskurven mit einem Anteil von 600m Steigung über 7% auf einer Höhe von maximal 10 metern"
+    )
+)
