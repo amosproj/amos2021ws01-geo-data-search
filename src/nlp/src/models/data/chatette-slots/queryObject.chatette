@@ -6,8 +6,9 @@
 @[&queryObject#place]
     See[n?]
     Gewässer
-    [Wald|Wälder|Waldflächen]
+    [Wald|Wälder|Waldfläche[n?]]
     Ort[e?]
+    Gebiet[e?]
 
 @[&queryObject#route]
     Route[n?]
