@@ -11,12 +11,15 @@
     "@headlessui/react": "^1.4.2",
     "@heroicons/react": "^1.0.5",
     "jotai": "^1.4.3",
+    "leaflet": "^1.7.1",
     "next": "12.0.1",
     "react": "17.0.2",
     "react-dom": "17.0.2",
+    "react-leaflet": "^3.2.2",
     "swr": "^1.0.1"
   },
   "devDependencies": {
+    "@types/leaflet": "^1.7.6",
     "@types/node": "16.11.6",
     "@types/react": "17.0.33",
     "autoprefixer": "^10.4.0",

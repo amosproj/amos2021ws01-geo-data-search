@@ -1,5 +1,4 @@
 import logging
-import os
 
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
@@ -9,9 +8,6 @@ from .string_interpreter import process_string, Query
 # Logging
 logger = logging.getLogger()
 logging.basicConfig(level=logging.INFO)
-
-# get os specific file separator
-SEP = os.path.sep
 
 # App title and landing page
 APP_TITLE = "API for NLP Component"
@@ -40,4 +36,5 @@ async def get_version():
 )
 async def request(text: str):
     logging.info(f"[NLP Component] Received Request: {text}")
+
     return process_string(text)
