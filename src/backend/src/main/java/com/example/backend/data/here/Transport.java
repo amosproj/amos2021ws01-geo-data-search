@@ -7,9 +7,13 @@ public class Transport {
     @SerializedName("mode")
     public final String mode;
 
-    public Transport(String mode){
+    public Transport(String mode) {
         this.mode = mode;
     }
 
-
+    public String toString(String tab) {
+        return "\n" + tab + "Transport{" +
+                "\n" + tab + "\tmode = \"" + mode + "\"" +
+                "\n" + tab + "\t}";
+    }
 }

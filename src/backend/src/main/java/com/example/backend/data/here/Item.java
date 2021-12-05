@@ -5,23 +5,19 @@ import com.google.gson.annotations.SerializedName;
 public class Item {
 
     @SerializedName("title")
-    String title;
+    public String title;
     @SerializedName("id")
-    String id;
+    public String id;
     @SerializedName("resultType")
-    String resultType;
+    public String resultType;
     @SerializedName("address")
-    Address address;
+    public Address address;
     @SerializedName("position")
-    Position position;
+    public Position position;
     @SerializedName("mapView")
-    MapView mapView;
+    public MapView mapView;
     @SerializedName("scoring")
-    Object scoring;
-
-    public Item() {
-
-    }
+    public Object scoring;
 
     public Item(String title, String id, String resultType, Address address, Position position, MapView mapView, Object scoring) {
         this.title = title;
@@ -33,16 +29,15 @@ public class Item {
         this.scoring = scoring;
     }
 
-    @Override
-    public String toString() {
-        return "\n\t\tItem{" +
-                "\n\t\t\ttitle = \"" + title + "\"" +
-                "\n\t\t\tid = \"" + id + "\"" +
-                "\n\t\t\tresultType = \"" + resultType + "\"" +
-                "\n\t\t\taddress = \"" + address + "\"" +
-                "\n\t\t\tposition = \"" + position + "\"" +
-                "\n\t\t\tmapView = = \"" + mapView + "\"" +
-                "\n\t\t\tscoring = \"" + scoring + "\"" +
-                "\n\t\t\t}";
+    public String toString(String tab) {
+        return "\n" + tab + "Item{" +
+                "\n" + tab + "\ttitle = \"" + title + "\"" +
+                "\n" + tab + "\tid = \"" + id + "\"" +
+                "\n" + tab + "\tresultType = " + resultType + "\"" +
+                "\n" + tab + "\taddress = " + address.toString(tab + "\t\t") +
+                "\n" + tab + "\tposition = " + position.toString(tab + "\t\t") +
+                "\n" + tab + "\tmapView = " + mapView.toString(tab + "\t\t") +
+                "\n" + tab + "\tscoring = " + scoring.toString() +
+                "\n" + tab + "\t}";
     }
 }

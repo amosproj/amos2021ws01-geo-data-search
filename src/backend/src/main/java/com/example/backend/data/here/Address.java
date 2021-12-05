@@ -5,27 +5,23 @@ import com.google.gson.annotations.SerializedName;
 public class Address {
 
     @SerializedName("label")
-    String label;
+    public String label;
     @SerializedName("countryCode")
-    String countryCode;
+    public String countryCode;
     @SerializedName("countryName")
-    String countryName;
+    public String countryName;
     @SerializedName("stateCode")
-    String stateCode;
+    public String stateCode;
     @SerializedName("state")
-    String state;
+    public String state;
     @SerializedName("countyCode")
-    String countyCode;
+    public String countyCode;
     @SerializedName("county")
-    String county;
+    public String county;
     @SerializedName("city")
-    String city;
+    public String city;
     @SerializedName("street")
-    String street;
-
-    public Address() {
-
-    }
+    public String street;
 
     public Address(String label, String countryCode, String countryName, String stateCode, String state, String countyCode, String county, String city, String street) {
         this.label = label;
@@ -39,18 +35,17 @@ public class Address {
         this.street = street;
     }
 
-    @Override
-    public String toString() {
-        return "\n\t\t\tAddress{" +
-                "\n\t\t\t\tlabel = \"" + label + "\"" +
-                "\n\t\t\t\tcountryCode = \"" + countryCode + "\"" +
-                "\n\t\t\t\tcountryName = \"" + countryName + "\"" +
-                "\n\t\t\t\tstateCode = \"" + stateCode + "\"" +
-                "\n\t\t\t\tstate = \"" + state + "\"" +
-                "\n\t\t\t\tcountyCode = = \"" + countyCode + "\"" +
-                "\n\t\t\t\tcounty = \"" + county + "\"" +
-                "\n\t\t\t\tcity = \"" + city + "\"" +
-                "\n\t\t\t\tstreet = \"" + street + "\"" +
-                "\n\t\t\t\t}";
+    public String toString(String tab) {
+        return "\n" + tab + "Address{" +
+                "\n" + tab + "\tlabel = \"" + label + "\"" +
+                "\n" + tab + "\tcountryCode = \"" + countryCode + "\"" +
+                "\n" + tab + "\tcountryName = " + countryName + "\"" +
+                "\n" + tab + "\tstateCode = \"" + stateCode + "\"" +
+                "\n" + tab + "\tstate = \"" + state + "\"" +
+                "\n" + tab + "\tcountyCode = " + countyCode + "\"" +
+                "\n" + tab + "\tcounty = \"" + county + "\"" +
+                "\n" + tab + "\tcity = \"" + city + "\"" +
+                "\n" + tab + "\tstreet = " + street + "\"" +
+                "\n" + tab + "\t}";
     }
 }

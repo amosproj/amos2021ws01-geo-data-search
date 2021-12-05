@@ -5,24 +5,19 @@ import com.google.gson.annotations.SerializedName;
 public class Position {
 
     @SerializedName("lat")
-    double lat;
+    public double lat;
     @SerializedName("lng")
-    double lng;
-
-    public Position(){
-
-    }
+    public double lng;
 
     public Position(double lat, double lng) {
         this.lat = lat;
         this.lng = lng;
     }
 
-    @Override
-    public String toString() {
-        return "\n\t\t\tPosition{" +
-                "\n\t\t\t\tlat = \"" + lat + "\"" +
-                "\n\t\t\t\tlng = \"" + lng + "\"" +
-                "\n\t\t\t\t}";
+    public String toString(String tab) {
+        return "\n" + tab + "Position{" +
+                "\n" + tab + "\tlat = " + lat +
+                "\n" + tab + "\tlng = " + lng +
+                "\n" + tab + "\t}";
     }
 }

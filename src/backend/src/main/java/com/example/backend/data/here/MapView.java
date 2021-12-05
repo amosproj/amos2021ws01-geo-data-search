@@ -5,17 +5,13 @@ import com.google.gson.annotations.SerializedName;
 public class MapView {
 
     @SerializedName("north")
-    double north;
+    public double north;
     @SerializedName("east")
-    double east;
+    public double east;
     @SerializedName("south")
-    double south;
+    public double south;
     @SerializedName("west")
-    double west;
-
-    public MapView() {
-
-    }
+    public double west;
 
     public MapView(double north, double east, double south, double west) {
         this.north = north;
@@ -24,13 +20,12 @@ public class MapView {
         this.west = west;
     }
 
-    @Override
-    public String toString() {
-        return "\n\t\t\tMapView{" +
-                "\n\t\t\t\tnorth = \"" + north + "\"" +
-                "\n\t\t\t\teast = \"" + east + "\"" +
-                "\n\t\t\t\tsouth = \"" + south + "\"" +
-                "\n\t\t\t\twest = \"" + west + "\"" +
-                "\n\t\t\t\t}";
+    public String toString(String tab) {
+        return "\n" + tab + "MapView{" +
+                "\n" + tab + "\tnorth = " + north +
+                "\n" + tab + "\teast = " + east +
+                "\n" + tab + "\tsouth = " + south +
+                "\n" + tab + "\twest = " + west +
+                "\n" + tab + "\t}";
     }
 }

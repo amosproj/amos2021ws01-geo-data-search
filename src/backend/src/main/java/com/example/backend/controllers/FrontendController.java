@@ -3,11 +3,8 @@ package com.example.backend.controllers;
 import com.example.backend.clients.ApiClient;
 import com.example.backend.clients.NlpClient;
 import com.example.backend.data.ApiResult;
-import com.example.backend.data.api.HereApiGeocodeResponse;
+import com.example.backend.data.api.*;
 import com.example.backend.data.HttpResponse;
-import com.example.backend.data.api.NodeInfo;
-import com.example.backend.data.api.OSMQuery;
-import com.example.backend.data.api.OSMSearchResult;
 import com.example.backend.data.http.Error;
 import com.example.backend.data.http.*;
 import com.example.backend.helpers.BackendLogger;
@@ -73,7 +70,7 @@ public class FrontendController {
         try {
             HereApiGeocodeResponse hereApiGeocodeResponse = getApiGeocodeResponse(nqr.getLocation());
             logInfo("HERE / GEOCODE:");
-            logInfo(hereApiGeocodeResponse.toString());
+            logInfo(hereApiGeocodeResponse.toString(""));
         } catch (Throwable throwable) {
             handleError(throwable);
         }
@@ -82,6 +79,8 @@ public class FrontendController {
             String hereApiRoutingResponse = rs.getRoutingResponse("52.5308,13.3847", "52.5264,13.3686", "car", "summary");
             logInfo("HERE / ROUTING:");
             logInfo(hereApiRoutingResponse);
+            HereApiRoutingResponse hereApiRoutingResponse1 = new Gson().fromJson(hereApiRoutingResponse, HereApiRoutingResponse.class);
+            logInfo(hereApiRoutingResponse1.toString(""));
         } catch (Throwable throwable) {
             handleError(throwable);
         }
