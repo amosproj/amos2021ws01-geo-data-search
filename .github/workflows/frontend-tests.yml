@@ -19,4 +19,4 @@ jobs:
       - name: build frontend
         run: docker compose up -d --build frontend
       - name: check the container is still running
-        run: docker compose ps
+        run: docker compose exec frontend echo healthy
