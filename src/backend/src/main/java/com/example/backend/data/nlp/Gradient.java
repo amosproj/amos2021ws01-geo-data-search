@@ -2,30 +2,30 @@ package com.example.backend.data.nlp;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Gradiant {
+public class Gradient {
 
     @SerializedName("min")
-    private final String min;
+    private final Integer min;
     @SerializedName("max")
-    private final String max;
+    private final Integer max;
     @SerializedName("length")
-    private final String length;
+    private final Integer length;
 
-    public Gradiant(String min, String max, String length) {
+    public Gradient(Integer min, Integer max, Integer length) {
         this.min = min;
         this.max = max;
         this.length = length;
     }
 
-    public String getMin() {
+    public Integer getMin() {
         return min;
     }
 
-    public String getMax() {
+    public Integer getMax() {
         return max;
     }
 
-    public String getLength() {
+    public Integer getLength() {
         return length;
     }
 
@@ -33,16 +33,16 @@ public class Gradiant {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Gradiant gradiant = (Gradiant) o;
-        return min == gradiant.min && max == gradiant.max && length == gradiant.length;
+        Gradient gradient = (Gradient) o;
+        return min.equals(gradient.min) && max.equals(gradient.max) && length.equals(gradient.length);
     }
 
     @Override
     public String toString() {
-        return "Gradiant{" +
-                "\n\t\t\tmin = \"" + min + "\"" +
-                "\n\t\t\tmax = \"" + max + "\"" +
-                "\n\t\t\tlength = \"" + length + "\"" +
+        return "Gradient{" +
+                "\n\t\t\tmin = " + min +
+                "\n\t\t\tmax = " + max +
+                "\n\t\t\tlength = " + length +
                 "\n\t\t\t}";
     }
 }
