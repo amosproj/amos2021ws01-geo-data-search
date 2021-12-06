@@ -44,7 +44,8 @@ def get_synonyms(chatette_file_path: str = None, entity="queryObject") -> dict:
                     .replace(f"{entity}#", "") \
                     .replace("]", "") \
                     .replace("\n", "") \
-                    .lower()
+                    .lower() \
+                    .strip()
 
             # found synonym
             if line.startswith(4 * " ") or line.startswith("\t"):
@@ -70,7 +71,7 @@ def get_synonyms(chatette_file_path: str = None, entity="queryObject") -> dict:
 
                     for sub_part in sub_parts:
                         if sub_part.isalpha():
-                            values.append(sub_part.lower())
+                            values.append(sub_part.lower().strip())
                             logging.debug(f"[NLP COMPONENT] Added {sub_part} as synonym for {key}")
     synonyms[key] = values
     return synonyms
