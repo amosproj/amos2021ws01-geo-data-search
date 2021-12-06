@@ -52,9 +52,9 @@ public class NlpQueryResponseTest {
         assertThat(sut.getRouteAttributes().getHeight().getMax(), is(expectedRouteHeightMax));
         assertThat(sut.getRouteAttributes().getLength().getMin(), is(expectedRouteLengthMin));
         assertThat(sut.getRouteAttributes().getLength().getMax(), is(expectedRouteLengthMax));
-        assertThat(sut.getRouteAttributes().getGradiant().getMin(), is(expectedRouteGradiantMin));
-        assertThat(sut.getRouteAttributes().getGradiant().getMax(), is(expectedRouteGradiantMax));
-        assertThat(sut.getRouteAttributes().getGradiant().getLength(), is(expectedRouteGradiantLength));
+        assertThat(sut.getRouteAttributes().getGradient().getMin(), is(expectedRouteGradiantMin));
+        assertThat(sut.getRouteAttributes().getGradient().getMax(), is(expectedRouteGradiantMax));
+        assertThat(sut.getRouteAttributes().getGradient().getLength(), is(expectedRouteGradiantLength));
         assertThat(sut.getRouteAttributes().getCurves().getMin(), is(expectedRouteCurvesMin));
         assertThat(sut.getRouteAttributes().getCurves().getMax(), is(expectedRouteCurvesMax));
         assertThat(sut.getRouteAttributes().getCurves().getCount(), is(expectedRouteCurvesCount));

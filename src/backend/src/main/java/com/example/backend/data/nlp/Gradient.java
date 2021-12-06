@@ -2,7 +2,7 @@ package com.example.backend.data.nlp;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Gradiant {
+public class Gradient {
 
     @SerializedName("min")
     private final Integer min;
@@ -11,7 +11,7 @@ public class Gradiant {
     @SerializedName("length")
     private final Integer length;
 
-    public Gradiant(Integer min, Integer max, Integer length) {
+    public Gradient(Integer min, Integer max, Integer length) {
         this.min = min;
         this.max = max;
         this.length = length;
@@ -33,13 +33,13 @@ public class Gradiant {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Gradiant gradiant = (Gradiant) o;
-        return min.equals(gradiant.min) && max.equals(gradiant.max) && length.equals(gradiant.length);
+        Gradient gradient = (Gradient) o;
+        return min.equals(gradient.min) && max.equals(gradient.max) && length.equals(gradient.length);
     }
 
     @Override
     public String toString() {
-        return "Gradiant{" +
+        return "Gradient{" +
                 "\n\t\t\tmin = " + min +
                 "\n\t\t\tmax = " + max +
                 "\n\t\t\tlength = " + length +
