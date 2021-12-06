@@ -1,7 +1,6 @@
 import logging
 import os
 import pathlib
-import subprocess
 
 from models.data.training_data import generate_data
 from models.train_model import train
