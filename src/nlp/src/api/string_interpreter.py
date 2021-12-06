@@ -64,7 +64,8 @@ def get_query(string: str) -> object:
 
 
 def get_keyword(string: str) -> str:
-    default_keyword = ""  # TODO define default queryObject
+    # default queryObject
+    default_keyword = "route"
     for keyword in synonyms:
         if string in synonyms[keyword]:
             return keyword
