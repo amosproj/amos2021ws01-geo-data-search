@@ -4,6 +4,8 @@ import os
 import pathlib
 import re
 
+from typing import Optional
+
 # get os specific file separator
 SEP = os.path.sep
 
@@ -19,9 +21,9 @@ def get_synonyms(chatette_file_path: str = None, entity="queryObject") -> dict:
         logging.error(f"Couldn't find file {chatette_file_path}")
 
     with open(chatette_file_path) as file:
-        synonyms = dict()
-        key: str = None
-        values = list()
+        synonyms = {}
+        key: Optional[str] = None
+        values = []
         optional_alias = re.compile(r"\[[a-z]+\?]")
         for line in file:
 
@@ -34,7 +36,7 @@ def get_synonyms(chatette_file_path: str = None, entity="queryObject") -> dict:
                 # add synonyms to dictionary if new sub entity is found
                 if key is not None:
                     synonyms[key] = values
-                    values = list()
+                    values = []
 
                 # rm syntax specific chars
                 key = line.replace("@[", "") \
