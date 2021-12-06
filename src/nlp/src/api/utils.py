@@ -1,3 +1,4 @@
+import itertools
 import logging
 import os
 import pathlib
@@ -55,8 +56,16 @@ def get_synonyms(chatette_file_path: str = None, entity="queryObject") -> dict:
                 for part in parts:
                     # case: only letters in line or in line aliases
                     sub_parts = [part]
-                    if "|" in part:
+                    if "|" in part and "=" in part:
+                        tmp = part.split("|")
+                        for i in range(len(tmp)):
+                            tmp[i] = tmp[i].split("=")
+                        sub_parts = list(itertools.chain(*tmp))
+                    elif "=" in part:
+                        sub_parts = part.split("=")
+                    elif "|" in part:
                         sub_parts = part.split("|")
+
                     for sub_part in sub_parts:
                         if sub_part.isalpha():
                             values.append(sub_part.lower())
