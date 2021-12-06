@@ -1,7 +1,5 @@
 package com.example.backend.helpers;
 
-import com.example.backend.BackendApplication;
-
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 
@@ -34,16 +32,25 @@ public class HereApiKey {
     }
 
     private static void retrieveTheKeyFromFile() {
+        File hereApiKeyFile = new File(HERE_API_KEY_FILE_NAME);
         try {
-            FileInputStream inputStream = new FileInputStream(HERE_API_KEY_FILE_NAME);
-            InputStreamReader streamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
-            BufferedReader reader = new BufferedReader(streamReader);
-            hereApiKey = reader.readLine();
+            if (hereApiKeyFile.exists() && !hereApiKeyFile.isDirectory()) {
+                FileInputStream inputStream = new FileInputStream(HERE_API_KEY_FILE_NAME);
+                InputStreamReader streamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
+                BufferedReader reader = new BufferedReader(streamReader);
+                hereApiKey = reader.readLine();
+            } else {
+                handleErrorWithFile();
+            }
         } catch (NullPointerException | IOException e) {
             logger.error(CLASS_PREFIX, e.getMessage());
-            logger.error(CLASS_PREFIX, "Could not find \"" + HERE_API_KEY_FILE_NAME + "\"!");
-            logger.error(CLASS_PREFIX, "Make sure that the file is in the correct directory: secrets\\here-api-key.txt");
-            hereApiKey = UNKNOWN_API_KEY;
+            handleErrorWithFile();
         }
+    }
+
+    private static void handleErrorWithFile() {
+        logger.error(CLASS_PREFIX, "Could not find \"" + HERE_API_KEY_FILE_NAME + "\"!");
+        logger.error(CLASS_PREFIX, "Make sure that the file is in the correct directory: secrets\\here-api-key.txt");
+        hereApiKey = UNKNOWN_API_KEY;
     }
 }
