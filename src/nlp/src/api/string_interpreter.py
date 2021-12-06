@@ -66,8 +66,10 @@ def get_query(string: str) -> object:
 def get_keyword(string: str) -> str:
     # default queryObject
     default_keyword = "route"
+
+    # get keyword
     for keyword in synonyms:
-        if string in synonyms[keyword]:
+        if string.lower() in synonyms[keyword]:
             return keyword
 
     logging.warning(f"[NLP COMPONENT][STRING INTERPRETER] Couldn't find a matching keyword for {string}, "
