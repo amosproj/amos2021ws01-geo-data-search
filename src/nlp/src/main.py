@@ -1,6 +1,7 @@
 import logging
 import os
 import pathlib
+import subprocess
 
 from models.data.training_data import generate_data
 from models.train_model import train
@@ -26,19 +27,24 @@ else:
     else:
         logging.info(f"[NLP COMPONENT] Could not find training data file {data_path}")
 
-        path = f'{CURRENT_DIR}{SEP}models{SEP}data{SEP}output'
-        pathlib.Path(path).mkdir(parents=True, exist_ok=True)
-        # for host machine in order to be able to edit generated files, for docker to create files
-        os.chmod(path, 0o777)
-
         # generate training data with Chatette
         generate_data(str(CURRENT_DIR) + f"{SEP}models{SEP}data")
 
-    path = f'{CURRENT_DIR}{SEP}models{SEP}training{SEP}'
-    pathlib.Path(path).mkdir(parents=True, exist_ok=True)
-    # for host machine in order to be able to edit generated files, for docker to create files
-    os.chmod(path, 0o777)
+        path = f'{CURRENT_DIR}{SEP}models{SEP}data{SEP}output'
+        # for host machine in order to be able to edit generated files, for docker to create files
+        if SEP == "/":
+            subprocess.call(['chmod', '-R', '777', path])
+        else:
+            os.chmod(path, 0o777)
 
     # train model with spaCy
     train(train_data_path=str(data_path),
           model_path=str(model_path))
+
+    # for host machine in order to be able to edit generated files, for docker to create files
+    path = f'{CURRENT_DIR}{SEP}models{SEP}training{SEP}'
+    pathlib.Path(path).mkdir(parents=True, exist_ok=True)
+    if SEP == "/":
+        subprocess.call(['chmod', '-R', '777',  path])
+    else:
+        os.chmod(path, 0o777)
