@@ -5,27 +5,27 @@ import com.google.gson.annotations.SerializedName;
 public class Right {
 
     @SerializedName("min")
-    private final String min;
+    private final Integer min;
     @SerializedName("max")
-    private final String max;
+    private final Integer max;
     @SerializedName("count")
-    private final String count;
+    private final Integer count;
 
-    public Right(String min, String max, String count) {
+    public Right(Integer min, Integer max, Integer count) {
         this.min = min;
         this.max = max;
         this.count = count;
     }
 
-    public String getMin() {
+    public Integer getMin() {
         return min;
     }
 
-    public String getMax() {
+    public Integer getMax() {
         return max;
     }
 
-    public String getCount() {
+    public Integer getCount() {
         return count;
     }
 
@@ -34,15 +34,15 @@ public class Right {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Right right = (Right) o;
-        return min == right.min && max == right.max && count == right.count;
+        return min.equals(right.min) && max.equals(right.max) && count.equals(right.count);
     }
 
     @Override
     public String toString() {
         return "Right{" +
-                "\n\t\t\t\tmin = \"" + min + "\"" +
-                "\n\t\t\t\tmax = \"" + max + "\"" +
-                "\n\t\t\t\tcount = \"" + count + "\"" +
+                "\n\t\t\t\tmin = " + min +
+                "\n\t\t\t\tmax = " + max +
+                "\n\t\t\t\tcount = " + count +
                 "\n\t\t\t\t}";
     }
 }
