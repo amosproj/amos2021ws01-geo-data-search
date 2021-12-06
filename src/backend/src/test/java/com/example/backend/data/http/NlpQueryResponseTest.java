@@ -11,27 +11,27 @@ import java.util.Random;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class NlpResponseTest {
+public class NlpQueryResponseTest {
 
     private final String expectedLocation = "" + new Random().nextInt();
-    private final String expectedMaxDistance = "" + new Random().nextInt();
+    private final Integer expectedMaxDistance = new Random().nextInt();
     private final String expectedQueryObject = "" + new Random().nextInt();
-    private final String expectedRouteHeightMin = "" + new Random().nextInt();
-    private final String expectedRouteHeightMax = "" + new Random().nextInt();
-    private final String expectedRouteLengthMin = "" + new Random().nextInt();
-    private final String expectedRouteLengthMax = "" + new Random().nextInt();
-    private final String expectedRouteGradiantMin = "" + new Random().nextInt();
-    private final String expectedRouteGradiantMax = "" + new Random().nextInt();
-    private final String expectedRouteGradiantLength = "" + new Random().nextInt();
-    private final String expectedRouteCurvesMin = "" + new Random().nextInt();
-    private final String expectedRouteCurvesMax = "" + new Random().nextInt();
-    private final String expectedRouteCurvesCount = "" + new Random().nextInt();
-    private final String expectedRouteCurvesLeftMin = "" + new Random().nextInt();
-    private final String expectedRouteCurvesLeftMax = "" + new Random().nextInt();
-    private final String expectedRouteCurvesLeftCount = "" + new Random().nextInt();
-    private final String expectedRouteCurvesRightMin = "" + new Random().nextInt();
-    private final String expectedRouteCurvesRightMax = "" + new Random().nextInt();
-    private final String expectedRouteCurvesRightCount = "" + new Random().nextInt();
+    private final Integer expectedRouteHeightMin = new Random().nextInt();
+    private final Integer expectedRouteHeightMax = new Random().nextInt();
+    private final Integer expectedRouteLengthMin = new Random().nextInt();
+    private final Integer expectedRouteLengthMax = new Random().nextInt();
+    private final Integer expectedRouteGradiantMin = new Random().nextInt();
+    private final Integer expectedRouteGradiantMax = new Random().nextInt();
+    private final Integer expectedRouteGradiantLength = new Random().nextInt();
+    private final Integer expectedRouteCurvesMin = new Random().nextInt();
+    private final Integer expectedRouteCurvesMax = new Random().nextInt();
+    private final Integer expectedRouteCurvesCount = new Random().nextInt();
+    private final Integer expectedRouteCurvesLeftMin = new Random().nextInt();
+    private final Integer expectedRouteCurvesLeftMax = new Random().nextInt();
+    private final Integer expectedRouteCurvesLeftCount = new Random().nextInt();
+    private final Integer expectedRouteCurvesRightMin = new Random().nextInt();
+    private final Integer expectedRouteCurvesRightMax = new Random().nextInt();
+    private final Integer expectedRouteCurvesRightCount = new Random().nextInt();
 
     @Test
     public void test_correctExtractionAndStructureOfNlpResponse() {
@@ -52,9 +52,9 @@ public class NlpResponseTest {
         assertThat(sut.getRouteAttributes().getHeight().getMax(), is(expectedRouteHeightMax));
         assertThat(sut.getRouteAttributes().getLength().getMin(), is(expectedRouteLengthMin));
         assertThat(sut.getRouteAttributes().getLength().getMax(), is(expectedRouteLengthMax));
-        assertThat(sut.getRouteAttributes().getGradiant().getMin(), is(expectedRouteGradiantMin));
-        assertThat(sut.getRouteAttributes().getGradiant().getMax(), is(expectedRouteGradiantMax));
-        assertThat(sut.getRouteAttributes().getGradiant().getLength(), is(expectedRouteGradiantLength));
+        assertThat(sut.getRouteAttributes().getGradient().getMin(), is(expectedRouteGradiantMin));
+        assertThat(sut.getRouteAttributes().getGradient().getMax(), is(expectedRouteGradiantMax));
+        assertThat(sut.getRouteAttributes().getGradient().getLength(), is(expectedRouteGradiantLength));
         assertThat(sut.getRouteAttributes().getCurves().getMin(), is(expectedRouteCurvesMin));
         assertThat(sut.getRouteAttributes().getCurves().getMax(), is(expectedRouteCurvesMax));
         assertThat(sut.getRouteAttributes().getCurves().getCount(), is(expectedRouteCurvesCount));
