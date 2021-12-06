@@ -1,5 +1,3 @@
-import sys
-
 from api.string_interpreter import get_query
 
 
