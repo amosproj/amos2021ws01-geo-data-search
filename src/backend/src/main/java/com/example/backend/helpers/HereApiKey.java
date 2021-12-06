@@ -7,8 +7,7 @@ import java.nio.charset.StandardCharsets;
 
 /**
  * Reads in the key for the HERE-API that is in plain text in the <strong>"here-api-key.txt"</strong> file and
- * that was <strong>manually</strong> inserted into the correct folder
- * <strong>"main\src\backend\src\main\resources"</strong> by the user.
+ * that was <strong>manually</strong> inserted into the correct folder <strong>"secrets"</strong> by the user.
  */
 public class HereApiKey {
 
@@ -22,7 +21,7 @@ public class HereApiKey {
      * This method will not check, if the key is correct. It will only check, if the correct file is in the correct
      * directory and then try to read that file and return its content as a <code>String</code>.
      * <br>
-     * In case, this was not successful, it will return <code>UNKNOWN_API_KEY</code> as a <code>String</code> and
+     * In case, this was not successful, it will return <code>"UNKNOWN_API_KEY"</code> as a <code>String</code> and
      * log the problem as an error.
      *
      * @return HERE-API-KEY
@@ -35,16 +34,12 @@ public class HereApiKey {
     }
 
     private static void retrieveTheKeyFromFile() {
-        ClassLoader classLoader = BackendApplication.class.getClassLoader();
         try {
             FileInputStream inputStream = new FileInputStream(HERE_API_KEY_FILE_NAME);
             InputStreamReader streamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
             BufferedReader reader = new BufferedReader(streamReader);
             hereApiKey = reader.readLine();
-        } catch (IOException e) {
-            e.printStackTrace();
-            hereApiKey = UNKNOWN_API_KEY;
-        } catch (NullPointerException e) {
+        } catch (NullPointerException | IOException e) {
             logger.error(CLASS_PREFIX, e.getMessage());
             logger.error(CLASS_PREFIX, "Could not find \"" + HERE_API_KEY_FILE_NAME + "\"!");
             logger.error(CLASS_PREFIX, "Make sure that the file is in the correct directory: secrets\\here-api-key.txt");
