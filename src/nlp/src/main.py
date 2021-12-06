@@ -42,8 +42,6 @@ else:
     train(train_data_path=str(data_path),
           model_path=str(model_path))
 
-# TODO maybe load model
-
 
 # for host machine in order to be able to edit generated files
 subprocess.call(['chmod', '-R', '777', f'{CURRENT_DIR}{SEP}models{SEP}data{SEP}output'])
