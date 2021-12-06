@@ -9,7 +9,8 @@ import java.nio.charset.StandardCharsets;
  */
 public class HereApiKey {
 
-    public static final String HERE_API_KEY_FILE_NAME = "/run/secrets/here-api-key";
+    private static final String SEP = File.separator;
+    public static final String HERE_API_KEY_FILE_NAME = SEP + "run" + SEP + "secrets" + SEP + "here-api-key";
     public static final String CLASS_PREFIX = "HERE API KEY";
     public static final String UNKNOWN_API_KEY = "UNKNOWN_API_KEY";
     private static final BackendLogger logger = new BackendLogger();
@@ -50,7 +51,7 @@ public class HereApiKey {
 
     private static void handleErrorWithFile() {
         logger.error(CLASS_PREFIX, "Could not find \"" + HERE_API_KEY_FILE_NAME + "\"!");
-        logger.error(CLASS_PREFIX, "Make sure that the file is in the correct directory: secrets\\here-api-key.txt");
+        logger.error(CLASS_PREFIX, "Make sure that the file is in the correct directory: secrets" + SEP + "here-api-key.txt");
         hereApiKey = UNKNOWN_API_KEY;
     }
 }
