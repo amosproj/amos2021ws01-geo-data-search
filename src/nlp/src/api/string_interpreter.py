@@ -50,9 +50,7 @@ def get_query(string: str) -> object:
         # save query object
         if token.ent_type_ == "queryObject":
             result.query_object = get_keyword(token.lemma_)
-        else:
-            # use default value if no QueryObject was found
-            result.query_object = "route"
+
         # save min height
         if token.ent_type_ == "amount":
             # make sure an int was found
@@ -62,6 +60,10 @@ def get_query(string: str) -> object:
             # todo: extract which attribute the amount is specifying
             result.route_attributes.height.min = int(token.lemma_)
         print(token.lemma_, ":", token.ent_type_)
+
+    # set default value
+    if result.query_object == "":
+        result.query_object = "route"
 
     return result
 
