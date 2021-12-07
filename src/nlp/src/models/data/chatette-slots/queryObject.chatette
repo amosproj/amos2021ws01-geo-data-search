@@ -2,9 +2,11 @@
     Berg[e?]
     Erhebung[en?]
     Hügel
+    Halde
+    Kuppe
 
 @[&queryObject#place]
-    See[n?]
+    [See[n?]|Seenplatte]
     Gewässer
     [Wald|Wälder|Waldfläche[n?]]
     Ort[e?]
