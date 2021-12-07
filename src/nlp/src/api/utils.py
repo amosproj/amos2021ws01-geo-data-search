@@ -13,6 +13,12 @@ CURRENT_DIR = pathlib.Path(__file__).parent.resolve()
 
 
 def get_synonyms(chatette_file_path: str = None, entity="queryObject") -> dict:
+    """
+    Extracts all synonyms for the given entity if sub entities are defined
+    :param chatette_file_path Path to Chatette file containing the synonym definitions
+    :param entity the entity to be parsed, default value is queryObject
+    :return Dictionary with sub entity title as key and list with their synonyms as value
+    """
     # read synonyms from chatette file
     if chatette_file_path is None:
         chatette_file_path = str(CURRENT_DIR) + f"{SEP}..{SEP}models{SEP}data{SEP}chatette-slots{SEP}{entity}.chatette"
