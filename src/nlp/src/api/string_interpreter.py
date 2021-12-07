@@ -1,11 +1,11 @@
 import pathlib
 import sys
 from typing import Optional
+from api import synonyms as syn
+from api import helper_service as hs
 
 import spacy
 from pydantic.dataclasses import dataclass
-
-from .synonyms import check_synonym
 
 current_dir = pathlib.Path(__file__).parent.resolve()
 
@@ -38,7 +38,8 @@ def get_query(string: str) -> object:
             result.location += token.lemma_
 
     ner_tokens = ner_model(string)
-    for token in ner_tokens:
+    for index in range(len(ner_tokens)):
+        token = ner_tokens[index]
         # save query object
         if token.ent_type_ == "queryObject":
             result.query_object = get_synonym(token.lemma_)
@@ -56,9 +57,11 @@ def get_query(string: str) -> object:
 
             # extract query parameters
             param_1, param_2 = get_query_parameters(token)
-            print("Einheit für amount " + token.text + ": " + check_unit(token))
             # check if parameters were found
             if param_2 == "height":
+                if index != (len(ner_tokens) - 1):
+                    next_token = ner_tokens[index + 1]
+                    number = convert_to_meter(token, next_token)
                 # select min parameter by default
                 if param_1 == "min" or param_1 == "":
                     result.route_attributes.height.min = number
@@ -133,15 +136,21 @@ def get_depencies(origin: spacy.tokens.token.Token) -> [spacy.tokens.token.Token
     return results
 
 
-def check_unit(amount_token: spacy.tokens.token.Token) -> str:
+def check_unit(token: spacy.tokens.token.Token) -> str:
     """
     :param amount_token the token which is checked for a unit
     :return unit, if token has a unit, otherwise an empty string
     """
-    if hasattr(amount_token, "head"):
-        if amount_token.dep_ == "nk":
-            synonym = check_synonym("unit", amount_token.head)
-            return synonym
+    synonym = syn.check_synonym("unit", token)
+    return synonym
+
+
+def convert_to_meter(amount_token: str, next_token: str) -> str:
+    amount_unit = check_unit(next_token)
+    if amount_unit != "":
+        number = int(amount_token.text)
+        converted_number = hs.convert_number_to_meter(amount_unit, number)
+        return converted_number
     return ""
 
 
