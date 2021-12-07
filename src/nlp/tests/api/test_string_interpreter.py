@@ -17,7 +17,7 @@ def test_long_string_interpretation():
     )
 
     assert result.location == "Italien"
-    assert result.query_object == "Strecke"
+    assert result.query_object == "route"
     assert result.route_attributes.height.max == 10000
 
 
