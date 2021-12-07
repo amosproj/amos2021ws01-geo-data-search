@@ -12,13 +12,13 @@ public class NlpQueryResponse implements HttpResponse {
     @SerializedName("location")
     private final String location;
     @SerializedName("max_distance")
-    private final String maxDistance;
+    private final Integer maxDistance;
     @SerializedName("query_object")
     private final String queryObject;
     @SerializedName("route_attributes")
     private final RouteAttributes routeAttributes;
 
-    public NlpQueryResponse(String location, String maxDistance, String queryObject, RouteAttributes routeAttributes) {
+    public NlpQueryResponse(String location, Integer maxDistance, String queryObject, RouteAttributes routeAttributes) {
         this.location = location;
         this.maxDistance = maxDistance;
         this.queryObject = queryObject;
@@ -29,7 +29,7 @@ public class NlpQueryResponse implements HttpResponse {
         return location;
     }
 
-    public String getMaxDistance() {
+    public Integer getMaxDistance() {
         return maxDistance;
     }
 
@@ -43,9 +43,9 @@ public class NlpQueryResponse implements HttpResponse {
 
     @Override
     public String toString() {
-        return "\nNlpResponse{" +
+        return "\nNlpQueryResponse{" +
                 "\n\tlocation = \"" + location + "\"" +
-                "\n\tmaxDistance = \"" + maxDistance + "\"" +
+                "\n\tmaxDistance = " + maxDistance +
                 "\n\tqueryObject = \"" + queryObject + "\"" +
                 "\n\trouteAttributes = " + routeAttributes +
                 "\n\t}";
