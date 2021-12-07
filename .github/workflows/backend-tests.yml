@@ -17,6 +17,8 @@ jobs:
       DOCKER_BUILDKIT: 1
     steps:
       - uses: actions/checkout@v2
+      - name: prepare the api key file for testing
+        run: cp secrets/here-api-key.txt.dist secrets/here-api-key.txt
       - name: build backend
         run: docker compose up -d --build backend
       - name: run tests
