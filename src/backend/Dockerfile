@@ -20,6 +20,7 @@ RUN mkdir -p target/docker-packaging && cd target/docker-packaging && java -Djar
 FROM maven:latest as maven_test
 WORKDIR /app
 COPY pom.xml .
+RUN mkdir /run/secrets/ && touch /run/secrets/here-api-key
 COPY src ./src
 
 RUN --mount=type=cache,target=/root/.m2 mvn test
