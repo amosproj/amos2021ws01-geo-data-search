@@ -9,8 +9,9 @@ Our project mission is to achieve an interpretation of buzzword user queries in 
 
 ## Build instructions
 #### Running on a local machine
-- install docker: https://docs.docker.com/get-docker/
-- install docker-compose: https://docs.docker.com/compose/install/
+- Install docker: https://docs.docker.com/get-docker/
+- Install docker-compose: https://docs.docker.com/compose/install/
+- Manually paste the file containing the HERE-API key into this folder: `secrets\here-api-key.txt`
 - From this directory, run in your command line: `docker-compose up -d`
 - The service will be available under http://localhost:8080
 
@@ -48,5 +49,3 @@ $ cd src
 ```
 $ mvn test
 ```
-
-
