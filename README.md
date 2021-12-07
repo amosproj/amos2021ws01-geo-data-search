@@ -38,13 +38,7 @@ Currently, in the container for the NLP Component a preparation script has to be
 ## Test instructions
 
 ### Backend
-To run the tests make sure the backend container is running and do the following steps:
-1. Open terminal in backend container
-2. Change the current working directory to /src:
+To run the tests enter the following in the console:
 ```
-$ cd src
-```
-3. Use `mvn test` to run the tests:
-```
-$ mvn test
+docker build --target maven_test -f src/backend/Dockerfile src/backend
 ```
