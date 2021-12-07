@@ -2,7 +2,7 @@ package com.example.backend.data.here;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Summary {
+public class Summary implements HereApiElement{
 
     @SerializedName("duration")
     public Integer duration;

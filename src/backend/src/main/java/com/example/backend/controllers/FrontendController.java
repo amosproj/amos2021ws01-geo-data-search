@@ -85,6 +85,14 @@ public class FrontendController {
             handleError(throwable);
         }
 
+        try {
+            HereGuidanceResponse hereApiRoutingResponse = rs.getGuidanceResponse("52.5308,13.3847", "52.5264,13.3686", "car");
+            logInfo("HERE / GUIDANCE:");
+            logInfo(hereApiRoutingResponse.toString(""));
+        } catch (Throwable throwable) {
+            handleError(throwable);
+        }
+
         ArrayList<ApiResult> results = new ArrayList<>();
         results.addAll(osmResults.getSearchResults());
 

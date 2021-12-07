@@ -2,7 +2,7 @@ package com.example.backend.data.here;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Item {
+public class Item implements HereApiElement{
 
     @SerializedName("title")
     public String title;
@@ -34,10 +34,26 @@ public class Item {
                 "\n" + tab + "\ttitle = \"" + title + "\"" +
                 "\n" + tab + "\tid = \"" + id + "\"" +
                 "\n" + tab + "\tresultType = " + resultType + "\"" +
-                "\n" + tab + "\taddress = " + address.toString(tab + "\t\t") +
-                "\n" + tab + "\tposition = " + position.toString(tab + "\t\t") +
-                "\n" + tab + "\tmapView = " + mapView.toString(tab + "\t\t") +
-                "\n" + tab + "\tscoring = " + scoring.toString() +
+                "\n" + tab + "\taddress = " + print(address, tab) +
+                "\n" + tab + "\tposition = " + print(position, tab) +
+                "\n" + tab + "\tmapView = " + print(mapView, tab) +
+                "\n" + tab + "\tscoring = " + print(scoring) +
                 "\n" + tab + "\t}";
+    }
+
+    private String print(Object obj) {
+        if (obj != null) {
+            return obj.toString();
+        } else {
+            return "null";
+        }
+    }
+
+    private String print(HereApiElement element, String tab) {
+        if (element != null) {
+            return element.toString(tab + "\t\t");
+        } else {
+            return "null";
+        }
     }
 }

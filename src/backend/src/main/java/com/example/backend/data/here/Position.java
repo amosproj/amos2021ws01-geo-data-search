@@ -2,7 +2,7 @@ package com.example.backend.data.here;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Position {
+public class Position implements HereApiElement{
 
     @SerializedName("lat")
     public double lat;

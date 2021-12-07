@@ -2,7 +2,7 @@ package com.example.backend.data.here;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Address {
+public class Address implements HereApiElement{
 
     @SerializedName("label")
     public String label;

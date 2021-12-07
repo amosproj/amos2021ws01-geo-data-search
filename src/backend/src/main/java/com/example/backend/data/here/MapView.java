@@ -2,7 +2,7 @@ package com.example.backend.data.here;
 
 import com.google.gson.annotations.SerializedName;
 
-public class MapView {
+public class MapView implements HereApiElement{
 
     @SerializedName("north")
     public double north;

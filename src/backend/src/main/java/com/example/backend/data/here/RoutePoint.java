@@ -2,7 +2,7 @@ package com.example.backend.data.here;
 
 import com.google.gson.annotations.SerializedName;
 
-public class RoutePoint {
+public class RoutePoint implements HereApiElement {
 
     @SerializedName("time")
     public String time;
@@ -17,7 +17,15 @@ public class RoutePoint {
     public String toString(String tab) {
         return "\n" + tab + "RoutePoint{" +
                 "\n" + tab + "\ttime = \"" + time + "\"" +
-                "\n" + tab + "\tplace = " + place.toString(tab + "\t\t") +
+                "\n" + tab + "\tplace = " + print(place, tab) +
                 "\n" + tab + "\t}";
+    }
+
+    private String print(HereApiElement element, String tab) {
+        if (element != null) {
+            return element.toString(tab + "\t\t");
+        } else {
+            return "null";
+        }
     }
 }

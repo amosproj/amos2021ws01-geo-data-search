@@ -1,7 +1,11 @@
 package com.example.backend.controllers;
 
+import com.example.backend.data.api.HereApiRoutingResponse;
+import com.example.backend.data.api.HereGuidanceResponse;
+import com.example.backend.data.here.TransportMode;
 import com.example.backend.helpers.BackendLogger;
 import com.example.backend.helpers.HereApiKey;
+import com.google.gson.Gson;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -46,6 +50,18 @@ public class HereApiRestService {
         String response = this.restTemplate.getForObject(url, String.class);
         logInfo("HereApiRestService.getRoutingResponse() = " + response);
         return response;
+    }
+
+    public HereGuidanceResponse getGuidanceResponse(String origin, String destination, String transportMode) {
+        String url = HERE_ROUTING_URL + SEPARATOR + URL_QUERY_API_KEY + DELIMITER + //
+                URL_QUERY_TRANSPORT_MODE + transportMode + DELIMITER +
+                URL_QUERY_ORIGIN + origin + DELIMITER + //
+                URL_QUERY_DESTINATION + destination + DELIMITER + //
+                URL_QUERY_RETURN_TYPE + "polyline,turnbyturnactions";
+        logInfo("URL for HERE GUIDANCE = " + url);
+        String response = this.restTemplate.getForObject(url, String.class);
+        logInfo("HereApiRestService.getGuidanceResponse() = " + response);
+        return new Gson().fromJson(response, HereGuidanceResponse.class);
     }
 
     private void logInfo(String logMsg) {

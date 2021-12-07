@@ -2,7 +2,7 @@ package com.example.backend.data.here;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Transport {
+public class Transport implements HereApiElement{
 
     @SerializedName("mode")
     public final String mode;
