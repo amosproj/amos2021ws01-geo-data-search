@@ -1,10 +1,11 @@
 import pathlib
 import sys
 from typing import Optional
-from synonyms import check_synonym
 
 import spacy
 from pydantic.dataclasses import dataclass
+
+from .synonyms import check_synonym
 
 current_dir = pathlib.Path(__file__).parent.resolve()
 
