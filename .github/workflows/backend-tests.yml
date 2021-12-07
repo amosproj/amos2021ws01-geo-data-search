@@ -10,16 +10,23 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
-
+  build_n_run:
     runs-on: ubuntu-latest
     env:
       DOCKER_BUILDKIT: 1
     steps:
       - uses: actions/checkout@v2
+      - name: prepare dummy key file
+        run: touch secrets/here-api-key.txt
       - name: build backend
         run: docker compose up -d --build backend
-      - name: run tests
-        run: docker build --target maven_test -f src/backend/Dockerfile src/backend
       - name: check the container is still running
         run: sleep 5 && docker compose exec backend echo healthy
+  tests:
+    runs-on: ubuntu-latest
+    env:
+      DOCKER_BUILDKIT: 1
+    steps:
+      - uses: actions/checkout@v2
+      - name: run tests
+        run: docker build --target maven_test -f src/backend/Dockerfile src/backend
