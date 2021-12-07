@@ -1,3 +1,5 @@
+import logging
+import os
 import pathlib
 import sys
 from typing import Optional
@@ -7,6 +9,11 @@ from api import helper_service as hs
 import spacy
 from pydantic.dataclasses import dataclass
 
+from .utils import get_synonyms
+
+# get os specific file separator
+SEP = os.path.sep
+
 current_dir = pathlib.Path(__file__).parent.resolve()
 
 # load spacy ml nlp model
@@ -15,9 +22,12 @@ nlp_default = spacy.load("de_core_news_sm")
 # load custom ml ner model
 try:
     # this path is valid when this class is run locally
-    ner_model = spacy.load(f"{current_dir}/../models/training/")
+    ner_model = spacy.load(f"{current_dir}{SEP}..{SEP}models{SEP}training{SEP}")
 except IOError as error:
     sys.exit(str(error) + "\nML model was not trained locally")
+
+# get synonyms for keywords from chatette file
+synonyms = get_synonyms()
 
 
 def process_string(string: str) -> object:
@@ -42,7 +52,8 @@ def get_query(string: str) -> object:
         token = ner_tokens[index]
         # save query object
         if token.ent_type_ == "queryObject":
-            result.query_object = get_synonym(token.lemma_)
+            result.query_object = get_keyword(token.lemma_)
+
         # extract information about amount parameter
         if token.ent_type_ == "amount":
             # save number as string
@@ -68,13 +79,27 @@ def get_query(string: str) -> object:
                 elif param_1 == "max":
                     result.route_attributes.height.max = number
 
+    # set default value
+    if result.query_object == "":
+        result.query_object = "route"
+
     return result
 
 
-def get_synonym(string: str) -> str:
-    if string == "Berg":
-        return "Mountain"
-    return string
+def get_keyword(string: str) -> str:
+    # default queryObject
+    default_keyword = "route"
+
+    # get keyword
+    for keyword in synonyms:
+        if string.lower() in synonyms[keyword]:
+            return keyword
+
+    logging.warning(
+        f"[NLP COMPONENT][STRING INTERPRETER] Couldn't find a matching keyword for {string}, "
+        f"using default keyword {default_keyword}"
+    )
+    return default_keyword
 
 
 def get_query_parameters(origin: spacy.tokens.token.Token) -> (str, str):
@@ -224,6 +249,6 @@ class Query:
 
 print(
     get_query(
-        "Finde eine Strecke in Italien mit mindestens 10 meilen länge in einer lage über 1000 meter mit einem Anteil von 500 kilometer Linkskurven mit einem Anteil von 600m Steigung über 7% auf einer Höhe von maximal 10 metern"
+        "Finde eine Strecke in Italien mit mindestens 10 meilen länge in einer lage über 1000 kilometern mit einem Anteil von 500 kilometer Linkskurven mit einem Anteil von 600m Steigung über 7% auf einer Höhe von maximal 10 metern"
     )
 )
