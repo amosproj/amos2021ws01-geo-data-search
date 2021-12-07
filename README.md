@@ -9,9 +9,12 @@ Our project mission is to achieve an interpretation of buzzword user queries in 
 
 ## Build instructions
 #### Running on a local machine
-- install docker: https://docs.docker.com/get-docker/
-- install docker-compose: https://docs.docker.com/compose/install/
-- From this directory, run in your command line: `docker-compose up -d`
+- Install docker: https://docs.docker.com/get-docker/
+- Install docker-compose: https://docs.docker.com/compose/install/
+- Create your own HERE API Key following those steps: https://developer.here.com/tutorials/getting-here-credentials/
+  - **Linux/Mac**: Run in your terminal from this directory `echo "<YOUR_API_KEY>" > secrets/here-api-key.txt`
+  - **Windows**: Run in your terminal from this directory `echo <YOUR_API_KEY> > secrets\here-api-key.txt`
+- From this directory, run in your terminal: `docker-compose up -d`
 - The service will be available under http://localhost:8080
 
 #### Starting a single container
@@ -28,17 +31,15 @@ Our project mission is to achieve an interpretation of buzzword user queries in 
 - `docker-compose run --rm backend java main/HelloWorldMain.java`
 - `docker-compose run --rm nlp python3 helloTest.py`
 
-## At first execution of NLP Container
-Currently, in the container for the NLP Component a preparation script has to be executed, otherwise the NLP container does not respond.
-1. Open terminal in nlp container
-2. `cd src`
-3. `python main.py`
-4. Restart the nlp container
-
 ## Test instructions
 
 ### Backend
-To run the tests enter the following in the console:
+To run the tests enter the following in the terminal:
 ```
 docker build --target maven_test -f src/backend/Dockerfile src/backend
+```
+### NLP
+To run the tests enter the following in the terminal:
+```
+docker compose run nlp pytest
 ```
