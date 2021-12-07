@@ -11,8 +11,10 @@ Our project mission is to achieve an interpretation of buzzword user queries in 
 #### Running on a local machine
 - Install docker: https://docs.docker.com/get-docker/
 - Install docker-compose: https://docs.docker.com/compose/install/
-- Manually paste the file containing the HERE-API key into this folder: `secrets\here-api-key.txt`
-- From this directory, run in your command line: `docker-compose up -d`
+- Create your own HERE API Key following those steps: https://developer.here.com/tutorials/getting-here-credentials/
+  - **Linux/Mac**: Run in your terminal from this directory `echo "<YOUR_API_KEY>" > secrets/here-api-key.txt`
+  - **Windows**: Run in your terminal from this directory `echo <YOUR_API_KEY> > secrets\here-api-key.txt`
+- From this directory, run in your terminal: `docker-compose up -d`
 - The service will be available under http://localhost:8080
 
 #### Starting a single container
@@ -29,23 +31,15 @@ Our project mission is to achieve an interpretation of buzzword user queries in 
 - `docker-compose run --rm backend java main/HelloWorldMain.java`
 - `docker-compose run --rm nlp python3 helloTest.py`
 
-## At first execution of NLP Container
-Currently, in the container for the NLP Component a preparation script has to be executed, otherwise the NLP container does not respond.
-1. Open terminal in nlp container
-2. `cd src`
-3. `python main.py`
-4. Restart the nlp container
-
 ## Test instructions
 
 ### Backend
-To run the tests make sure the backend container is running and do the following steps:
-1. Open terminal in backend container
-2. Change the current working directory to /src:
+To run the tests enter the following in the terminal:
 ```
-$ cd src
+docker build --target maven_test -f src/backend/Dockerfile src/backend
 ```
-3. Use `mvn test` to run the tests:
+### NLP
+To run the tests enter the following in the terminal:
 ```
-$ mvn test
+docker compose run nlp pytest
 ```
