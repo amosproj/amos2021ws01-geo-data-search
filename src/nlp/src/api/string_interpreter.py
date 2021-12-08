@@ -3,11 +3,11 @@ import os
 import pathlib
 import sys
 from typing import Optional
-from api import synonyms as syn
-from api import helper_service as hs
 
 import spacy
 from pydantic.dataclasses import dataclass
+from .helper_service import convert_number_to_meter
+from .synonyms import synonyms, check_synonym
 
 from .utils import get_synonyms
 
@@ -176,7 +176,7 @@ def check_unit(token: spacy.tokens.token.Token) -> str:
     :param amount_token the token which is checked for a unit
     :return unit, if token has a unit, otherwise an empty string
     """
-    synonym = syn.check_synonym("unit", token)
+    synonym = check_synonym("unit", token)
     return synonym
 
 
@@ -189,7 +189,7 @@ def convert_to_meter(
         amount_unit = check_unit(next_token)
     if amount_unit != "":
         number = int(amount_token.text)
-        converted_number = hs.convert_number_to_meter(amount_unit, number)
+        converted_number = convert_number_to_meter(amount_unit, number)
         return converted_number
     return ""
 
