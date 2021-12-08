@@ -16,8 +16,17 @@ RUN --mount=type=cache,target=/root/.m2  mvn clean package -Dmaven.test.skip
 # split the built app into multiple layers to improve layer rebuild
 RUN mkdir -p target/docker-packaging && cd target/docker-packaging && java -Djarmode=layertools -jar ../backend-0.0.1-SNAPSHOT.jar extract
 
+
+FROM maven:latest as maven_test
+WORKDIR /app
+COPY pom.xml .
+RUN mkdir /run/secrets/ && touch /run/secrets/here-api-key
+COPY src ./src
+
+RUN --mount=type=cache,target=/root/.m2 mvn test
+
 ########Run stage########
-FROM openjdk:latest
+FROM openjdk:latest as runner
 WORKDIR /app
 #copy built app layer by layer
 ARG DOCKER_PACKAGING_DIR=/app/target/docker-packaging
