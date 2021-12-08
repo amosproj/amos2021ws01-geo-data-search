@@ -1,6 +1,8 @@
 package com.example.backend.controllers;
 
+import com.example.backend.data.api.HereApiRoutingResponse;
 import com.example.backend.data.api.HereGuidanceResponse;
+import com.example.backend.data.here.TransportMode;
 import com.example.backend.helpers.BackendLogger;
 import com.example.backend.helpers.HereApiKey;
 import com.google.gson.Gson;
