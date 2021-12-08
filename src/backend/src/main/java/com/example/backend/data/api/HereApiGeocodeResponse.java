@@ -1,6 +1,5 @@
 package com.example.backend.data.api;
 
-import com.example.backend.data.ApiResult;
 import com.example.backend.data.here.Item;
 import com.google.gson.annotations.SerializedName;
 
@@ -16,6 +15,10 @@ public class HereApiGeocodeResponse {
 
     public HereApiGeocodeResponse(List<Item> items) {
         this.items = items;
+    }
+
+    public List<Item> getSearchResults() {
+        return items;
     }
 
     @Override

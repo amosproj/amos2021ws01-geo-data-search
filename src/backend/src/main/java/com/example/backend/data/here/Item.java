@@ -1,8 +1,9 @@
 package com.example.backend.data.here;
 
+import com.example.backend.data.ApiResult;
 import com.google.gson.annotations.SerializedName;
 
-public class Item {
+public class Item implements ApiResult {
 
     @SerializedName("title")
     String title;
@@ -44,5 +45,30 @@ public class Item {
                 "\n\t\t\tmapView = = \"" + mapView + "\"" +
                 "\n\t\t\tscoring = \"" + scoring + "\"" +
                 "\n\t\t\t}";
+    }
+
+    @Override
+    public String getType() {
+        return resultType;
+    }
+
+    @Override
+    public int getId() {
+        return 0;
+    }
+
+    @Override
+    public String getLat() {
+        return String.valueOf(position.lat);
+    }
+
+    @Override
+    public String getLon() {
+        return String.valueOf(position.lng);
+    }
+
+    @Override
+    public String getName() {
+        return title;
     }
 }

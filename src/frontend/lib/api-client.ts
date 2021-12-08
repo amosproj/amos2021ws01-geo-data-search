@@ -6,7 +6,7 @@ type ApiClientConfig = {
   body?: URLSearchParams;
 };
 
-export default function apiClient(
+export default function osmApiClient(
   endpoint: string,
   { body }: { [key: string]: any } = {}
 ) {

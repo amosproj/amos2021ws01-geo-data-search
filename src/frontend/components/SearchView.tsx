@@ -1,5 +1,5 @@
 import React, { FormEvent, useState } from "react";
-import apiClient from "@lib/api-client";
+import osmApiClient from "@lib/api-client";
 import SearchInput from "./SearchInput";
 import ErrorMessage from "./ErrorMessage";
 import {
@@ -26,7 +26,7 @@ const SearchView = () => {
       setErrorData(null);
       setResults(null);
 
-      const response = await apiClient("/user_query", {
+      const response = await osmApiClient("/user_query", {
         body: {
           query: searchValue,
         },
