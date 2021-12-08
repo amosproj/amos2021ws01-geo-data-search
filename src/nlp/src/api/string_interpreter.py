@@ -73,6 +73,9 @@ def get_query(string: str) -> object:
                 if index != (len(ner_tokens) - 1):
                     next_token = ner_tokens[index + 1]
                     number = convert_to_meter(token, next_token)
+                # last token is an amount but has no unit
+                else:
+                    number = convert_to_meter(token)
                 # select min parameter by default
                 if param_1 == "min" or param_1 == "":
                     result.route_attributes.height.min = number
@@ -170,8 +173,13 @@ def check_unit(token: spacy.tokens.token.Token) -> str:
     return synonym
 
 
-def convert_to_meter(amount_token: str, next_token: str) -> str:
-    amount_unit = check_unit(next_token)
+def convert_to_meter(
+    amount_token: spacy.tokens.token.Token, next_token: spacy.tokens.token.Token = None
+) -> str:
+    if next_token == None:
+        amount_unit = "km"
+    else:
+        amount_unit = check_unit(next_token)
     if amount_unit != "":
         number = int(amount_token.text)
         converted_number = hs.convert_number_to_meter(amount_unit, number)
@@ -249,6 +257,6 @@ class Query:
 
 print(
     get_query(
-        "Finde eine Strecke in Italien mit mindestens 10 meilen länge in einer lage über 1000 kilometern mit einem Anteil von 500 kilometer Linkskurven mit einem Anteil von 600m Steigung über 7% auf einer Höhe von maximal 10 metern"
+        "Finde eine Strecke in Italien mit mindestens 10 meilen länge in einer lage über 1000  mit einem Anteil von 500 kilometer Linkskurven mit einem Anteil von 600m Steigung über 7% auf einer Höhe von maximal 10"
     )
 )

@@ -2,9 +2,7 @@ from api.string_interpreter import get_query
 
 
 def test_default_string_interpretation():
-    result = get_query(
-        "Finde alle Berge in Berlin die höher als 100m sind"
-    )
+    result = get_query("Finde alle Berge in Berlin die höher als 100m sind")
 
     assert result.location == "Berlin"
     assert result.query_object == "elevation"
@@ -63,6 +61,17 @@ def test_default_keyword():
 
     result = get_query("Lage des Kieler Hafens")
     assert result.query_object == "route"
+
+
+def test_convert_units():
+    result = get_query("Zeige mir Berge in Hamburg mit einer Höhe von 1 kilometern")
+    assert result.route_attributes.height.min == 1000
+
+    result = get_query("Zeige mir Berge mit einer Höhe von 1 meile in Hamburg")
+    assert result.route_attributes.height.min == 1609.34
+
+    result = get_query("Berge in Berlin Höhe von maximal 1")
+    assert result.route_attributes.height.max == 1000
 
 
 def test_no_input():
