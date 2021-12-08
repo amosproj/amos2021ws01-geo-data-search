@@ -16,6 +16,11 @@
 ~[value]
     [mindestens|höchstens|genau] @[amount] [km|m|kilometer|meter]
 
+~[unit]
+    [km|kilo[meter[n?]?]]
+    [m|meter[n?]]
+    meile[n?]
+
 
 //~[queryObjectscheme]
 //    [@[amount#singular] @[queryObject#singular]|@[amount#plural] @[queryObject#plural]]

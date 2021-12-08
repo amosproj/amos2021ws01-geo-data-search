@@ -2,10 +2,9 @@ package com.example.backend.controllers;
 
 import com.example.backend.clients.OsmApiClient;
 import com.example.backend.data.ApiResult;
-import com.example.backend.data.api.HereApiGeocodeResponse;
-import com.example.backend.data.api.NodeInfo;
-import com.example.backend.data.api.OSMQuery;
-import com.example.backend.data.api.OSMSearchResult;
+import com.example.backend.data.api.*;
+import com.example.backend.data.http.Error;
+import com.example.backend.data.http.ErrorResponse;
 import com.example.backend.data.http.NlpQueryResponse;
 import com.example.backend.helpers.ApiSelectionHelper;
 import com.example.backend.helpers.ApiSelectionHelper.ApiType;
@@ -15,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 @RestController
 @RequestMapping("/backend")
@@ -58,10 +58,35 @@ public class ApiController {
         return result;
     }
 
+    public void routeSearch(String origin, String destination, String transportMode, String returnType) {
+        try {
+            String hereApiRoutingResponseString =
+                    hereApiRestService.getRoutingResponse(origin, destination, transportMode, returnType);
+            logInfo("HERE / ROUTING:");
+            logInfo(hereApiRoutingResponseString);
+            HereApiRoutingResponse hereApiRoutingResponse = new Gson().fromJson(hereApiRoutingResponseString, HereApiRoutingResponse.class);
+            logInfo(hereApiRoutingResponse.toString(""));
+        } catch (Throwable throwable) {
+            handleError(throwable);
+        }
+    }
+
+    public void guidanceSearch(String origin, String destination, String transportMode) {
+        try {
+            HereGuidanceResponse hereApiRoutingResponse =
+                    hereApiRestService.getGuidanceResponse("52.5308,13.3847", "52.5264,13.3686", "car");
+            logInfo("HERE / GUIDANCE:");
+            logInfo(hereApiRoutingResponse.toString(""));
+        } catch (Throwable throwable) {
+            handleError(throwable);
+        }
+    }
+
     private OSMQuery generateOsmQuery(NlpQueryResponse nlpQueryResponse) {
         OSMQuery osmQuery = new OSMQuery();
-        String amenity = nlpQueryResponse.getQueryObject();
-        osmQuery.setAmenity(amenity);
+//        String amenity = nlpQueryResponse.getQueryObject();
+//        osmQuery.setAmenity(amenity);
+        osmQuery.setAmenity("restaurant");
         //TODO we are not getting location object from NLP, yet
         osmQuery.setArea("Mitte");
         logInfo("Generated Query for OSM: " + osmQuery.toQuery());
@@ -79,5 +104,14 @@ public class ApiController {
 
     private void logInfo(String logMsg) {
         logger.info(LOG_PREFIX, logMsg);
+    }
+
+    private ErrorResponse handleError(Throwable throwable) {
+        logError("...ERROR!" + "\n" + "\t" + throwable.getMessage());
+        return new ErrorResponse(Error.createError(throwable.getMessage(), Arrays.toString(throwable.getStackTrace())));
+    }
+
+    private void logError(String logMsg) {
+        logger.error(LOG_PREFIX, logMsg);
     }
 }

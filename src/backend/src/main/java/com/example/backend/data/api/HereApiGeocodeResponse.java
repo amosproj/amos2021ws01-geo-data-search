@@ -8,23 +8,32 @@ import java.util.List;
 public class HereApiGeocodeResponse {
 
     @SerializedName("items")
-    List<Item> items;
-
-    public HereApiGeocodeResponse() {
-    }
+    public List<Item> items;
 
     public HereApiGeocodeResponse(List<Item> items) {
         this.items = items;
+    }
+
+    public String toString(String tab) {
+        return "\n" + tab + "HereApiGeocodeResponse{" +
+                "\n" + tab + "\titems = " + createListAsString(items, tab + "\t\t") +
+                "\n" + tab + "\t}";
     }
 
     public List<Item> getSearchResults() {
         return items;
     }
 
-    @Override
-    public String toString() {
-        return "\nHereApiResponse{" +
-                "\n\titems = \"" + items + "\"" +
-                "\n\t}";
+    private String createListAsString(List<Item> sections, String tab) {
+        if (sections != null && !sections.isEmpty()) {
+            StringBuilder returnString = new StringBuilder();
+            for (Item section : sections) {
+                returnString.append(section.toString(tab));
+                returnString.append("\n");
+            }
+            return returnString.toString();
+        } else {
+            return "null";
+        }
     }
 }

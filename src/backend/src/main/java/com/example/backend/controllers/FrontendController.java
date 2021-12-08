@@ -39,7 +39,6 @@ public class FrontendController {
     public HttpResponse handleQueryRequest(@RequestBody String query) {
         logInfo("New query received! Query = \"" + query + "\"");
 
-        // TODO Replace this work-around with something useful
         query = query.replace('+', ' ');
         query = query.replace("query=", "");
         logInfo("WORK AROUND! Query = \"" + query + "\"");
@@ -58,6 +57,9 @@ public class FrontendController {
         }
 
         ArrayList<ApiResult> apiQueryResults = apiController.querySearch(nlpQueryResponse);
+
+        apiController.routeSearch("52.5308,13.3847", "52.5264,13.3686", "car", "summary");
+        apiController.guidanceSearch("52.5308,13.3847", "52.5264,13.3686", "car");
 
         return new ResultResponse(apiQueryResults);
     }

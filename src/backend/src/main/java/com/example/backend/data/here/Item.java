@@ -3,26 +3,22 @@ package com.example.backend.data.here;
 import com.example.backend.data.ApiResult;
 import com.google.gson.annotations.SerializedName;
 
-public class Item implements ApiResult {
+public class Item implements HereApiElement, ApiResult {
 
     @SerializedName("title")
-    String title;
+    public String title;
     @SerializedName("id")
-    String id;
+    public String id;
     @SerializedName("resultType")
-    String resultType;
+    public String resultType;
     @SerializedName("address")
-    Address address;
+    public Address address;
     @SerializedName("position")
-    Position position;
+    public Position position;
     @SerializedName("mapView")
-    MapView mapView;
+    public MapView mapView;
     @SerializedName("scoring")
-    Object scoring;
-
-    public Item() {
-
-    }
+    public Object scoring;
 
     public Item(String title, String id, String resultType, Address address, Position position, MapView mapView, Object scoring) {
         this.title = title;
@@ -34,17 +30,32 @@ public class Item implements ApiResult {
         this.scoring = scoring;
     }
 
-    @Override
-    public String toString() {
-        return "\n\t\tItem{" +
-                "\n\t\t\ttitle = \"" + title + "\"" +
-                "\n\t\t\tid = \"" + id + "\"" +
-                "\n\t\t\tresultType = \"" + resultType + "\"" +
-                "\n\t\t\taddress = \"" + address + "\"" +
-                "\n\t\t\tposition = \"" + position + "\"" +
-                "\n\t\t\tmapView = = \"" + mapView + "\"" +
-                "\n\t\t\tscoring = \"" + scoring + "\"" +
-                "\n\t\t\t}";
+    public String toString(String tab) {
+        return "\n" + tab + "Item{" +
+                "\n" + tab + "\ttitle = \"" + title + "\"" +
+                "\n" + tab + "\tid = \"" + id + "\"" +
+                "\n" + tab + "\tresultType = " + resultType + "\"" +
+                "\n" + tab + "\taddress = " + print(address, tab) +
+                "\n" + tab + "\tposition = " + print(position, tab) +
+                "\n" + tab + "\tmapView = " + print(mapView, tab) +
+                "\n" + tab + "\tscoring = " + print(scoring) +
+                "\n" + tab + "\t}";
+    }
+
+    private String print(Object obj) {
+        if (obj != null) {
+            return obj.toString();
+        } else {
+            return "null";
+        }
+    }
+
+    private String print(HereApiElement element, String tab) {
+        if (element != null) {
+            return element.toString(tab + "\t\t");
+        } else {
+            return "null";
+        }
     }
 
     @Override

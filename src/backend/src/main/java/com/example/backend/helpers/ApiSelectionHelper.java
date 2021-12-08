@@ -16,7 +16,7 @@ public class ApiSelectionHelper {
     }
 
     public ApiType getApiPreference(NlpQueryResponse nlpQueryResponse) {
-        return ApiType.HERE_API;
+        return ApiType.OSM_API;
     }
 
     public enum ApiType {
