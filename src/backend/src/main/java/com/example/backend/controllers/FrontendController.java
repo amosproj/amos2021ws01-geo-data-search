@@ -3,11 +3,8 @@ package com.example.backend.controllers;
 import com.example.backend.clients.ApiClient;
 import com.example.backend.clients.NlpClient;
 import com.example.backend.data.ApiResult;
-import com.example.backend.data.api.HereApiGeocodeResponse;
+import com.example.backend.data.api.*;
 import com.example.backend.data.HttpResponse;
-import com.example.backend.data.api.NodeInfo;
-import com.example.backend.data.api.OSMQuery;
-import com.example.backend.data.api.OSMSearchResult;
 import com.example.backend.data.http.Error;
 import com.example.backend.data.http.*;
 import com.example.backend.helpers.BackendLogger;
@@ -45,7 +42,6 @@ public class FrontendController {
     public HttpResponse handleQueryRequest(@RequestBody String query) {
         logInfo("New query received! Query = \"" + query + "\"");
 
-        // TODO Replace this work-around with something useful
         query = query.replace('+', ' ');
         query = query.replace("query=", "");
         logInfo("WORK AROUND! Query = \"" + query + "\"");
@@ -71,19 +67,31 @@ public class FrontendController {
         logInfo("Search results: ");
         logInfo(osmResults.toString());
 
-        HereApiGeocodeResponse hereApiGeocodeResponse;
         try {
-            // TODO Remove this hard coded nqr.getLocation()
-            hereApiGeocodeResponse = getApiGeocodeResponse(nqr.getLocation());
+            HereApiGeocodeResponse hereApiGeocodeResponse = getApiGeocodeResponse(nqr.getLocation());
+            logInfo("HERE / GEOCODE:");
+            logInfo(hereApiGeocodeResponse.toString(""));
         } catch (Throwable throwable) {
-            return handleError(throwable);
+            handleError(throwable);
         }
 
-        logInfo("INTERPRETED API RESPONSE:");
-        logInfo("OSM:");
-        logInfo(osmResults.toString());
-        logInfo("HERE:");
-        logInfo(hereApiGeocodeResponse.toString());
+        try {
+            String hereApiRoutingResponse = rs.getRoutingResponse("52.5308,13.3847", "52.5264,13.3686", "car", "summary");
+            logInfo("HERE / ROUTING:");
+            logInfo(hereApiRoutingResponse);
+            HereApiRoutingResponse hereApiRoutingResponse1 = new Gson().fromJson(hereApiRoutingResponse, HereApiRoutingResponse.class);
+            logInfo(hereApiRoutingResponse1.toString(""));
+        } catch (Throwable throwable) {
+            handleError(throwable);
+        }
+
+        try {
+            HereGuidanceResponse hereApiRoutingResponse = rs.getGuidanceResponse("52.5308,13.3847", "52.5264,13.3686", "car");
+            logInfo("HERE / GUIDANCE:");
+            logInfo(hereApiRoutingResponse.toString(""));
+        } catch (Throwable throwable) {
+            handleError(throwable);
+        }
 
         ArrayList<ApiResult> results = new ArrayList<>();
         results.addAll(osmResults.getSearchResults());

@@ -1,30 +1,29 @@
 package com.example.backend.data.api;
 
-import com.example.backend.data.here.Action;
-import com.example.backend.data.here.Item;
+import com.example.backend.data.here.Route;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class HereApiGeocodeResponse {
+public class HereApiRoutingResponse {
 
-    @SerializedName("items")
-    public List<Item> items;
+    @SerializedName("routes")
+    public List<Route> routes;
 
-    public HereApiGeocodeResponse(List<Item> items) {
-        this.items = items;
+    public HereApiRoutingResponse(List<Route> routes) {
+        this.routes = routes;
     }
 
     public String toString(String tab) {
-        return "\n" + tab + "HereApiGeocodeResponse{" +
-                "\n" + tab + "\titems = " + createListAsString(items, tab + "\t\t") +
+        return "\n" + tab + "HereApiRoutingResponse{" +
+                "\n" + tab + "\troutes = " + createListAsString(routes, tab + "\t\t") +
                 "\n" + tab + "\t}";
     }
 
-    private String createListAsString(List<Item> sections, String tab) {
+    private String createListAsString(List<Route> sections, String tab) {
         if (sections != null && !sections.isEmpty()) {
             StringBuilder returnString = new StringBuilder();
-            for (Item section : sections) {
+            for (Route section : sections) {
                 returnString.append(section.toString(tab));
                 returnString.append("\n");
             }
