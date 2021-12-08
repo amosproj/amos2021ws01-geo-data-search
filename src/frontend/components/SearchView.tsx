@@ -2,14 +2,16 @@ import React, { FormEvent, useRef, useState } from 'react';
 import apiClient, { CancelablePromise } from '@lib/api-client';
 import SearchInput from './SearchInput';
 import ErrorMessage from './ErrorMessage';
-import { SearchQueryResponse, SearchResult, SearchError } from '@lib/types/search';
+import { SearchQueryResponse, SearchError } from '@lib/types/search';
 import SearchListResult from './SearchListResult';
 import { isDevelopment } from '@lib/config';
+import { useAtom } from 'jotai';
+import { searchResultsAtom } from '@lib/store';
 
 const SearchView = () => {
   const [searchValue, setSearchValue] = useState('');
   const [errorData, setErrorData] = useState<SearchError | null>(null);
-  const [results, setResults] = useState<SearchResult[] | null>(null);
+  const [results, setResults] = useAtom(searchResultsAtom)
   const [loading, setLoading] = useState(false);
   const searchQueryPromise = useRef<CancelablePromise<any> | null>(null);
 
