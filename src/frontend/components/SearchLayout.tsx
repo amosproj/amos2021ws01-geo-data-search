@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import AboutModal from './AboutModal';
 import SearchView from './SearchView';
 import dynamic from 'next/dynamic'

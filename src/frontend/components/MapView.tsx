@@ -1,6 +1,6 @@
 import React from 'react';
-import {MapContainer, TileLayer, ZoomControl} from 'react-leaflet';
-import {LatLngExpression} from 'leaflet';
+import { MapContainer, TileLayer, ZoomControl } from 'react-leaflet';
+import { LatLngExpression } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
 // Berlin center
