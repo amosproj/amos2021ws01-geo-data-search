@@ -3,11 +3,11 @@ import os
 import pathlib
 import sys
 from typing import Optional
-from api import synonyms as syn
-from api import helper_service as hs
 
 import spacy
 from pydantic.dataclasses import dataclass
+from .helper_service import convert_number_to_meter
+from .synonyms import synonyms, check_synonym
 
 from .utils import get_synonyms
 
@@ -19,12 +19,18 @@ current_dir = pathlib.Path(__file__).parent.resolve()
 # load spacy ml nlp model
 nlp_default = spacy.load("de_core_news_sm")
 
+
+def load_custom_ner_model():
+    try:
+        # this path is valid when this class is run locally
+        model = spacy.load(f"{current_dir}{SEP}..{SEP}models{SEP}training{SEP}")
+        return model
+    except IOError as error:
+        sys.exit(str(error) + "\nML model was not trained locally")
+
+
 # load custom ml ner model
-try:
-    # this path is valid when this class is run locally
-    ner_model = spacy.load(f"{current_dir}{SEP}..{SEP}models{SEP}training{SEP}")
-except IOError as error:
-    sys.exit(str(error) + "\nML model was not trained locally")
+ner_model = load_custom_ner_model()
 
 # get synonyms for keywords from chatette file
 synonyms = get_synonyms()
@@ -151,6 +157,7 @@ def get_depencies(origin: spacy.tokens.token.Token) -> [spacy.tokens.token.Token
 
         # add current token to results
         results.append(current_token)
+
         # add children to discovery queue, if it wasnt discovered already
         for child in current_token.children:
             if child not in discovery_queue and child not in results:
@@ -169,7 +176,7 @@ def check_unit(token: spacy.tokens.token.Token) -> str:
     :param amount_token the token which is checked for a unit
     :return unit, if token has a unit, otherwise an empty string
     """
-    synonym = syn.check_synonym("unit", token)
+    synonym = check_synonym("unit", token)
     return synonym
 
 
@@ -182,7 +189,7 @@ def convert_to_meter(
         amount_unit = check_unit(next_token)
     if amount_unit != "":
         number = int(amount_token.text)
-        converted_number = hs.convert_number_to_meter(amount_unit, number)
+        converted_number = convert_number_to_meter(amount_unit, number)
         return converted_number
     return ""
 
