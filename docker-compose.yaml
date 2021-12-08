@@ -1,16 +1,18 @@
-version: "3"
+version: "3.9"
 services:
   backend:
     build: ./src/backend
     ports:
       - 5000:8080
+    secrets:
+      - source: here-api-key
   nlp:
     build: ./src/nlp
     volumes:
       - ./src/nlp:/app
     ports:
       - 4000:8000
-    entrypoint: /app/entrypoint.sh
+    command: ["uvicorn", "src.api.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
   frontend:
     build:
       context: ./src/frontend
@@ -22,3 +24,6 @@ services:
     environment:
       - BACKEND_API_ROOT=http://backend:8080/backend
       - ENVIRONMENT=development
+secrets:
+  here-api-key:
+    file: ./secrets/here-api-key.txt
