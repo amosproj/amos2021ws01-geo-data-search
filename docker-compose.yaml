@@ -12,7 +12,7 @@ services:
       - ./src/nlp:/app
     ports:
       - 4000:8000
-    entrypoint: /app/entrypoint.sh
+    command: /app/entrypoint.sh
   frontend:
     build:
       context: ./src/frontend
