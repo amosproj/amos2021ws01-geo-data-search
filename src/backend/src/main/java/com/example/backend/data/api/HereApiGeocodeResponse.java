@@ -1,6 +1,5 @@
 package com.example.backend.data.api;
 
-import com.example.backend.data.here.Action;
 import com.example.backend.data.here.Item;
 import com.google.gson.annotations.SerializedName;
 
@@ -19,6 +18,10 @@ public class HereApiGeocodeResponse {
         return "\n" + tab + "HereApiGeocodeResponse{" +
                 "\n" + tab + "\titems = " + createListAsString(items, tab + "\t\t") +
                 "\n" + tab + "\t}";
+    }
+
+    public List<Item> getSearchResults() {
+        return items;
     }
 
     private String createListAsString(List<Item> sections, String tab) {

@@ -1,8 +1,9 @@
 package com.example.backend.data.here;
 
+import com.example.backend.data.ApiResult;
 import com.google.gson.annotations.SerializedName;
 
-public class Item implements HereApiElement{
+public class Item implements HereApiElement, ApiResult {
 
     @SerializedName("title")
     public String title;
@@ -55,5 +56,30 @@ public class Item implements HereApiElement{
         } else {
             return "null";
         }
+    }
+
+    @Override
+    public String getType() {
+        return resultType;
+    }
+
+    @Override
+    public int getId() {
+        return 0;
+    }
+
+    @Override
+    public String getLat() {
+        return String.valueOf(position.lat);
+    }
+
+    @Override
+    public String getLon() {
+        return String.valueOf(position.lng);
+    }
+
+    @Override
+    public String getName() {
+        return title;
     }
 }

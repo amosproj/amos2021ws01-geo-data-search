@@ -1,9 +1,8 @@
 package com.example.backend.controllers;
 
-import com.example.backend.clients.ApiClient;
 import com.example.backend.clients.NlpClient;
+import com.example.backend.clients.OsmApiClient;
 import com.example.backend.data.ApiResult;
-import com.example.backend.data.api.*;
 import com.example.backend.data.HttpResponse;
 import com.example.backend.data.http.Error;
 import com.example.backend.data.http.*;
@@ -22,12 +21,10 @@ public class FrontendController {
     private final BackendLogger logger = new BackendLogger();
     private final ApiController apiController;
     private static final String LOG_PREFIX = "FRONTEND_CONTROLLER";
-    private final HereApiRestService rs;
 
-    public FrontendController(NlpClient nlpClient, ApiClient apiClient, HereApiRestService rs) {
+    public FrontendController(NlpClient nlpClient, OsmApiClient osmApiClient, HereApiRestService hereApiRestService) {
         this.nlpClient = nlpClient;
-        this.apiController = new ApiController(apiClient);
-        this.rs = rs;
+        this.apiController = new ApiController(osmApiClient, hereApiRestService);
     }
 
     /**
@@ -45,7 +42,7 @@ public class FrontendController {
         query = query.replace('+', ' ');
         query = query.replace("query=", "");
         logInfo("WORK AROUND! Query = \"" + query + "\"");
-        NlpQueryResponse nqr;
+        NlpQueryResponse nlpQueryResponse;
         try {
             logInfo("Sending data to NLP...");
             String nlpResponse = nlpClient.sendToNlp(query);
@@ -53,71 +50,23 @@ public class FrontendController {
             logInfo("NLP RESPONSE:");
             logInfo(nlpResponse);
             logInfo("INTERPRETED NLP RESPONSE:");
-            nqr = new Gson().fromJson(nlpResponse, NlpQueryResponse.class);
-            logInfo(nqr.toString());
+            nlpQueryResponse = new Gson().fromJson(nlpResponse, NlpQueryResponse.class);
+            logInfo(nlpQueryResponse.toString());
         } catch (Throwable throwable) {
             return handleError(throwable);
         }
 
-        OSMQuery osmQuery = createDummySearchQuery();
-        logInfo("OSM Search Query: ");
-        logInfo(osmQuery.toQuery());
+        ArrayList<ApiResult> apiQueryResults = apiController.querySearch(nlpQueryResponse);
 
-        OSMSearchResult osmResults = apiController.querySearch(osmQuery.toQuery());
-        logInfo("Search results: ");
-        logInfo(osmResults.toString());
+        apiController.routeSearch("52.5308,13.3847", "52.5264,13.3686", "car", "summary");
+        apiController.guidanceSearch("52.5308,13.3847", "52.5264,13.3686", "car");
 
-        try {
-            HereApiGeocodeResponse hereApiGeocodeResponse = getApiGeocodeResponse(nqr.getLocation());
-            logInfo("HERE / GEOCODE:");
-            logInfo(hereApiGeocodeResponse.toString(""));
-        } catch (Throwable throwable) {
-            handleError(throwable);
-        }
-
-        try {
-            String hereApiRoutingResponse = rs.getRoutingResponse("52.5308,13.3847", "52.5264,13.3686", "car", "summary");
-            logInfo("HERE / ROUTING:");
-            logInfo(hereApiRoutingResponse);
-            HereApiRoutingResponse hereApiRoutingResponse1 = new Gson().fromJson(hereApiRoutingResponse, HereApiRoutingResponse.class);
-            logInfo(hereApiRoutingResponse1.toString(""));
-        } catch (Throwable throwable) {
-            handleError(throwable);
-        }
-
-        try {
-            HereGuidanceResponse hereApiRoutingResponse = rs.getGuidanceResponse("52.5308,13.3847", "52.5264,13.3686", "car");
-            logInfo("HERE / GUIDANCE:");
-            logInfo(hereApiRoutingResponse.toString(""));
-        } catch (Throwable throwable) {
-            handleError(throwable);
-        }
-
-        ArrayList<ApiResult> results = new ArrayList<>();
-        results.addAll(osmResults.getSearchResults());
-
-        return new ResultResponse(results);
-    }
-
-    private OSMQuery createDummySearchQuery() {
-        OSMQuery osmQuery = new OSMQuery();
-        osmQuery.setAmenity("restaurant");
-        osmQuery.setArea("Mitte");
-        return osmQuery;
+        return new ResultResponse(apiQueryResults);
     }
 
     private ErrorResponse handleError(Throwable throwable) {
         logError("...ERROR!" + "\n" + "\t" + throwable.getMessage());
         return new ErrorResponse(Error.createError(throwable.getMessage(), Arrays.toString(throwable.getStackTrace())));
-    }
-
-    private HereApiGeocodeResponse getApiGeocodeResponse(String query) {
-        String hereApiResponseAsString = rs.getPostsPlainJSON(query);
-        return new Gson().fromJson(hereApiResponseAsString, HereApiGeocodeResponse.class);
-    }
-
-    private NodeInfo getOsmApiResponse(String nodeId) {
-        return this.apiController.requestNodeInfo(nodeId);
     }
 
     @GetMapping("/version")
