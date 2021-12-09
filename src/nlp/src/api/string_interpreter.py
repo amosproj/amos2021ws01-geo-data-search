@@ -56,6 +56,7 @@ def get_query(string: str) -> object:
     ner_tokens = ner_model(string)
     for index in range(len(ner_tokens)):
         token = ner_tokens[index]
+
         # save query object
         if token.ent_type_ == "queryObject":
             result.query_object = get_keyword(token.lemma_)
@@ -87,6 +88,12 @@ def get_query(string: str) -> object:
                     result.route_attributes.height.min = number
                 elif param_1 == "max":
                     result.route_attributes.height.max = number
+            elif param_2 == "length":
+                # select min parameter by default
+                if param_1 == "min" or param_1 == "":
+                    result.route_attributes.length.min = number
+                elif param_1 == "max":
+                    result.route_attributes.length.max = number
 
     # set default value
     if result.query_object == "":
@@ -98,6 +105,9 @@ def get_query(string: str) -> object:
 def get_keyword(string: str) -> str:
     # default queryObject
     default_keyword = "route"
+
+    print("input", string)
+    print(synonyms)
 
     # get keyword
     for keyword in synonyms:
@@ -134,6 +144,8 @@ def get_query_parameters(origin: spacy.tokens.token.Token) -> (str, str):
         if param_2 == "":
             if lemma == "hoch" or lemma == "höhe":
                 param_2 = "height"
+            elif lemma == "lang" or lemma == "länge":
+                param_2 = "length"
 
     return param_1, param_2
 
@@ -263,3 +275,4 @@ class Query:
 
 
 # print(get_query("Finde eine Strecke in Italien mit mindestens 10 meilen länge in einer lage über 1000  mit einem Anteil von 500 kilometer Linkskurven mit einem Anteil von 600m Steigung über 7% auf einer Höhe von maximal 10"))
+print(get_query("Gibt es hohe Hügel in Bayern"))
