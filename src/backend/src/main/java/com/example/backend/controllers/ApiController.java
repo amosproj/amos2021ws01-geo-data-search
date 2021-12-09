@@ -87,16 +87,14 @@ public class ApiController {
 //        String amenity = nlpQueryResponse.getQueryObject();
 //        osmQuery.setAmenity(amenity);
         osmQuery.setAmenity("restaurant");
-        //TODO we are not getting location object from NLP, yet
-        osmQuery.setArea("Mitte");
+        osmQuery.setArea(nlpQueryResponse.getLocation());
         logInfo("Generated Query for OSM: " + osmQuery.toQuery());
         return osmQuery;
     }
 
     private String generateHereQuery(NlpQueryResponse nlpQueryResponse) {
         StringBuilder builder = new StringBuilder();
-//        builder.append(nlpQueryResponse.getLocation()).append(" ");
-        builder.append("Berlin ");
+        builder.append(nlpQueryResponse.getLocation()).append(" ");
         builder.append(nlpQueryResponse.getQueryObject());
         logInfo("Generated Query for HERE: " + builder);
         return builder.toString();
