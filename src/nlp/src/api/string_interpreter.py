@@ -6,7 +6,7 @@ from typing import Optional
 
 import spacy
 from pydantic.dataclasses import dataclass
-from .helper_service import convert_number_to_meter
+from .helper_service import convert_number_to_meter, save_dependecies_tree
 from .synonyms import synonyms, check_synonym
 
 from .utils import get_synonyms
@@ -43,6 +43,7 @@ def process_string(string: str) -> object:
 
 def get_query(string: str) -> object:
     default_tokens = nlp_default(string)
+    save_dependecies_tree(default_tokens)
 
     result = Query()
 
@@ -94,6 +95,12 @@ def get_query(string: str) -> object:
                     result.route_attributes.length.min = number
                 elif param_1 == "max":
                     result.route_attributes.length.max = number
+            elif param_2 == "gradiant":
+                # select min parameter by default
+                if param_1 == "min" or param_1 == "":
+                    result.route_attributes.gradiant.min = number
+                elif param_1 == "max":
+                    result.route_attributes.gradiant.max = number
 
     # set default value
     if result.query_object == "":
@@ -139,6 +146,8 @@ def get_query_parameters(origin: spacy.tokens.token.Token) -> (str, str):
                 param_1 = "min"
             elif lemma == "maximal":
                 param_1 = "max"
+            elif lemma == "über":
+                param_1 = "min"
 
         # extract parameter 2
         if param_2 == "":
@@ -146,7 +155,8 @@ def get_query_parameters(origin: spacy.tokens.token.Token) -> (str, str):
                 param_2 = "height"
             elif lemma == "lang" or lemma == "länge":
                 param_2 = "length"
-
+            elif lemma == "steigung":
+                param_2 = "gradiant"
     return param_1, param_2
 
 
@@ -275,4 +285,8 @@ class Query:
 
 
 # print(get_query("Finde eine Strecke in Italien mit mindestens 10 meilen länge in einer lage über 1000  mit einem Anteil von 500 kilometer Linkskurven mit einem Anteil von 600m Steigung über 7% auf einer Höhe von maximal 10"))
-print(get_query("Gibt es hohe Hügel in Bayern"))
+print(
+    get_query(
+        "Plane mir eine Route nach Paris mit einem Anteil von 500 meter Steigung von maximal 7%"
+    )
+)
