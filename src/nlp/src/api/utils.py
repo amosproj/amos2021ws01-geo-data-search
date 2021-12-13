@@ -29,8 +29,7 @@ def parse_synonyms(is_entity: bool = True, chatette_file_path: str = None,
 
     # read synonyms from chatette file
     if chatette_file_path is None:
-        default_path = str(CURRENT_DIR) \
-                       + f"{SEP}..{SEP}models{SEP}data{SEP}chatette-slots{SEP}{title}.chatette"
+        default_path = f"{CURRENT_DIR}{SEP}..{SEP}models{SEP}data{SEP}chatette-slots{SEP}{title}.chatette"
         logging.info(f"[NLP COMPONENT] No Chatette file was specified, trying {default_path}")
         chatette_file_path = default_path
 
@@ -111,6 +110,11 @@ def parse_synonyms(is_entity: bool = True, chatette_file_path: str = None,
 
 
 def get_entity_synonyms(chatette_file_path: str = None, entity: str = "queryObject") -> dict:
+    """
+     Parses entity synonyms from Chatette file
+     :param chatette_file_path Path to Chatette file
+     :param entity Name of the entity used in the Chatette file
+    """
     entity_synonyms = parse_synonyms(
         is_entity=True,
         chatette_file_path=chatette_file_path,
@@ -126,6 +130,11 @@ def get_entity_synonyms(chatette_file_path: str = None, entity: str = "queryObje
 
 def get_alias_synonyms(chatette_file_path: str = None,
                        title: str = "unit") -> dict:
+    """
+     Parses alias synonyms from Chatette file
+     :param chatette_file_path Path to Chatette file
+     :param title Name of the alias used in the Chatette file
+    """
     if chatette_file_path is None:
         chatette_file_path = f"{CURRENT_DIR}{SEP}..{SEP}models{SEP}data{SEP}chatette-slots{SEP}aliases.chatette"
 
