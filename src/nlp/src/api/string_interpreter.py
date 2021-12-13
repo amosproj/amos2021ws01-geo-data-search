@@ -125,7 +125,7 @@ def get_query_parameters(origin: spacy.tokens.token.Token) -> (str, str):
     :return query attributes found in sting. Example: min height
     """
 
-    dependencies = get_depencies(origin)
+    dependencies = get_dependencies(origin)
     param_1, param_2 = "", ""
 
     for dep in dependencies:
@@ -148,7 +148,7 @@ def get_query_parameters(origin: spacy.tokens.token.Token) -> (str, str):
     return param_1, param_2
 
 
-def get_depencies(origin: spacy.tokens.token.Token) -> [spacy.tokens.token.Token]:
+def get_dependencies(origin: spacy.tokens.token.Token) -> [spacy.tokens.token.Token]:
     """
     :param origin token which requires its closest dependencies
     :return tokens ordered by proximity to origin
