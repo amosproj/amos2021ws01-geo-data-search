@@ -127,7 +127,7 @@ def get_entity_synonyms(chatette_file_path: str = None, entity: str = "queryObje
 def get_alias_synonyms(chatette_file_path: str = None,
                        title: str = "unit") -> dict:
     if chatette_file_path is None:
-        chatette_file_path = str(CURRENT_DIR) + f"{SEP}..{SEP}models{SEP}data{SEP}chatette-slots{SEP}aliases.chatette"
+        chatette_file_path = f"{CURRENT_DIR}{SEP}..{SEP}models{SEP}data{SEP}chatette-slots{SEP}aliases.chatette"
 
     aliases = parse_synonyms(
         is_entity=False,
@@ -140,3 +140,18 @@ def get_alias_synonyms(chatette_file_path: str = None,
     except TypeError:
         return aliases
     return aliases
+
+
+def check_synonym(synonym_class: str, word: str) -> str:
+    """
+    checks if a word matches to a synonym from a specific class
+    :param  synonym_class the class in which the synonyms are searched for
+    :param  word
+    :return key synonym if the word is in the synonym list, otherwise an empty string
+    """
+    synonyms = get_alias_synonyms(title=synonym_class)
+    synonym_class_list = synonyms[synonym_class]
+    for synonym in synonym_class_list:
+        if word.lower() in synonym_class_list[synonym]:
+            return synonym
+    return "km"

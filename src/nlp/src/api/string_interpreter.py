@@ -7,9 +7,8 @@ from typing import Optional
 import spacy
 from pydantic.dataclasses import dataclass
 from .helper_service import convert_number_to_meter
-from .synonyms import check_synonym
 
-from .utils import get_entity_synonyms
+from .utils import get_entity_synonyms, check_synonym
 
 # get os specific file separator
 SEP = os.path.sep
