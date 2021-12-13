@@ -79,7 +79,7 @@ def get_synonyms(chatette_file_path: str = None, entity="queryObject") -> dict:
                         sub_parts = part.split("|")
 
                     for sub_part in sub_parts:
-                        if sub_part.isalpha():
+                        if sub_part.strip().isalpha():
                             values.append(sub_part.lower().strip())
                             logging.debug(f"[NLP COMPONENT] Added {sub_part} as synonym for {key}")
     synonyms[key] = values
