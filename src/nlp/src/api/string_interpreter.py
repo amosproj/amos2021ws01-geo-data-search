@@ -109,7 +109,7 @@ def get_keyword(string: str) -> str:
     # get keyword
     for keyword in synonyms:
         if string.lower() in synonyms[keyword]:
-            logging.log(f"[NLP COMPONENT][STRING INTERPRETER] Found matching keyword {keyword} for {string}")
+            logging.info(f"[NLP COMPONENT][STRING INTERPRETER] Found matching keyword {keyword} for {string}")
             return keyword
 
     logging.warning(
