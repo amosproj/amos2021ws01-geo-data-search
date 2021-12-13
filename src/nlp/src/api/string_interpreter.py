@@ -106,12 +106,10 @@ def get_keyword(string: str) -> str:
     # default queryObject
     default_keyword = "route"
 
-    print("input", string)
-    print(synonyms)
-
     # get keyword
     for keyword in synonyms:
         if string.lower() in synonyms[keyword]:
+            logging.log(f"[NLP COMPONENT][STRING INTERPRETER] Found matching keyword {keyword} for {string}")
             return keyword
 
     logging.warning(
@@ -135,16 +133,16 @@ def get_query_parameters(origin: spacy.tokens.token.Token) -> (str, str):
 
         # extract parameter 1
         if param_1 == "":
-            if lemma == "mindestens":
+            if lemma  in ["mindestens", "min"]:
                 param_1 = "min"
-            elif lemma == "maximal":
+            elif lemma in ["maximal", "max", "höchstens"]:
                 param_1 = "max"
 
         # extract parameter 2
         if param_2 == "":
-            if lemma == "hoch" or lemma == "höhe":
+            if lemma in ["hoch", "höhe"]:
                 param_2 = "height"
-            elif lemma == "lang" or lemma == "länge":
+            elif lemma in ["lang", "länge"]:
                 param_2 = "length"
 
     return param_1, param_2
