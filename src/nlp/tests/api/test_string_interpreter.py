@@ -80,3 +80,10 @@ def test_no_input():
     assert result.location == ""
     assert result.query_object == "route"  # route is default value
     assert result.route_attributes.height.min == 0
+
+
+def test_route_length():
+    result = get_query("Plane mir eine Route nach Paris mit einer länge von mindestens 100 und maximal 1000 metern")
+
+    assert result.route_attributes.length.min == 100
+    assert result.route_attributes.length.max == 1000

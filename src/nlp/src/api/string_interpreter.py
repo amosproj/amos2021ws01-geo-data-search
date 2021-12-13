@@ -56,6 +56,7 @@ def get_query(string: str) -> object:
     ner_tokens = ner_model(string)
     for index in range(len(ner_tokens)):
         token = ner_tokens[index]
+
         # save query object
         if token.ent_type_ == "queryObject":
             result.query_object = get_keyword(token.lemma_)
@@ -87,6 +88,12 @@ def get_query(string: str) -> object:
                     result.route_attributes.height.min = number
                 elif param_1 == "max":
                     result.route_attributes.height.max = number
+            elif param_2 == "length":
+                # select min parameter by default
+                if param_1 == "min" or param_1 == "":
+                    result.route_attributes.length.min = number
+                elif param_1 == "max":
+                    result.route_attributes.length.max = number
 
     # set default value
     if result.query_object == "":
@@ -102,6 +109,7 @@ def get_keyword(string: str) -> str:
     # get keyword
     for keyword in query_object_synonyms.keys():
         if string.lower() in query_object_synonyms[keyword]:
+            logging.info(f"[NLP COMPONENT][STRING INTERPRETER] Found matching keyword {keyword} for {string}")
             return keyword
 
     logging.warning(
@@ -117,7 +125,7 @@ def get_query_parameters(origin: spacy.tokens.token.Token) -> (str, str):
     :return query attributes found in sting. Example: min height
     """
 
-    dependencies = get_depencies(origin)
+    dependencies = get_dependencies(origin)
     param_1, param_2 = "", ""
 
     for dep in dependencies:
@@ -125,20 +133,22 @@ def get_query_parameters(origin: spacy.tokens.token.Token) -> (str, str):
 
         # extract parameter 1
         if param_1 == "":
-            if lemma == "mindestens":
+            if lemma  in ["mindestens", "min"]:
                 param_1 = "min"
-            elif lemma == "maximal":
+            elif lemma in ["maximal", "max", "höchstens"]:
                 param_1 = "max"
 
         # extract parameter 2
         if param_2 == "":
-            if lemma == "hoch" or lemma == "höhe":
+            if lemma in ["hoch", "höhe"]:
                 param_2 = "height"
+            elif lemma in ["lang", "länge"]:
+                param_2 = "length"
 
     return param_1, param_2
 
 
-def get_depencies(origin: spacy.tokens.token.Token) -> [spacy.tokens.token.Token]:
+def get_dependencies(origin: spacy.tokens.token.Token) -> [spacy.tokens.token.Token]:
     """
     :param origin token which requires its closest dependencies
     :return tokens ordered by proximity to origin
@@ -263,3 +273,4 @@ class Query:
 
 
 # print(get_query("Finde eine Strecke in Italien mit mindestens 10 meilen länge in einer lage über 1000  mit einem Anteil von 500 kilometer Linkskurven mit einem Anteil von 600m Steigung über 7% auf einer Höhe von maximal 10"))
+# print(get_query("Gibt es hohe Hügel in Bayern"))
