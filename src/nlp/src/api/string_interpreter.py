@@ -133,7 +133,7 @@ def get_query_parameters(origin: spacy.tokens.token.Token) -> (str, str):
 
         # extract parameter 1
         if param_1 == "":
-            if lemma  in ["mindestens", "min"]:
+            if lemma in ["mindestens", "min"]:
                 param_1 = "min"
             elif lemma in ["maximal", "max", "höchstens"]:
                 param_1 = "max"
