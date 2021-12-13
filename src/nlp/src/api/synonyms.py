@@ -1,10 +1,4 @@
-synonyms = {
-    "unit": {
-        "m": ["meter", "m", "metern"],
-        "km": ["kilometer", "km", "kilo", "kilometern"],
-        "miles": ["meile", "meilen"],
-    }
-}
+from .utils import get_alias_synonyms
 
 
 def check_synonym(synonym_class: str, word: str) -> str:
@@ -14,6 +8,7 @@ def check_synonym(synonym_class: str, word: str) -> str:
     :param  word
     :return key synonym if the word is in the synonym list, otherwise an empty string
     """
+    synonyms = get_alias_synonyms(title=synonym_class)
     synonym_class_list = synonyms[synonym_class]
     for synonym in synonym_class_list:
         if word.lower() in synonym_class_list[synonym]:
