@@ -12,25 +12,39 @@ SEP = os.path.sep
 CURRENT_DIR = pathlib.Path(__file__).parent.resolve()
 
 
-def get_synonyms(chatette_file_path: str = None, entity="queryObject") -> dict:
+def parse_synonyms(is_entity: bool = True, chatette_file_path: str = None,
+                   title: str = "queryObject") -> dict:
     """
-    Extracts all synonyms for the given entity if sub entities are defined
+    Extracts all synonyms for the given entity or alias defined in chatette_file_path
+    :param is_entity True if title is an entity and not an alias
     :param chatette_file_path Path to Chatette file containing the synonym definitions
-    :param entity the entity to be parsed, default value is queryObject
-    :return Dictionary with sub entity title as key and list with their synonyms as value
+    :param title of the entity/alias to be parsed, default value is queryObject
+    :return Dictionary with (sub) entity title as key and list with their synonyms as value
     """
+    operator: str
+    if is_entity:
+        operator = "@"
+    else:
+        operator = "~"
+
     # read synonyms from chatette file
     if chatette_file_path is None:
-        chatette_file_path = str(CURRENT_DIR) + f"{SEP}..{SEP}models{SEP}data{SEP}chatette-slots{SEP}{entity}.chatette"
+        default_path = str(CURRENT_DIR) \
+                       + f"{SEP}..{SEP}models{SEP}data{SEP}chatette-slots{SEP}{title}.chatette"
+        logging.info(f"[NLP COMPONENT] No Chatette file was specified, trying {default_path}")
+        chatette_file_path = default_path
+
     chatette_file_path = pathlib.Path(chatette_file_path)
     if not chatette_file_path.exists():
-        logging.error(f"Couldn't find file {chatette_file_path}")
+        logging.error(f"[NLP COMPONENT] Couldn't find file {chatette_file_path}")
 
     with open(chatette_file_path) as file:
         synonyms = {}
         key: Optional[str] = None
         values = []
         optional_alias = re.compile(r"\[[a-z]+\?]")
+        wrong_definition = False
+
         for line in file:
 
             # line is a comment or empty and should be ignored
@@ -41,20 +55,30 @@ def get_synonyms(chatette_file_path: str = None, entity="queryObject") -> dict:
             line = line.split("//")[0]
 
             # line contains (sub-) entity definition
-            if "@" in line and "queryObject" in line:
+            if operator in line and title in line:
+                wrong_definition = False
+
                 # add synonyms to dictionary if new sub entity is found
                 if key is not None:
                     synonyms[key] = values
                     values = []
 
                 # rm syntax specific chars
-                key = line.replace("@[", "") \
+                key = line
+                if "#" in line:
+                    key = line.replace(f"{title}#", "")
+                key = key.replace(f"{operator}[", "") \
                     .replace("&", "") \
-                    .replace(f"{entity}#", "") \
                     .replace("]", "") \
                     .replace("\n", "") \
                     .lower() \
                     .strip()
+
+            # skip lines with other aliases or entities
+            elif wrong_definition \
+                    or (("@" in line or "~" in line) and title not in line):
+                wrong_definition = True
+                continue
 
             # found synonym
             elif line.startswith(4 * " ") or line.startswith("\t"):
@@ -84,3 +108,35 @@ def get_synonyms(chatette_file_path: str = None, entity="queryObject") -> dict:
                             logging.debug(f"[NLP COMPONENT] Added {sub_part} as synonym for {key}")
     synonyms[key] = values
     return synonyms
+
+
+def get_entity_synonyms(chatette_file_path: str = None, entity: str = "queryObject") -> dict:
+    entity_synonyms = parse_synonyms(
+        is_entity=True,
+        chatette_file_path=chatette_file_path,
+        title=entity)
+
+    try:
+        if list(entity_synonyms.keys())[0] != entity:
+            return {entity: entity_synonyms}
+    except TypeError:
+        return entity_synonyms
+    return entity_synonyms
+
+
+def get_alias_synonyms(chatette_file_path: str = None,
+                       title: str = "unit") -> dict:
+    if chatette_file_path is None:
+        chatette_file_path = str(CURRENT_DIR) + f"{SEP}..{SEP}models{SEP}data{SEP}chatette-slots{SEP}aliases.chatette"
+
+    aliases = parse_synonyms(
+        is_entity=False,
+        chatette_file_path=chatette_file_path,
+        title=title)
+
+    try:
+        if list(aliases.keys())[0] != title:
+            return {title: aliases}
+    except TypeError:
+        return aliases
+    return aliases

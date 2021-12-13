@@ -7,9 +7,9 @@ from typing import Optional
 import spacy
 from pydantic.dataclasses import dataclass
 from .helper_service import convert_number_to_meter
-from .synonyms import synonyms, check_synonym
+from .synonyms import check_synonym
 
-from .utils import get_synonyms
+from .utils import get_entity_synonyms
 
 # get os specific file separator
 SEP = os.path.sep
@@ -33,7 +33,7 @@ def load_custom_ner_model():
 ner_model = load_custom_ner_model()
 
 # get synonyms for keywords from chatette file
-synonyms = get_synonyms()
+query_object_synonyms = get_entity_synonyms(entity="queryObject")["queryObject"]
 
 
 def process_string(string: str) -> object:
@@ -100,8 +100,8 @@ def get_keyword(string: str) -> str:
     default_keyword = "route"
 
     # get keyword
-    for keyword in synonyms:
-        if string.lower() in synonyms[keyword]:
+    for keyword in query_object_synonyms.keys():
+        if string.lower() in query_object_synonyms[keyword]:
             return keyword
 
     logging.warning(
