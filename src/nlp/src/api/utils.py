@@ -34,8 +34,11 @@ def get_synonyms(chatette_file_path: str = None, entity="queryObject") -> dict:
         for line in file:
 
             # line is a comment or empty and should be ignored
-            if "//" in line or len(line.strip()) == 0:
+            if line.strip().startswith("//") or len(line.strip()) == 0:
                 continue
+
+            # rm inline comments
+            line = line.split("//")[0]
 
             # line contains (sub-) entity definition
             if "@" in line and "queryObject" in line:
