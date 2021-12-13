@@ -16,6 +16,6 @@ def check_synonym(synonym_class: str, word: str) -> str:
     """
     synonym_class_list = synonyms[synonym_class]
     for synonym in synonym_class_list:
-        if word.text.lower() in synonym_class_list[synonym]:
+        if word.lower() in synonym_class_list[synonym]:
             return synonym
     return "km"

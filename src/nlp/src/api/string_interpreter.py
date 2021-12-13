@@ -176,7 +176,7 @@ def check_unit(token: spacy.tokens.token.Token) -> str:
     :param amount_token the token which is checked for a unit
     :return unit, if token has a unit, otherwise an empty string
     """
-    synonym = check_synonym("unit", token)
+    synonym = check_synonym("unit", token.lemma_)
     return synonym
 
 
