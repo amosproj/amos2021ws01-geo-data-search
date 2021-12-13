@@ -16,9 +16,16 @@
 ~[value]
     [mindestens|höchstens|genau] @[amount] [km|m|kilometer|meter]
 
-~[unit]
-    [km|kilo[meter[n?]?]]
-    [m|meter[n?]]
+~[unit#km]
+    km
+    kilo
+    kilometer[n?]
+
+~[unit#m]
+    m
+    meter[n?]
+
+~[unit#miles]
     meile[n?]
 
 
