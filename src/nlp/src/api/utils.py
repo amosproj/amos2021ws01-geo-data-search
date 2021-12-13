@@ -57,7 +57,7 @@ def get_synonyms(chatette_file_path: str = None, entity="queryObject") -> dict:
                     .strip()
 
             # found synonym
-            if line.startswith(4 * " ") or line.startswith("\t"):
+            elif line.startswith(4 * " ") or line.startswith("\t"):
                 parts = optional_alias.sub("", line) \
                     .replace(4 * " ", "") \
                     .replace("\t", "") \
