@@ -6,7 +6,7 @@ from typing import Optional
 
 import spacy
 from pydantic.dataclasses import dataclass
-from .helper_service import convert_number_to_meter, save_dependecies_tree
+from .helper_service import convert_number_to_meter
 from .synonyms import synonyms, check_synonym
 
 from .utils import get_synonyms
@@ -43,7 +43,6 @@ def process_string(string: str) -> object:
 
 def get_query(string: str) -> object:
     default_tokens = nlp_default(string)
-    save_dependecies_tree(default_tokens)
 
     result = Query()
 
