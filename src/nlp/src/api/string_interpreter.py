@@ -112,12 +112,10 @@ def get_keyword(string: str) -> str:
     # default queryObject
     default_keyword = "route"
 
-    print("input", string)
-    print(synonyms)
-
     # get keyword
     for keyword in synonyms:
         if string.lower() in synonyms[keyword]:
+            logging.info(f"[NLP COMPONENT][STRING INTERPRETER] Found matching keyword {keyword} for {string}")
             return keyword
 
     logging.warning(
@@ -133,7 +131,7 @@ def get_query_parameters(origin: spacy.tokens.token.Token) -> (str, str):
     :return query attributes found in sting. Example: min height
     """
 
-    dependencies = get_depencies(origin)
+    dependencies = get_dependencies(origin)
     param_1, param_2 = "", ""
 
     for dep in dependencies:
@@ -141,25 +139,25 @@ def get_query_parameters(origin: spacy.tokens.token.Token) -> (str, str):
 
         # extract parameter 1
         if param_1 == "":
-            if lemma == "mindestens":
+            if lemma  in ["mindestens", "min"]:
                 param_1 = "min"
-            elif lemma == "maximal":
+            elif lemma in ["maximal", "max", "höchstens"]:
                 param_1 = "max"
             elif lemma == "über":
                 param_1 = "min"
 
         # extract parameter 2
         if param_2 == "":
-            if lemma == "hoch" or lemma == "höhe":
+            if lemma in ["hoch", "höhe"]:
                 param_2 = "height"
-            elif lemma == "lang" or lemma == "länge":
+            elif lemma in ["lang", "länge"]:
                 param_2 = "length"
             elif lemma == "steigung":
                 param_2 = "gradiant"
     return param_1, param_2
 
 
-def get_depencies(origin: spacy.tokens.token.Token) -> [spacy.tokens.token.Token]:
+def get_dependencies(origin: spacy.tokens.token.Token) -> [spacy.tokens.token.Token]:
     """
     :param origin token which requires its closest dependencies
     :return tokens ordered by proximity to origin
