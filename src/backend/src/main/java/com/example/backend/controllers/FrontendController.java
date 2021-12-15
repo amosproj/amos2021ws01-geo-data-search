@@ -44,6 +44,7 @@ public class FrontendController {
         logInfo("New query received! Query = \"" + query + "\"");
 
         query = URLDecoder.decode(query, StandardCharsets.UTF_8);
+        query = query.replace("query=", "");
 
         logInfo("WORK AROUND! Query = \"" + query + "\"");
         NlpQueryResponse nlpQueryResponse;
