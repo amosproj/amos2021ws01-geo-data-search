@@ -1,17 +1,20 @@
 import React, { FormEvent, useRef, useState } from 'react';
+import Image from 'next/image';
 import apiClient, { CancelablePromise } from '@lib/api-client';
 import SearchInput from './SearchInput';
 import ErrorMessage from './ErrorMessage';
 import { SearchQueryResponse, SearchError } from '@lib/types/search';
-import SearchListResult from './SearchListResult';
 import { isDevelopment } from '@lib/config';
 import { useAtom } from 'jotai';
-import { searchResultsAtom } from '@lib/store';
+import { currentSearchResultAtom, searchResultsAtom } from '@lib/store';
+import SearchResults from './SearchResults';
+import SearchResultDetail from './SearchResultDetail';
 
 const SearchView = () => {
   const [searchValue, setSearchValue] = useState('');
   const [errorData, setErrorData] = useState<SearchError | null>(null);
-  const [results, setResults] = useAtom(searchResultsAtom)
+  const [results, setResults] = useAtom(searchResultsAtom);
+  const [currentSearchResult, setCurrentSearchResult] = useAtom(currentSearchResultAtom);
   const [loading, setLoading] = useState(false);
   const searchQueryPromise = useRef<CancelablePromise<any> | null>(null);
 
@@ -76,6 +79,10 @@ const SearchView = () => {
     } finally {
       setLoading(false);
       searchQueryPromise.current = null;
+
+      if (currentSearchResult) {
+        setCurrentSearchResult(null);
+      }
     }
   };
 
@@ -86,33 +93,44 @@ const SearchView = () => {
     }
   };
 
+  const onCloseSearchResultDetail = () => {
+    setCurrentSearchResult(null);
+  };
+
   return (
     <div className="my-4">
       <form onSubmit={getSearchSuggestions}>
-        <SearchInput
-          placeholder="Search"
-          value={searchValue}
-          onChange={setSearchValue}
-          onCancelSearchRequest={onCancelSearchRequest}
-          loading={loading}
-        />
+        <div className="flex items-center w-full">
+          <div className="h-20 w-20 mr-2 sm:hidden">
+            <Image
+              className="sm:hidden"
+              priority
+              layout="responsive"
+              width="150"
+              height="142"
+              src="/images/logo.png"
+              alt="Geo Data Search Logo"
+            />
+          </div>
 
-        {results &&
-          (results.length > 0 ? (
-            <ul className="mt-8">
-              {results.map((result) => (
-                <SearchListResult key={result.id} result={result} />
-              ))}
-            </ul>
-          ) : (
-            <p className="mb-2">No results found</p>
-          ))}
-
-        {errorData?.message && <ErrorMessage message={`Error: ${errorData.message}`} />}
-        {isDevelopment && errorData?.trace && (
-          <ErrorMessage message={`Trace: ${errorData.trace}`} />
-        )}
+          <SearchInput
+            placeholder="Search"
+            value={searchValue}
+            onChange={setSearchValue}
+            onCancelSearchRequest={onCancelSearchRequest}
+            loading={loading}
+          />
+        </div>
       </form>
+
+      {currentSearchResult ? (
+        <SearchResultDetail onBackClick={onCloseSearchResultDetail} result={currentSearchResult} />
+      ) : (
+        <SearchResults results={results} />
+      )}
+
+      {errorData?.message && <ErrorMessage message={`Error: ${errorData.message}`} />}
+      {isDevelopment && errorData?.trace && <ErrorMessage message={`Trace: ${errorData.trace}`} />}
     </div>
   );
 };
