@@ -25,8 +25,8 @@ async def root():
     tags=["Version Number"]
 )
 async def get_version():
-    logging.info("[NLP Component] Requested current version number")
-    return {"version": "0.0.1"}
+    logging.warning("[NLP Component] Requested current version number")
+    return {"version": "0.2.0"}
 
 
 @app.get(
@@ -35,6 +35,9 @@ async def get_version():
     response_model=Query
 )
 async def request(text: str):
-    logging.info(f"[NLP Component] Received Request: {text}")
+    logging.warning(f"[NLP Component] Received Request: {text}")
 
-    return process_string(text)
+    answer = process_string(text)
+    logging.warning(f"[NLP Component] Answer: {answer}")
+
+    return answer

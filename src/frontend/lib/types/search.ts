@@ -10,6 +10,16 @@ export type SearchResult = {
   lat: string;
   lon: string;
   name: string;
+  tags: {
+    'addr:city': string;
+    'addr:country': string;
+    'addr:housenumber': string;
+    'addr:postcode': string;
+    'addr:street': string;
+    'addr:suburb': string;
+    amenity: string;
+    name: string;
+  };
 };
 
 export type SearchQueryResponse = {
