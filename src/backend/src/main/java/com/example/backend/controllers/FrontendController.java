@@ -17,8 +17,6 @@ import java.util.Arrays;
 @RequestMapping("/backend")
 public class FrontendController {
 
-    private static final boolean WITH_CHARGING = true;
-    private static final boolean WITHOUT_CHARGING = false;
     private final NlpClient nlpClient;
     private final BackendLogger logger = new BackendLogger();
     private final ApiController apiController;
@@ -66,7 +64,7 @@ public class FrontendController {
 
         ArrayList<ApiResult> apiQueryResults = apiController.querySearch(nlpQueryResponse);
 
-        apiQueryResults.addAll(apiController.getRouteSearchResults(ROUTE_START_COORDINATES, ROUTE_DESTINATION_COORDINATES, WITH_CHARGING));
+        apiQueryResults.addAll(apiController.getChargingStationsAlongTheWay(ROUTE_START_COORDINATES, ROUTE_DESTINATION_COORDINATES));
 
         return new ResultResponse(apiQueryResults);
     }

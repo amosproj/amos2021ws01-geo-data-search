@@ -15,6 +15,7 @@ public class ApiSelectionHelper {
         return instance;
     }
 
+    // TODO Selection must be implemented somehow
     public ApiType getApiPreference(NlpQueryResponse nlpQueryResponse) {
         return ApiType.OSM_API;
     }
