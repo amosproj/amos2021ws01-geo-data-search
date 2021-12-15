@@ -9,10 +9,6 @@ def get_query_objects_test_data():
         ["Ort in NRW", "place"],
         ["Zeige mir Seen auf der Mecklenburger Seenplatte", "place"],
         ["Wo liegt der bayrische Wald", "place"],
-        ["Finde alle Berge in Berlin die höher als 100m sind", "elevation"],
-        ["Finde alle Berge in Berlin die höher als 100m sind", "elevation"],
-        ["Finde alle Berge in Berlin die höher als 100m sind", "elevation"],
-        ["Finde alle Berge in Berlin die höher als 100m sind", "elevation"],
     ]
     return queries
 
@@ -47,18 +43,36 @@ def get_keyword_test_data():
     return queries
 
 def get_query_test_data():
-    
     queries = []
-    
     query = Query()
     query.location = "Paris"
     query.query_object = "route"
     query.route_attributes.gradiant.max = 7
-    queries.append(["Plane mir eine Route nach Paris mit einer Steigung von maximal 7%",
-            query
-        ]
+    queries.append(["Plane mir eine Route nach Paris mit einer Steigung von maximal 7%", query])
+    
+    query = Query()
+    query.location = "Essen, Köln"
+    query.query_object = "route"
+    query.route_attributes.gradiant.max = 7
+    queries.append(["Zeige mir einen Weg von Essen nach Köln mit einer Steigung von maximal 7",query])
 
-    )
+    query = Query()
+    query.location = "Berlin"
+    query.query_object = "elevation"
+    query.route_attributes.height.min = 1000
+    queries.append(["Gibt es Hügel in Berlin mit einer Höhe von mindestens 1000 metern",query])
+
+    query = Query()
+    query.location = "Spanien"
+    query.query_object = "route"
+    query.route_attributes.length.min = 1000
+    queries.append(["Finde eine Strecke in Spanien mit einer Länge von 10 kilometern in einer lage über 1000m",query])
+    
+    query = Query()
+    query.location = "Hamburg"
+    query.query_object = "elevation"
+    query.route_attributes.height.min = 1609.34
+    queries.append([" Zeige mir Berge mit einer Höhe von 1 meile in Hamburg",query])
     return queries
 
 
@@ -130,9 +144,7 @@ def test_no_input():
 
 
 def test_route_length():
-    result = get_query(
-        "Plane mir eine Route nach Paris mit einer länge von mindestens 100 und maximal 1000 metern"
-    )
+    result = get_query("Plane mir eine Route nach Paris mit einer länge von mindestens 100 und maximal 1000 metern")
 
     assert result.route_attributes.length.min == 100
     assert result.route_attributes.length.max == 1000
