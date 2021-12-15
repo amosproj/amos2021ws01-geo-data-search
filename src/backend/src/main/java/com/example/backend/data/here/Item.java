@@ -64,6 +64,11 @@ public class Item implements HereApiElement, ApiResult {
     }
 
     @Override
+    public void setType(String type) {
+        resultType = type;
+    }
+
+    @Override
     public int getId() {
         return 0;
     }

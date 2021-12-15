@@ -44,6 +44,13 @@ public class NodeInfo implements ApiResult {
     }
 
     @Override
+    public void setType(String type) {
+        if (tags != null) {
+            tags.amenity = type;
+        }
+    }
+
+    @Override
     public int getId() {
         return Integer.parseInt(id);
     }

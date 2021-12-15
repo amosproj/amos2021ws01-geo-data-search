@@ -44,6 +44,7 @@ public class FrontendController {
         logInfo("New query received! Query = \"" + query + "\"");
 
         query = URLDecoder.decode(query, StandardCharsets.UTF_8);
+        query = query.replace("query=", "");
 
         logInfo("WORK AROUND! Query = \"" + query + "\"");
         NlpQueryResponse nlpQueryResponse;
@@ -67,7 +68,13 @@ public class FrontendController {
 
         logInfo("SENDING THIS RESPONSE TO FRONTEND:");
         logInfo(apiQueryResults.toString());
-        return new ResultResponse(apiQueryResults);
+        ResultResponse response;
+        if (apiQueryResults.isEmpty()){
+            response = new ResultResponse(null);
+        }else{
+            response = new ResultResponse(apiQueryResults);
+        }
+        return response;
     }
 
     private ErrorResponse handleError(Throwable throwable) {

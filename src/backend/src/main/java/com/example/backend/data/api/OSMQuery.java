@@ -5,6 +5,7 @@ public class OSMQuery {
     private int timeOut = 10;
     private String area;
     private String amenity;
+    private String natural;
     private int resultCount = 10;
     private boolean isDetailed = true;
 
@@ -13,10 +14,19 @@ public class OSMQuery {
                 .append("[out:" + outType + "]")
                 .append("[timeout:" + timeOut + "];\n");
         if (area != null) builder.append("area[name=\"" + area + "\"]->.searchArea;\n");
+        String key = null;
+        String value = null;
+        if (amenity != null) {
+            key = "amenity";
+            value = amenity;
+        } else if (natural != null) {
+            key = "natural";
+            value = "peak";
+        }
         builder.append("(\n")
-                .append("  node[\"amenity\"=\"" + amenity + "\"](area.searchArea);\n")
-                .append("  way[\"amenity\"=\"" + amenity + "\"](area.searchArea);\n")
-                .append("  relation[\"amenity\"=\"" + amenity + "\"](area.searchArea);\n")
+                .append("  node[\""+key+"\"=\"" + value + "\"](area.searchArea);\n")
+                .append("  way[\""+key+"\"=\"" + value + "\"](area.searchArea);\n")
+                .append("  relation[\""+key+"\"=\"" + value + "\"](area.searchArea);\n")
                 .append(");\n");
         if (isDetailed) builder.append("out body center " + resultCount + ";\n");
         else builder.append("out sqel center" + resultCount + ";\n");
@@ -44,7 +54,7 @@ public class OSMQuery {
     }
 
     public void setArea(String area) {
-        this.area = area;
+        this.area = area.substring(0, 1).toUpperCase() + area.substring(1);
     }
 
     public String getAmenity() {
@@ -69,5 +79,13 @@ public class OSMQuery {
 
     public void setDetailed(boolean detailed) {
         isDetailed = detailed;
+    }
+
+    public String getNatural() {
+        return natural;
+    }
+
+    public void setNatural(String natural) {
+        this.natural = natural;
     }
 }

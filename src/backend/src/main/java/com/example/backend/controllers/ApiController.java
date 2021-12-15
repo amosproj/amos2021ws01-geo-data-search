@@ -6,7 +6,6 @@ import com.example.backend.data.api.*;
 import com.example.backend.data.http.Error;
 import com.example.backend.data.http.ErrorResponse;
 import com.example.backend.data.http.NlpQueryResponse;
-import com.example.backend.helpers.ApiSelectionHelper;
 import com.example.backend.helpers.ApiSelectionHelper.ApiType;
 import com.example.backend.helpers.BackendLogger;
 import com.google.gson.Gson;
@@ -15,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import static com.example.backend.helpers.ApiSelectionHelper.*;
 
 @RestController
 @RequestMapping("/backend")
@@ -43,7 +44,7 @@ public class ApiController {
     }
 
     public ArrayList<ApiResult> querySearch(NlpQueryResponse nlpQueryResponse) {
-        ApiType preferredApi = ApiSelectionHelper.getInstance().getApiPreference(nlpQueryResponse);
+        ApiType preferredApi = getInstance().getApiPreference(nlpQueryResponse);
         ArrayList<ApiResult> result = new ArrayList<>();
         logInfo("Selected Api: " + preferredApi);
         if (preferredApi == ApiType.OSM_API) {
@@ -55,6 +56,7 @@ public class ApiController {
             HereApiGeocodeResponse hereResults = new Gson().fromJson(hereApiResponseAsString, HereApiGeocodeResponse.class);
             result.addAll(hereResults.getSearchResults());
         }
+        result = adjustTypeValues(result, nlpQueryResponse);
         return result;
     }
 
@@ -84,22 +86,31 @@ public class ApiController {
 
     private OSMQuery generateOsmQuery(NlpQueryResponse nlpQueryResponse) {
         OSMQuery osmQuery = new OSMQuery();
-//        String amenity = nlpQueryResponse.getQueryObject();
-//        osmQuery.setAmenity(amenity);
-        osmQuery.setAmenity("restaurant");
-        //TODO we are not getting location object from NLP, yet
-        osmQuery.setArea("Mitte");
+        if (getInstance().getRequestType(nlpQueryResponse) == RequestType.ELEVATION) {
+            osmQuery.setNatural("peak");
+        } else if (getInstance().getRequestType(nlpQueryResponse) == RequestType.PLACE) {
+            osmQuery.setAmenity("restaurant");
+        }
+        osmQuery.setArea(nlpQueryResponse.getLocation());
         logInfo("Generated Query for OSM: " + osmQuery.toQuery());
         return osmQuery;
     }
 
     private String generateHereQuery(NlpQueryResponse nlpQueryResponse) {
         StringBuilder builder = new StringBuilder();
-//        builder.append(nlpQueryResponse.getLocation()).append(" ");
-        builder.append("Berlin ");
+        builder.append(nlpQueryResponse.getLocation()).append(" ");
         builder.append(nlpQueryResponse.getQueryObject());
         logInfo("Generated Query for HERE: " + builder);
         return builder.toString();
+    }
+
+    private ArrayList<ApiResult> adjustTypeValues(ArrayList<ApiResult> result, NlpQueryResponse nlpQueryResponse) {
+        for (int i = 0; i < result.size(); i++) {
+            if (result.get(0).getType().equalsIgnoreCase("Unknown")) {
+                result.get(0).setType(nlpQueryResponse.getQueryObject());
+            }
+        }
+        return result;
     }
 
     private void logInfo(String logMsg) {
