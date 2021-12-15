@@ -59,7 +59,7 @@ def get_query_test_data():
     query = Query()
     query.location = "Berlin"
     query.query_object = "elevation"
-    query.route_attributes.height.min = 1000
+    query.route_attributes.height.min = 1000000
     queries.append(["Gibt es Hügel in Berlin mit einer Höhe von mindestens 1000 metern",query])
 
     query = Query()
@@ -71,7 +71,7 @@ def get_query_test_data():
     query = Query()
     query.location = "Hamburg"
     query.query_object = "elevation"
-    query.route_attributes.height.min = 1609.34
+    query.route_attributes.height.min = 1609
     queries.append([" Zeige mir Berge mit einer Höhe von 1 meile in Hamburg",query])
     return queries
 
