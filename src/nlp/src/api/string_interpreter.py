@@ -8,7 +8,7 @@ import spacy
 from pydantic.dataclasses import dataclass
 from .helper_service import convert_number_to_meter
 
-from .utils import get_entity_synonyms, check_synonym
+from .utils import get_entity_synonyms, get_keyword_from_synonyms, get_alias_synonyms
 
 # get os specific file separator
 SEP = os.path.sep
@@ -33,6 +33,7 @@ ner_model = load_custom_ner_model()
 
 # get synonyms for keywords from chatette file
 query_object_synonyms = get_entity_synonyms(entity="queryObject")["queryObject"]
+unit_synonyms = get_alias_synonyms(title="unit")["unit"]
 
 
 def process_string(string: str) -> object:
@@ -58,7 +59,7 @@ def get_query(string: str) -> object:
 
         # save query object
         if token.ent_type_ == "queryObject":
-            result.query_object = get_keyword(token.lemma_)
+            result.query_object = get_keyword_from_synonyms(token.lemma_, "route", query_object_synonyms)
 
         # extract information about amount parameter
         if token.ent_type_ == "amount":
@@ -99,23 +100,6 @@ def get_query(string: str) -> object:
         result.query_object = "route"
 
     return result
-
-
-def get_keyword(string: str) -> str:
-    # default queryObject
-    default_keyword = "route"
-
-    # get keyword
-    for keyword in query_object_synonyms.keys():
-        if string.lower() in query_object_synonyms[keyword]:
-            logging.info(f"[NLP COMPONENT][STRING INTERPRETER] Found matching keyword {keyword} for {string}")
-            return keyword
-
-    logging.warning(
-        f"[NLP COMPONENT][STRING INTERPRETER] Couldn't find a matching keyword for {string}, "
-        f"using default keyword {default_keyword}"
-    )
-    return default_keyword
 
 
 def get_query_parameters(origin: spacy.tokens.token.Token) -> (str, str):
@@ -182,10 +166,10 @@ def get_dependencies(origin: spacy.tokens.token.Token) -> [spacy.tokens.token.To
 
 def check_unit(token: spacy.tokens.token.Token) -> str:
     """
-    :param amount_token the token which is checked for a unit
+    :param token the token which is checked for a unit
     :return unit, if token has a unit, otherwise an empty string
     """
-    synonym = check_synonym("unit", token.lemma_)
+    synonym = get_keyword_from_synonyms(token.lemma_, "km", unit_synonyms)
     return synonym
 
 
