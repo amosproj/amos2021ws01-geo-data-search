@@ -129,7 +129,7 @@ def test_convert_units():
     assert result.route_attributes.height.min == 1000
 
     result = get_query("Zeige mir Berge mit einer Höhe von 1 meile in Hamburg")
-    assert result.route_attributes.height.min == 1609.34
+    assert result.route_attributes.height.min == int(1609.34)
 
     result = get_query("Berge in Berlin Höhe von maximal 1")
     assert result.route_attributes.height.max == 1000
