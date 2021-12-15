@@ -64,7 +64,8 @@ public class ApiController {
         return result;
     }
 
-    public void routeSearch(String origin, String destination, boolean chargingIncluded) {
+    public List<ApiResult> getRouteSearchResults(String origin, String destination, boolean chargingIncluded) {
+        List<ApiResult> listOfChargingStations = new ArrayList<>();
         try {
             String hereApiRoutingResponseString =
                     hereApiRestService.getRoutingResponse(origin, destination, TransportMode.CAR, RETURN_TYPE_SUMMARY, chargingIncluded);
@@ -77,12 +78,15 @@ public class ApiController {
                 chargingStations.addAll(route.getAlLChargingStations());
             }
             logInfo("HERE COMES THE CHARGING STATIONS AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+
             for (Place chargingStation : chargingStations) {
                 logInfo("STATION: " + chargingStation.toString(""));
+                listOfChargingStations.add(new SuperResult(chargingStation.type, 1, "" + chargingStation.location.lat, "" + chargingStation.location.lng, "Charging Station"));
             }
         } catch (Throwable throwable) {
             handleError(throwable);
         }
+        return listOfChargingStations;
     }
 
     public void guidanceSearch(String origin, String destination, boolean chargingIncluded) {
@@ -127,5 +131,47 @@ public class ApiController {
 
     private void logError(String logMsg) {
         logger.error(LOG_PREFIX, logMsg);
+    }
+
+    private class SuperResult implements ApiResult {
+
+        private final String type;
+        private final int id;
+        private final String lat;
+        private final String lon;
+        private final String name;
+
+        public SuperResult(String type, int id, String lat, String lon, String name) {
+            this.type = type;
+            this.id = id;
+            this.lat = lat;
+            this.lon = lon;
+            this.name = name;
+        }
+
+        @Override
+        public String getType() {
+            return type;
+        }
+
+        @Override
+        public int getId() {
+            return id;
+        }
+
+        @Override
+        public String getLat() {
+            return lat;
+        }
+
+        @Override
+        public String getLon() {
+            return lon;
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
     }
 }

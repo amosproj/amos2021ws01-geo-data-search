@@ -4,7 +4,6 @@ import com.example.backend.clients.NlpClient;
 import com.example.backend.clients.OsmApiClient;
 import com.example.backend.data.ApiResult;
 import com.example.backend.data.HttpResponse;
-import com.example.backend.data.here.TransportMode;
 import com.example.backend.data.http.Error;
 import com.example.backend.data.http.*;
 import com.example.backend.helpers.BackendLogger;
@@ -61,13 +60,13 @@ public class FrontendController {
             nlpQueryResponse = new Gson().fromJson(nlpResponse, NlpQueryResponse.class);
             logInfo(nlpQueryResponse.toString());
         } catch (Throwable throwable) {
+            throwable.printStackTrace();
             return handleError(throwable);
         }
 
         ArrayList<ApiResult> apiQueryResults = apiController.querySearch(nlpQueryResponse);
 
-        apiController.routeSearch(ROUTE_START_COORDINATES, ROUTE_DESTINATION_COORDINATES, WITH_CHARGING);
-        //apiController.guidanceSearch(ROUTE_START_COORDINATES, ROUTE_DESTINATION_COORDINATES, WITH_CHARGING);
+        apiQueryResults.addAll(apiController.getRouteSearchResults(ROUTE_START_COORDINATES, ROUTE_DESTINATION_COORDINATES, WITH_CHARGING));
 
         return new ResultResponse(apiQueryResults);
     }
