@@ -10,6 +10,10 @@ import com.example.backend.helpers.BackendLogger;
 import com.google.gson.Gson;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -39,8 +43,8 @@ public class FrontendController {
     public HttpResponse handleQueryRequest(@RequestBody String query) {
         logInfo("New query received! Query = \"" + query + "\"");
 
-        query = query.replace('+', ' ');
-        query = query.replace("query=", "");
+        query = URLDecoder.decode(query, StandardCharsets.UTF_8);
+
         logInfo("WORK AROUND! Query = \"" + query + "\"");
         NlpQueryResponse nlpQueryResponse;
         try {
@@ -58,9 +62,11 @@ public class FrontendController {
 
         ArrayList<ApiResult> apiQueryResults = apiController.querySearch(nlpQueryResponse);
 
-        apiController.routeSearch("52.5308,13.3847", "52.5264,13.3686", "car", "summary");
-        apiController.guidanceSearch("52.5308,13.3847", "52.5264,13.3686", "car");
+//        apiController.routeSearch("52.5308,13.3847", "52.5264,13.3686", "car", "summary");
+//        apiController.guidanceSearch("52.5308,13.3847", "52.5264,13.3686", "car");
 
+        logInfo("SENDING THIS RESPONSE TO FRONTEND:");
+        logInfo(apiQueryResults.toString());
         return new ResultResponse(apiQueryResults);
     }
 
