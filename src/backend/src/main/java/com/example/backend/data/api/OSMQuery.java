@@ -54,7 +54,7 @@ public class OSMQuery {
     }
 
     public void setArea(String area) {
-        this.area = area;
+        this.area = area.substring(0, 1).toUpperCase() + area.substring(1);
     }
 
     public String getAmenity() {

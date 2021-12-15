@@ -106,11 +106,8 @@ public class ApiController {
 
     private ArrayList<ApiResult> adjustTypeValues(ArrayList<ApiResult> result, NlpQueryResponse nlpQueryResponse) {
         for (int i = 0; i < result.size(); i++) {
-            logInfo(result.get(0).getType());
             if (result.get(0).getType().equalsIgnoreCase("Unknown")) {
-                logInfo(result.get(0).getType());
                 result.get(0).setType(nlpQueryResponse.getQueryObject());
-                logInfo(result.get(0).getType());
             }
         }
         return result;
