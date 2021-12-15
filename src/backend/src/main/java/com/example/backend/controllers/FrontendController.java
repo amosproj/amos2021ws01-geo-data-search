@@ -4,6 +4,7 @@ import com.example.backend.clients.NlpClient;
 import com.example.backend.clients.OsmApiClient;
 import com.example.backend.data.ApiResult;
 import com.example.backend.data.HttpResponse;
+import com.example.backend.data.here.TransportMode;
 import com.example.backend.data.http.Error;
 import com.example.backend.data.http.*;
 import com.example.backend.helpers.BackendLogger;
@@ -17,10 +18,17 @@ import java.util.Arrays;
 @RequestMapping("/backend")
 public class FrontendController {
 
+    private static final boolean WITH_CHARGING = true;
+    private static final boolean WITHOUT_CHARGING = false;
     private final NlpClient nlpClient;
     private final BackendLogger logger = new BackendLogger();
     private final ApiController apiController;
     private static final String LOG_PREFIX = "FRONTEND_CONTROLLER";
+
+    // Brandenburger Tor in Berlin
+    public static final String ROUTE_START_COORDINATES = "52.518462144205756,13.373228882261595";
+    // Arc de Triomphe de l’Étoile in Paris
+    public static final String ROUTE_DESTINATION_COORDINATES = "48.873970150314705,2.2949678134907785";
 
     public FrontendController(NlpClient nlpClient, OsmApiClient osmApiClient, HereApiRestService hereApiRestService) {
         this.nlpClient = nlpClient;
@@ -58,8 +66,8 @@ public class FrontendController {
 
         ArrayList<ApiResult> apiQueryResults = apiController.querySearch(nlpQueryResponse);
 
-        apiController.routeSearch("52.5308,13.3847", "52.5264,13.3686", "car", "summary");
-        apiController.guidanceSearch("52.5308,13.3847", "52.5264,13.3686", "car");
+        apiController.routeSearch(ROUTE_START_COORDINATES, ROUTE_DESTINATION_COORDINATES, WITH_CHARGING);
+        //apiController.guidanceSearch(ROUTE_START_COORDINATES, ROUTE_DESTINATION_COORDINATES, WITH_CHARGING);
 
         return new ResultResponse(apiQueryResults);
     }

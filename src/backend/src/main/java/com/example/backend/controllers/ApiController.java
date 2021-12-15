@@ -3,6 +3,10 @@ package com.example.backend.controllers;
 import com.example.backend.clients.OsmApiClient;
 import com.example.backend.data.ApiResult;
 import com.example.backend.data.api.*;
+import com.example.backend.data.here.Place;
+import com.example.backend.data.here.Route;
+import com.example.backend.data.here.Section;
+import com.example.backend.data.here.TransportMode;
 import com.example.backend.data.http.Error;
 import com.example.backend.data.http.ErrorResponse;
 import com.example.backend.data.http.NlpQueryResponse;
@@ -15,11 +19,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 @RestController
 @RequestMapping("/backend")
 public class ApiController {
 
+    public static final String RETURN_TYPE_SUMMARY = "summary";
     private final OsmApiClient osmApiClient;
     private final BackendLogger logger = new BackendLogger();
     private static final String LOG_PREFIX = "API_CONTROLLER";
@@ -58,23 +64,31 @@ public class ApiController {
         return result;
     }
 
-    public void routeSearch(String origin, String destination, String transportMode, String returnType) {
+    public void routeSearch(String origin, String destination, boolean chargingIncluded) {
         try {
             String hereApiRoutingResponseString =
-                    hereApiRestService.getRoutingResponse(origin, destination, transportMode, returnType);
+                    hereApiRestService.getRoutingResponse(origin, destination, TransportMode.CAR, RETURN_TYPE_SUMMARY, chargingIncluded);
             logInfo("HERE / ROUTING:");
             logInfo(hereApiRoutingResponseString);
             HereApiRoutingResponse hereApiRoutingResponse = new Gson().fromJson(hereApiRoutingResponseString, HereApiRoutingResponse.class);
             logInfo(hereApiRoutingResponse.toString(""));
+            List<Place> chargingStations = new ArrayList<Place>();
+            for (Route route : hereApiRoutingResponse.routes) {
+                chargingStations.addAll(route.getAlLChargingStations());
+            }
+            logInfo("HERE COMES THE CHARGING STATIONS AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+            for (Place chargingStation : chargingStations) {
+                logInfo("STATION: " + chargingStation.toString(""));
+            }
         } catch (Throwable throwable) {
             handleError(throwable);
         }
     }
 
-    public void guidanceSearch(String origin, String destination, String transportMode) {
+    public void guidanceSearch(String origin, String destination, boolean chargingIncluded) {
         try {
             HereGuidanceResponse hereApiRoutingResponse =
-                    hereApiRestService.getGuidanceResponse("52.5308,13.3847", "52.5264,13.3686", "car");
+                    hereApiRestService.getGuidanceResponse(origin, destination, TransportMode.CAR, chargingIncluded);
             logInfo("HERE / GUIDANCE:");
             logInfo(hereApiRoutingResponse.toString(""));
         } catch (Throwable throwable) {

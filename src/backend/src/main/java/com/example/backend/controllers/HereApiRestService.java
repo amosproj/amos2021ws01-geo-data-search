@@ -40,10 +40,25 @@ public class HereApiRestService {
         return response;
     }
 
-    public String getRoutingResponse(String origin, String destination, String transportMode, String returnType) {
+    public String getRoutingResponse(String origin, String destination, String transportMode, String returnType, boolean ev) {
+        String url_query_ev = "";
+        if (ev) {
+            url_query_ev += "ev[connectorTypes]=iec62196Type2Combo&";
+            url_query_ev += "ev[freeFlowSpeedTable]=0,0.239,27,0.239,45,0.259,60,0.196,75,0.207,90,0.238,100,0.26,110,0.296,120,0.337,130,0.351,250,0.351&";
+            url_query_ev += "ev[trafficSpeedTable]=0,0.349,27,0.319,45,0.329,60,0.266,75,0.287,90,0.318,100,0.33,110,0.335,120,0.35,130,0.36,250,0.36&";
+            url_query_ev += "ev[auxiliaryConsumption]=1.8&";
+            url_query_ev += "ev[ascent]=9&";
+            url_query_ev += "ev[descent]=4.3&";
+            url_query_ev += "ev[makeReachable]=true&";
+            url_query_ev += "ev[initialCharge]=48&";
+            url_query_ev += "ev[maxCharge]=80&";
+            url_query_ev += "ev[chargingCurve]=0,239,32,199,56,167,60,130,64,111,68,83,72,55,76,33,78,17,80,1&";
+            url_query_ev += "ev[maxChargeAfterChargingStation]=72&";
+        }
         String url = HERE_ROUTING_URL + SEPARATOR + URL_QUERY_API_KEY + DELIMITER +  //
                 URL_QUERY_TRANSPORT_MODE + transportMode + DELIMITER + //
                 URL_QUERY_ORIGIN + origin + DELIMITER + //
+                url_query_ev + //
                 URL_QUERY_DESTINATION + destination + DELIMITER + //
                 URL_QUERY_RETURN_TYPE + returnType;
         logInfo("URL for HERE ROUTING = " + url);
@@ -52,10 +67,25 @@ public class HereApiRestService {
         return response;
     }
 
-    public HereGuidanceResponse getGuidanceResponse(String origin, String destination, String transportMode) {
+    public HereGuidanceResponse getGuidanceResponse(String origin, String destination, String transportMode, boolean ev) {
+        String url_query_ev = "";
+        if (ev) {
+            url_query_ev += "ev[connectorTypes]=iec62196Type2Combo&";
+            url_query_ev += "ev[freeFlowSpeedTable]=0,0.239,27,0.239,45,0.259,60,0.196,75,0.207,90,0.238,100,0.26,110,0.296,120,0.337,130,0.351,250,0.351&";
+            url_query_ev += "ev[trafficSpeedTable]=0,0.349,27,0.319,45,0.329,60,0.266,75,0.287,90,0.318,100,0.33,110,0.335,120,0.35,130,0.36,250,0.36&";
+            url_query_ev += "ev[auxiliaryConsumption]=1.8&";
+            url_query_ev += "ev[ascent]=9&";
+            url_query_ev += "ev[descent]=4.3&";
+            url_query_ev += "ev[makeReachable]=true&";
+            url_query_ev += "ev[initialCharge]=48&";
+            url_query_ev += "ev[maxCharge]=80&";
+            url_query_ev += "ev[chargingCurve]=0,239,32,199,56,167,60,130,64,111,68,83,72,55,76,33,78,17,80,1&";
+            url_query_ev += "ev[maxChargeAfterChargingStation]=72&";
+        }
         String url = HERE_ROUTING_URL + SEPARATOR + URL_QUERY_API_KEY + DELIMITER + //
                 URL_QUERY_TRANSPORT_MODE + transportMode + DELIMITER +
                 URL_QUERY_ORIGIN + origin + DELIMITER + //
+                url_query_ev + //
                 URL_QUERY_DESTINATION + destination + DELIMITER + //
                 URL_QUERY_RETURN_TYPE + "polyline,turnbyturnactions";
         logInfo("URL for HERE GUIDANCE = " + url);
