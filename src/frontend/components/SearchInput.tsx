@@ -26,8 +26,8 @@ const SearchInput = ({ value, onChange, onCancelSearchRequest, placeholder, load
   const searchTermEmpty = value.trim().length === 0;
 
   return (
-    <div className="flex mb-4 shadow-sm rounded">
-      <div className='relative w-full'>
+    <div className="flex mb-4 rounded w-full border-2 border-solid border-[#DAE5EA]">
+      <div className={cc(['relative w-full'])}>
         <input
           className="border-solid rounded-l p-2 w-full focus:outline-none"
           name="searchValue"

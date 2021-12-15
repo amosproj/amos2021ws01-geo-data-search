@@ -1,9 +1,15 @@
 import Leaflet from 'leaflet';
 
-const markerIcon = Leaflet.icon({
+export const regularMarkerIcon = Leaflet.icon({
   iconUrl: '/images/map-marker.svg',
   iconSize: [28, 42],
-  iconAnchor: [14, 0],
+  iconAnchor: [14, 42],
+  popupAnchor: [0, -42],
 });
 
-export default markerIcon;
+export const largeMarkerIcon = Leaflet.icon({
+  iconUrl: '/images/map-marker.svg',
+  iconSize: [36, 54],
+  iconAnchor: [18, 54],
+  popupAnchor: [0, -54],
+});

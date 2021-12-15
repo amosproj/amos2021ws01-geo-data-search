@@ -3,8 +3,8 @@ import { MapContainer, Marker, TileLayer, ZoomControl } from 'react-leaflet';
 import Leaflet, { LatLngExpression } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useAtom } from 'jotai';
-import { searchResultsAtom } from '@lib/store';
-import markerIcon from './markerIcon';
+import { currentSearchResultAtom, searchResultsAtom } from '@lib/store';
+import { largeMarkerIcon, regularMarkerIcon } from './markerIcon';
 
 // Berlin center
 const position: LatLngExpression = [52.520008, 13.404954];
@@ -18,13 +18,20 @@ const getMarkerPosition = ({ lat, lon }: any) => {
 
 const MapView = () => {
   const [results] = useAtom(searchResultsAtom);
+  const [currentSearchResult, setCurrentSearchResult] = useAtom(currentSearchResultAtom);
   const mapRef = useRef<Leaflet.Map | null>(null);
+
+  useEffect(() => {
+    if (mapRef.current && currentSearchResult) {
+      mapRef.current.setView(getMarkerPosition(currentSearchResult));
+    }
+  }, [currentSearchResult]);
 
   useEffect(() => {
     if (results && mapRef.current) {
       // Calculate the new bounds with the new results
       const bounds = Leaflet.latLngBounds(results.map(getMarkerPosition));
-      
+
       // Re-fit the map to the new bounds
       mapRef.current.fitBounds(bounds, {
         padding: [50, 50],
@@ -52,9 +59,23 @@ const MapView = () => {
       />
       <ZoomControl position="bottomright" />
       {results &&
-        results.map((result) => (
-          <Marker key={result.id} icon={markerIcon} position={getMarkerPosition(result)} />
-        ))}
+        results.map((result) => {
+          const markerIcon =
+            currentSearchResult?.id === result.id ? largeMarkerIcon : regularMarkerIcon;
+
+          return (
+            <Marker
+              key={result.id}
+              icon={markerIcon}
+              position={getMarkerPosition(result)}
+              eventHandlers={{
+                click: () => {
+                  setCurrentSearchResult(result);
+                },
+              }}
+            />
+          );
+        })}
     </MapContainer>
   );
 };
