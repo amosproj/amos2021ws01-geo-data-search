@@ -84,19 +84,19 @@ def get_query(string: str) -> object:
                 else:
                     number = convert_to_meter(token)
                 # select min parameter by default
-                if param_1 == "min" or param_1 == "":
+                if param_1 in ["min", ""]:
                     result.route_attributes.height.min = number
                 elif param_1 == "max":
                     result.route_attributes.height.max = number
             elif param_2 == "length":
                 # select min parameter by default
-                if param_1 == "min" or param_1 == "":
+                if param_1 in ["min", ""]:
                     result.route_attributes.length.min = number
                 elif param_1 == "max":
                     result.route_attributes.length.max = number
             elif param_2 == "gradiant":
                 # select min parameter by default
-                if param_1 == "min" or param_1 == "":
+                if param_1 in ["min", ""]:
                     result.route_attributes.gradiant.min = number
                 elif param_1 == "max":
                     result.route_attributes.gradiant.max = number
