@@ -67,7 +67,13 @@ public class FrontendController {
 
         logInfo("SENDING THIS RESPONSE TO FRONTEND:");
         logInfo(apiQueryResults.toString());
-        return new ResultResponse(apiQueryResults);
+        ResultResponse response;
+        if (apiQueryResults.isEmpty()){
+            response = new ResultResponse(null);
+        }else{
+            response = new ResultResponse(apiQueryResults);
+        }
+        return response;
     }
 
     private ErrorResponse handleError(Throwable throwable) {
