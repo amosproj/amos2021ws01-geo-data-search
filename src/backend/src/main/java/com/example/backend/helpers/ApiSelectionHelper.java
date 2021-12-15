@@ -22,16 +22,16 @@ public class ApiSelectionHelper {
         RequestType requestType;
         switch (nlpQueryResponse.getQueryObject()) {
             case ELEVATION:
-                requestType = RequestType.SEARCH;
+                requestType = RequestType.ELEVATION;
                 break;
             case PLACE:
-                requestType = RequestType.DETAILS;
+                requestType = RequestType.PLACE;
                 break;
             case ROUTE:
                 requestType = RequestType.ROUTING;
                 break;
             default:
-                requestType = RequestType.SEARCH;
+                requestType = RequestType.PLACE;
                 break;
         }
         return requestType;
@@ -39,19 +39,10 @@ public class ApiSelectionHelper {
 
     public ApiType getApiPreference(NlpQueryResponse nlpQueryResponse) {
         ApiType preference;
-        switch (getRequestType(nlpQueryResponse)) {
-            case SEARCH:
-                preference = ApiType.OSM_API;
-                break;
-            case ROUTING:
-                preference = ApiType.HERE_API;
-                break;
-            case DETAILS:
-                preference = ApiType.OSM_API;
-                break;
-            default:
-                preference = ApiType.OSM_API;
-                break;
+        if (getRequestType(nlpQueryResponse) == RequestType.ROUTING) {
+            preference = ApiType.HERE_API;
+        } else {
+            preference = ApiType.OSM_API;
         }
         return preference;
     }
@@ -60,7 +51,7 @@ public class ApiSelectionHelper {
         OSM_API, HERE_API
     }
     public enum RequestType {
-        SEARCH, ROUTING, DETAILS
+        ELEVATION, ROUTING, PLACE
     }
 }
 
