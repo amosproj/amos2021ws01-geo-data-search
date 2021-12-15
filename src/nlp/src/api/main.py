@@ -26,7 +26,7 @@ async def root():
 )
 async def get_version():
     logging.warning("[NLP Component] Requested current version number")
-    return {"version": "0.2.0"}
+    return {"version": "0.8.0"}
 
 
 @app.get(
