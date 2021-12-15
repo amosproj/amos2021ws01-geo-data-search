@@ -1,6 +1,5 @@
-from api.string_interpreter import get_query
+from api.string_interpreter import get_query, Query
 import pytest
-
 
 def get_query_objects_test_data():
     queries = [
@@ -47,6 +46,21 @@ def get_keyword_test_data():
     ]
     return queries
 
+def get_query_test_data():
+    
+    queries = []
+    
+    query = Query()
+    query.location = "Paris"
+    query.query_object = "route"
+    query.route_attributes.gradiant.max = 7
+    queries.append(["Plane mir eine Route nach Paris mit einer Steigung von maximal 7%",
+            query
+        ]
+
+    )
+    return queries
+
 
 @pytest.mark.parametrize("query", get_query_objects_test_data())
 def test_query_objects(query):
@@ -62,6 +76,11 @@ def test_route_gradient(query):
 def test_query_objects_keyword(query):
     result = get_query(query[0])
     assert result.query_object == query[1]
+
+@pytest.mark.parametrize("query", get_query_test_data())
+def test_query(query):
+    result = get_query(query[0])
+    assert result == query[1]
 
 def test_default_keyword():
     result = get_query("Wo sind Almen in Brandenburg")
