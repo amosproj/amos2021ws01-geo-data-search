@@ -3,6 +3,10 @@ package com.example.backend.controllers;
 import com.example.backend.clients.OsmApiClient;
 import com.example.backend.data.ApiResult;
 import com.example.backend.data.api.*;
+import com.example.backend.data.here.Place;
+import com.example.backend.data.here.Route;
+import com.example.backend.data.here.Section;
+import com.example.backend.data.here.TransportMode;
 import com.example.backend.data.http.Error;
 import com.example.backend.data.http.ErrorResponse;
 import com.example.backend.data.http.NlpQueryResponse;
@@ -14,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static com.example.backend.helpers.ApiSelectionHelper.*;
 
@@ -60,28 +65,12 @@ public class ApiController {
         return result;
     }
 
-    public void routeSearch(String origin, String destination, String transportMode, String returnType) {
-        try {
-            String hereApiRoutingResponseString =
-                    hereApiRestService.getRoutingResponse(origin, destination, transportMode, returnType);
-            logInfo("HERE / ROUTING:");
-            logInfo(hereApiRoutingResponseString);
-            HereApiRoutingResponse hereApiRoutingResponse = new Gson().fromJson(hereApiRoutingResponseString, HereApiRoutingResponse.class);
-            logInfo(hereApiRoutingResponse.toString(""));
-        } catch (Throwable throwable) {
-            handleError(throwable);
-        }
+    public List<ApiResult> getChargingStationsAlongTheWay(String origin, String destination) {
+        return hereApiRestService.getChargingStationsOnRoute(origin, destination);
     }
 
-    public void guidanceSearch(String origin, String destination, String transportMode) {
-        try {
-            HereGuidanceResponse hereApiRoutingResponse =
-                    hereApiRestService.getGuidanceResponse("52.5308,13.3847", "52.5264,13.3686", "car");
-            logInfo("HERE / GUIDANCE:");
-            logInfo(hereApiRoutingResponse.toString(""));
-        } catch (Throwable throwable) {
-            handleError(throwable);
-        }
+    public List<ApiResult> getGuidanceForRoute(String origin, String destination, boolean includingChargingStations){
+        return hereApiRestService.getGuidanceForRoute(origin, destination, includingChargingStations);
     }
 
     private OSMQuery generateOsmQuery(NlpQueryResponse nlpQueryResponse) {
@@ -96,6 +85,7 @@ public class ApiController {
         return osmQuery;
     }
 
+    // TODO What is this?
     private String generateHereQuery(NlpQueryResponse nlpQueryResponse) {
         StringBuilder builder = new StringBuilder();
         builder.append(nlpQueryResponse.getLocation()).append(" ");

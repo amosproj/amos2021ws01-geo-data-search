@@ -2,6 +2,7 @@ package com.example.backend.data.here;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Route implements HereApiElement {
@@ -34,5 +35,17 @@ public class Route implements HereApiElement {
         } else {
             return "null";
         }
+    }
+
+    public List<Place> getAlLChargingStations() {
+        List<Place> allChargingStations = new ArrayList<>();
+        for (Section section : sections) {
+            if (section != null && section.departure != null && section.departure.place != null) {
+                if (section.departure.place.type.equals("chargingStation")) {
+                    allChargingStations.add(section.departure.place);
+                }
+            }
+        }
+        return allChargingStations;
     }
 }

@@ -26,6 +26,11 @@ public class FrontendController {
     private final ApiController apiController;
     private static final String LOG_PREFIX = "FRONTEND_CONTROLLER";
 
+    // Brandenburger Tor in Berlin
+    public static final String ROUTE_START_COORDINATES = "52.518462144205756,13.373228882261595";
+    // Arc de Triomphe de l’Étoile in Paris
+    public static final String ROUTE_DESTINATION_COORDINATES = "48.873970150314705,2.2949678134907785";
+
     public FrontendController(NlpClient nlpClient, OsmApiClient osmApiClient, HereApiRestService hereApiRestService) {
         this.nlpClient = nlpClient;
         this.apiController = new ApiController(osmApiClient, hereApiRestService);
@@ -58,13 +63,14 @@ public class FrontendController {
             nlpQueryResponse = new Gson().fromJson(nlpResponse, NlpQueryResponse.class);
             logInfo(nlpQueryResponse.toString());
         } catch (Throwable throwable) {
+            throwable.printStackTrace();
             return handleError(throwable);
         }
 
         ArrayList<ApiResult> apiQueryResults = apiController.querySearch(nlpQueryResponse);
 
-//        apiController.routeSearch("52.5308,13.3847", "52.5264,13.3686", "car", "summary");
-//        apiController.guidanceSearch("52.5308,13.3847", "52.5264,13.3686", "car");
+        apiQueryResults.addAll(apiController.getChargingStationsAlongTheWay(ROUTE_START_COORDINATES, ROUTE_DESTINATION_COORDINATES));
+
 
         logInfo("SENDING THIS RESPONSE TO FRONTEND:");
         logInfo(apiQueryResults.toString());
@@ -97,6 +103,7 @@ public class FrontendController {
         } catch (Throwable t) {
             nlpVersion = "unknown";
         }
+
 
         return new VersionResponse(Version.createVersion("0.8.0", nlpVersion));
     }
