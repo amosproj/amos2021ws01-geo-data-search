@@ -1,0 +1,48 @@
+TeamMeeting Thursday 09.12.2021 12:30-14:00
+-------------------------------------------
+
+	location: Zoom
+
+	protocoled by: chrisjherm
+
+	Structure:
+		Old Sprint Review
+		Old Sprint Release
+		Old Sprint Retroperspective
+		Feedback from Coach
+		Organizational matters
+		New Sprint Planning
+
+- - - - - - - - - - - - - - - - - - - - - -
+
+	Old Sprint Review:
+		One Stakeholder was present this time.
+		We had still one issue in the Progress-Column: #151 "External APIs Feature research"
+		Three issues were left in the Awaiting-Review-Column: #150 "Find charging stations on routes",
+		#156 "Parse unit alternatives" and #166 "Adjust dataset for new labels"
+		Those four issues are still relevant for the upcoming sprint.
+		See Kanban Board for a more detailed overview.
+		After the Review the stakeholder left the meeting.
+
+	Old Sprint Release:
+		The latest version was released live by PO Decappi.
+
+	Old Sprint Retroperspective:
+		Todays Retro was about the first half of the entire project.
+		Takeaways next sprint: 
+			- Regular backend mid-sprint meetings (fixed schedule)
+		Takeaways second half:
+			- Prioritize issues in team which other teams depend on
+			- Spread the understanding of the project vision among devs
+			- discuss further steps with the whole team to make sure we reach our goal (tasks for the next 2-3 sprints, if someone has capacity, tasks can be done earlier)
+			- Try to discuss any frontend questions in #frontend team discord chat. Keep up the good work!
+			- keep it going!
+
+	Feedback from Coach:
+		This time there was no detailed feedback from the coach.
+
+	Organizational matters:
+		The next meeting will take place on Thursday, January 13, 2022 at 12:30 p.m.
+
+	New Sprint Planning:
+		See Kanban Board for a more detailed overview.
