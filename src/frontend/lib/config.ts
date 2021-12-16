@@ -1,2 +1,2 @@
 export const isDevelopment = process.env.ENVIRONMENT === 'development';
-export const FRONTEND_VERSION = '0.7';
+export const FRONTEND_VERSION = '0.8.0';
