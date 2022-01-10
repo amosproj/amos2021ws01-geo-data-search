@@ -42,6 +42,18 @@ def get_keyword_test_data():
     ]
     return queries
 
+def get_charging_station_test_data():
+    queries = [
+        ["Plane mir eine Route nach Paris mit einer Steigung von maximal 7% mit ladestationen", True],
+        ["Gibt's Routen von der Arktis zur Antarktis", False],
+        ["Plane mir eine Route nach Paris ohne ladesäulen", False],
+        ["Plane mir eine Route nach Paris mit einer Steigung von mindestens 22% mit etankstellen", True],
+        ["Plane mir eine Route nach Paris mit Stromtankstellen", True],
+        ["Plane mir eine Route nach Paris mit keinen charging stations", False],
+    ]
+    return queries
+
+
 def get_query_test_data():
     queries = []
     query = Query()
@@ -95,6 +107,11 @@ def test_query_objects_keyword(query):
 def test_query(query):
     result = get_query(query[0])
     assert result == query[1]
+
+@pytest.mark.parametrize("query", get_charging_station_test_data())
+def test_charging_station(query):
+    result = get_query(query[0])
+    assert result.route_attributes.charging_stations == query[1]
 
 def test_default_keyword():
     result = get_query("Wo sind Almen in Brandenburg")
