@@ -1,4 +1,3 @@
-import logging
 import os
 import pathlib
 import sys
@@ -6,8 +5,8 @@ from typing import Optional
 
 import spacy
 from pydantic.dataclasses import dataclass
-from .helper_service import convert_number_to_meter, check_similarity
 
+from .helper_service import convert_number_to_meter, check_similarity
 from .utils import get_entity_synonyms, get_keyword_from_synonyms, get_alias_synonyms
 
 # get os specific file separator
@@ -56,8 +55,8 @@ def get_query(string: str) -> object:
             result.location += token.lemma_
 
     ner_tokens = ner_model(string)
-    
-    #checks if charging stations are queried
+
+    # checks if charging stations are queried
     if check_feature(ner_tokens, "charging_station"):
         result.route_attributes.charging_stations = True
 
@@ -190,7 +189,7 @@ def check_unit(token: spacy.tokens.token.Token) -> str:
 
 
 def convert_to_meter(
-    amount_token: spacy.tokens.token.Token, next_token: spacy.tokens.token.Token = None
+        amount_token: spacy.tokens.token.Token, next_token: spacy.tokens.token.Token = None
 ) -> int:
     if next_token is None:
         amount_unit = "km"
@@ -202,48 +201,51 @@ def convert_to_meter(
         return converted_number
     return 0
 
-def check_feature(tokens: spacy.tokens.doc.Doc , feature="charging_station"):
+
+def check_feature(tokens: spacy.tokens.doc.Doc, feature="charging_station"):
     """
-    :param tokens 
-    :param feature, specifies the feature that is checked  
+    :param tokens
+    :param feature, specifies the feature that is checked
     :return true, if one token is equal to a feature synonym and it's not negated, otherwise false
     """
     feature_synonyms = []
-    #get the specific synonyms list
+    # get the specific synonyms list
     if feature == "charging_station":
         feature_synonyms = charging_station_synonyms
-    #iterate over all tokens and check if feature is present  
+    # iterate over all tokens and check if feature is present
     for index in range(len(tokens)):
         token = tokens[index]
         normalized_token = normalize_token(token)
-        #iterate over all items in the synonym list and check if token is equal to one synonym
+        # iterate over all items in the synonym list and check if token is equal to one synonym
         for synonym in feature_synonyms:
             if check_similarity(synonym, normalized_token, threshold=0.9):
-                normalized_previous_token = normalize_token(tokens[index-1])
+                normalized_previous_token = normalize_token(tokens[index - 1])
                 if not check_negation(normalized_previous_token):
                     return True
     return False
 
-def normalize_token(token: spacy.tokens.token.Token)-> str: 
+
+def normalize_token(token: spacy.tokens.token.Token) -> str:
     """
     :param token
     :return token as lemmatized lowercase string value
     """
     return str(token.lemma_).lower()
 
-def check_negation(prev_token: str)-> bool:
+
+def check_negation(prev_token: str) -> bool:
     """
-    :param token
+    :param prev_token
     :return true, if token is equal to an item from the negation list
     """
     for synonym in negation_synonyms:
-            if check_similarity(synonym, prev_token, threshold=0.8):
-                return True
+        if check_similarity(synonym, prev_token, threshold=0.8):
+            return True
     return False
+
 
 @dataclass
 class BaseAttributes:
-
     min: Optional[int]
     max: Optional[int]
 
