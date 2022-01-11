@@ -4,13 +4,13 @@ import com.example.backend.clients.NlpClient;
 import com.example.backend.clients.OsmApiClient;
 import com.example.backend.data.ApiResult;
 import com.example.backend.data.HttpResponse;
+import com.example.backend.data.api.HereApiGeocodeResponse;
 import com.example.backend.data.http.Error;
 import com.example.backend.data.http.*;
 import com.example.backend.helpers.BackendLogger;
 import com.google.gson.Gson;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
 import java.nio.charset.StandardCharsets;
@@ -21,6 +21,8 @@ import java.util.Arrays;
 @RequestMapping("/backend")
 public class FrontendController {
 
+    public static final String QUERY_OBJECT_ROUTE_WITH_CHARGING = "route_with_charging";
+    public static final String QUERY_OBJECT_ROUTE = "route";
     private final NlpClient nlpClient;
     private final BackendLogger logger = new BackendLogger();
     private final ApiController apiController;
@@ -69,15 +71,24 @@ public class FrontendController {
 
         ArrayList<ApiResult> apiQueryResults = apiController.querySearch(nlpQueryResponse);
 
-        apiQueryResults.addAll(apiController.getChargingStationsAlongTheWay(ROUTE_START_COORDINATES, ROUTE_DESTINATION_COORDINATES));
-
+        if (nlpQueryResponse.getQueryObject().equals(QUERY_OBJECT_ROUTE_WITH_CHARGING)) {
+            logInfo("Searching for a route to " + nlpQueryResponse.getLocation() + " with charging stations...");
+            // TODO Replace this workaround and introduce a proper starting location (coordinates)
+            String position = apiQueryResults.get(0).getLat() + "," + apiQueryResults.get(0).getLon();
+            apiQueryResults.addAll(apiController.getChargingStationsAlongTheWay(ROUTE_START_COORDINATES, position));
+        } else if (nlpQueryResponse.getQueryObject().equals(QUERY_OBJECT_ROUTE)) {
+            logInfo("Searching for a route to " + nlpQueryResponse.getLocation() + " without charging stations...");
+            // TODO Replace this workaround and introduce a proper starting location (coordinates)
+            String position = apiQueryResults.get(0).getLat() + "," + apiQueryResults.get(0).getLon();
+            apiQueryResults.addAll(apiController.getGuidanceForRoute(ROUTE_START_COORDINATES, position, false));
+        }
 
         logInfo("SENDING THIS RESPONSE TO FRONTEND:");
         logInfo(apiQueryResults.toString());
         ResultResponse response;
-        if (apiQueryResults.isEmpty()){
+        if (apiQueryResults.isEmpty()) {
             response = new ResultResponse(null);
-        }else{
+        } else {
             response = new ResultResponse(apiQueryResults);
         }
         return response;
