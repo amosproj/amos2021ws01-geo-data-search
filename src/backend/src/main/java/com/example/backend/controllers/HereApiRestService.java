@@ -99,7 +99,7 @@ public class HereApiRestService {
                 URL_QUERY_RETURN_TYPE + "polyline,turnbyturnactions";
         logInfo("URL for HERE GUIDANCE = " + url);
         String response = this.restTemplate.getForObject(url, String.class);
-        logInfo("HereApiRestService.getGuidanceResponse() = " + response);
+        logInfo("HereApiRestService.getGuidanceResponse() = " + "DEACTIVATED PRINT OUTS NOW");
         return new Gson().fromJson(response, HereGuidanceResponse.class);
     }
 
