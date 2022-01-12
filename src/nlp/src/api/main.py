@@ -26,6 +26,12 @@ APP_TITLE = "API for NLP Component"
 app = FastAPI(title=APP_TITLE)
 
 
+def write_log_to_file(text):
+    log_path = pathlib.Path(f'{CURRENT_DIR}{SEP}logs{SEP}')
+    with open(f"{log_path}{SEP}log_{datetime.now().date()}", "a") as logfile:
+        logfile.write(f"{datetime.now()} {text}\n")
+
+
 @app.get("/", include_in_schema=False, response_class=HTMLResponse)
 async def root():
     return f"<html><head><title>{APP_TITLE}</title></head><body>" \
@@ -47,9 +53,10 @@ async def get_version():
     response_model=Query
 )
 async def request(text: str):
-    logging.warning(f"[NLP Component] Received Request: {text}")
+    LOGGER.info('Received Request \"%s\"', text)
+    write_log_to_file(f'Received Request \"{text}\"')
 
     answer = process_string(text)
-    logging.warning(f"[NLP Component] Answer: {answer}")
-
+    LOGGER.info("Send %s", answer)
+    write_log_to_file(f'Send \"{answer}\"')
     return answer
