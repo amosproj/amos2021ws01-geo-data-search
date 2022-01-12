@@ -60,3 +60,14 @@
     newyorkcity
     NY
     washington
+
+~[&charging_station]
+    charging 
+    ladestation
+    etankstelle
+    ladesäule
+    stromtankstelle
+
+~[&negation]
+    keine
+    ohne

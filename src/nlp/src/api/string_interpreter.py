@@ -1,4 +1,3 @@
-import logging
 import os
 import pathlib
 import sys
@@ -6,8 +5,8 @@ from typing import Optional
 
 import spacy
 from pydantic.dataclasses import dataclass
-from .helper_service import convert_number_to_meter
 
+from .helper_service import convert_number_to_meter, check_similarity
 from .utils import get_entity_synonyms, get_keyword_from_synonyms, get_alias_synonyms
 
 # get os specific file separator
@@ -34,6 +33,8 @@ ner_model = load_custom_ner_model()
 # get synonyms for keywords from chatette file
 query_object_synonyms = get_entity_synonyms(entity="queryObject")["queryObject"]
 unit_synonyms = get_alias_synonyms(title="unit")["unit"]
+charging_station_synonyms = get_alias_synonyms(title="charging_station")["charging_station"]
+negation_synonyms = get_alias_synonyms(title="negation")["negation"]
 
 
 def process_string(string: str) -> object:
@@ -54,6 +55,11 @@ def get_query(string: str) -> object:
             result.location += token.lemma_
 
     ner_tokens = ner_model(string)
+
+    # checks if charging stations are queried
+    if check_feature(ner_tokens, "charging_station"):
+        result.route_attributes.charging_stations = True
+
     for index in range(len(ner_tokens)):
         token = ner_tokens[index]
 
@@ -183,7 +189,7 @@ def check_unit(token: spacy.tokens.token.Token) -> str:
 
 
 def convert_to_meter(
-    amount_token: spacy.tokens.token.Token, next_token: spacy.tokens.token.Token = None
+        amount_token: spacy.tokens.token.Token, next_token: spacy.tokens.token.Token = None
 ) -> int:
     if next_token is None:
         amount_unit = "km"
@@ -194,6 +200,48 @@ def convert_to_meter(
         converted_number = convert_number_to_meter(amount_unit, number)
         return converted_number
     return 0
+
+
+def check_feature(tokens: spacy.tokens.doc.Doc, feature="charging_station"):
+    """
+    :param tokens
+    :param feature, specifies the feature that is checked
+    :return true, if one token is equal to a feature synonym and it's not negated, otherwise false
+    """
+    feature_synonyms = []
+    # get the specific synonyms list
+    if feature == "charging_station":
+        feature_synonyms = charging_station_synonyms
+    # iterate over all tokens and check if feature is present
+    for index in range(len(tokens)):
+        token = tokens[index]
+        normalized_token = normalize_token(token)
+        # iterate over all items in the synonym list and check if token is equal to one synonym
+        for synonym in feature_synonyms:
+            if check_similarity(synonym, normalized_token, threshold=0.9):
+                normalized_previous_token = normalize_token(tokens[index - 1])
+                if not check_negation(normalized_previous_token):
+                    return True
+    return False
+
+
+def normalize_token(token: spacy.tokens.token.Token) -> str:
+    """
+    :param token
+    :return token as lemmatized lowercase string value
+    """
+    return str(token.lemma_).lower()
+
+
+def check_negation(prev_token: str) -> bool:
+    """
+    :param prev_token
+    :return true, if token is equal to an item from the negation list
+    """
+    for synonym in negation_synonyms:
+        if check_similarity(synonym, prev_token, threshold=0.8):
+            return True
+    return False
 
 
 @dataclass
@@ -241,12 +289,14 @@ class RouteAttributes:
     length: Optional[BaseAttributes]
     gradiant: Optional[GradiantAttributes]
     curves: Optional[Curves]
+    charging_stations: bool
 
     def __init__(self):
         self.height = BaseAttributes()
         self.length = BaseAttributes()
         self.gradiant = GradiantAttributes()
         self.curves = Curves()
+        self.charging_stations = False
 
 
 @dataclass
@@ -260,13 +310,12 @@ class Query:
         self.location = ""
         self.max_distance = 0
         self.query_object = ""
-
         self.route_attributes = RouteAttributes()
 
 
 # print(get_query("Finde eine Strecke in Italien mit mindestens 10 meilen länge in einer lage über 1000  mit einem Anteil von 500 kilometer Linkskurven mit einem Anteil von 600m Steigung über 7% auf einer Höhe von maximal 10"))
 print(
     get_query(
-        "Plane mir eine Route nach Paris mit einem Anteil von 500 meter Steigung von maximal 7%"
+        "Plane mir eine Route nach Paris mit einem Anteil von 500 meter Steigung von maximal 7% mit eine Ladestationen"
     )
 )
