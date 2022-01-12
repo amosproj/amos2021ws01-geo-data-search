@@ -21,14 +21,18 @@ public class ResultResponse implements HttpResponse {
 
     public String toString() {
         String output = "ResultResponse:\n";
-        for (ApiResult singleResult : result) {
-            output += "\t{";
-            output += "type=" + singleResult.getType() + ", ";
-            output += "name=" + singleResult.getName() + ", ";
-            output += "id=" + singleResult.getId() + ", ";
-            output += "lat=" + singleResult.getLat() + ", ";
-            output += "lon=" + singleResult.getLon();
-            output += "},\n";
+        if (result == null) {
+            output += "NULL";
+        } else {
+            for (ApiResult singleResult : result) {
+                output += "\t{";
+                output += "type=" + singleResult.getType() + ", ";
+                output += "name=" + singleResult.getName() + ", ";
+                output += "id=" + singleResult.getId() + ", ";
+                output += "lat=" + singleResult.getLat() + ", ";
+                output += "lon=" + singleResult.getLon();
+                output += "},\n";
+            }
         }
         return output;
     }
