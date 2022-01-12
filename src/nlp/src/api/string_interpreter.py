@@ -198,7 +198,8 @@ def check_unit(token: spacy.tokens.token.Token) -> str:
 
 
 def convert_to_meter(
-        amount_token: spacy.tokens.token.Token, next_token: spacy.tokens.token.Token = None
+        amount_token: spacy.tokens.token.Token,
+        next_token: spacy.tokens.token.Token = None
 ) -> int:
     if next_token is None:
         amount_unit = "km"
