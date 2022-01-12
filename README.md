@@ -43,3 +43,55 @@ To run the tests enter the following in the terminal:
 ```
 docker compose run nlp pytest
 ```
+
+### Artifact export
+```shell
+docker compose build
+docker save amos2021ws01-geo-data-search_nlp:latest > export/nlp.tar
+docker save amos2021ws01-geo-data-search_frontend:latest > export/frontend.tar
+docker save amos2021ws01-geo-data-search_backend:latest > export/backend.tar
+```
+Upload the files to https://gigamove.rwth-aachen.de/en
+### Artifact import
+Download the files in a new folder
+```shell
+docker load -i nlp.tar
+docker load -i frontend.tar
+docker load -i backend.tar
+```
+Add a new docker-compose.yaml file:
+```yaml
+version: "3.9"
+services:
+  frontend:
+    image: amos2021ws01-geo-data-search_frontend:latest
+    ports:
+      - 8080:3000
+    environment:
+      - BACKEND_API_ROOT=http://backend:8080/backend
+      - ENVIRONMENT=development
+  backend:
+    image: amos2021ws01-geo-data-search_backend:latest
+    ports:
+      - 5000:8080
+    secrets:
+      - source: here-api-key
+  nlp:
+    image: amos2021ws01-geo-data-search_nlp:latest
+    ports:
+      - 4000:8000
+    command: /app/entrypoint.sh
+secrets:
+  here-api-key:
+    file: ./secrets/here-api-key.txt
+```
+Create a folder for secrets and put your HERE API key:
+```shell
+mkdir secrets
+echo "<YOUR_API_KEY>" > secrets/here-api-key.txt
+```
+run the stack:
+```shell
+docker compose up -d
+```
+The application should be available under http://localhost:8080
