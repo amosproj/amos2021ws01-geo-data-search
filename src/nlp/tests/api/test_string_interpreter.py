@@ -53,6 +53,20 @@ def get_charging_station_test_data():
     ]
     return queries
 
+def get_toll_roads_test_data():
+    queries = [
+        ["Plane mir eine Route nach Paris mit einer Steigung von maximal 7% ohne mautstellen", False],
+        ["Gibt es kostenfreie Routen von der Arktis zur Antarktis", False],
+        ["Plane mir eine Route nach Paris mit maustellen", True],
+        ["Plane mir eine Route nach Paris mit einer Steigung von mindestens 22% mit etankstellen und maut", True],
+        ["Plane mir eine Route nach Paris mit gebühren", True],
+        ["Plane mir eine Route nach Paris mit zollstellen", True],
+        ["Plane mir eine gebührenfreie Route nach Paris", False],
+        ["Plane mir eine Route nach Paris mit keinen mautstellen", False],
+        ["Plane mir eine Route nach Paris ohne gebühren zu zahlen", False],
+        ["Plane mir eine Route nach Paris mit Autobahnen, kann auch gebühren enthalten", True],
+    ]
+    return queries
 
 def get_query_test_data():
     queries = []
@@ -112,6 +126,11 @@ def test_query(query):
 def test_charging_station(query):
     result = get_query(query[0])
     assert result.route_attributes.charging_stations == query[1]
+
+@pytest.mark.parametrize("query", get_toll_roads_test_data())
+def test_toll_roads(query):
+    result = get_query(query[0])
+    assert result.route_attributes.toll_roads == query[1]
 
 def test_default_keyword():
     result = get_query("Wo sind Almen in Brandenburg")
