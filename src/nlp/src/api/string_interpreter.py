@@ -34,6 +34,7 @@ ner_model = load_custom_ner_model()
 query_object_synonyms = get_entity_synonyms(entity="queryObject")["queryObject"]
 unit_synonyms = get_alias_synonyms(title="unit")["unit"]
 charging_station_synonyms = get_alias_synonyms(title="charging_station")["charging_station"]
+toll_road_synonyms = get_alias_synonyms(title="toll_road")["toll_road"]
 negation_synonyms = get_alias_synonyms(title="negation")["negation"]
 
 
@@ -59,6 +60,10 @@ def get_query(string: str) -> object:
     # checks if charging stations are queried
     if check_feature(ner_tokens, "charging_station"):
         result.route_attributes.charging_stations = True
+    
+    # checks if toll roads are queried
+    if check_feature(ner_tokens, "toll_road"):
+        result.route_attributes.toll_roads = True
 
     for index in range(len(ner_tokens)):
         token = ner_tokens[index]
@@ -212,13 +217,16 @@ def check_feature(tokens: spacy.tokens.doc.Doc, feature="charging_station"):
     # get the specific synonyms list
     if feature == "charging_station":
         feature_synonyms = charging_station_synonyms
-    # iterate over all tokens and check if feature is present
+    elif feature == "toll_road":
+        feature_synonyms = toll_road_synonyms
+        
+    #iterate over all tokens and check if feature is present  
     for index in range(len(tokens)):
         token = tokens[index]
         normalized_token = normalize_token(token)
         # iterate over all items in the synonym list and check if token is equal to one synonym
         for synonym in feature_synonyms:
-            if check_similarity(synonym, normalized_token, threshold=0.9):
+            if check_similarity(synonym, normalized_token, threshold=0.85):
                 normalized_previous_token = normalize_token(tokens[index - 1])
                 if not check_negation(normalized_previous_token):
                     return True
@@ -290,6 +298,7 @@ class RouteAttributes:
     gradiant: Optional[GradiantAttributes]
     curves: Optional[Curves]
     charging_stations: bool
+    toll_roads: bool
 
     def __init__(self):
         self.height = BaseAttributes()
@@ -297,6 +306,7 @@ class RouteAttributes:
         self.gradiant = GradiantAttributes()
         self.curves = Curves()
         self.charging_stations = False
+        self.toll_roads = False
 
 
 @dataclass

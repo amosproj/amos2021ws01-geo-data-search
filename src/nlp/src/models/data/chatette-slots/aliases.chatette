@@ -68,6 +68,16 @@
     ladesäule
     stromtankstelle
 
+~[&toll_road]
+    maut
+    mautstellen
+    zoll
+    zollstelle
+    kosten
+    gebühren 
+    beitrag
+    mautstraßen
+
 ~[&negation]
     keine
     ohne
