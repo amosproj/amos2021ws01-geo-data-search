@@ -115,8 +115,7 @@ public class ApiController {
 
     private String generateHereQuery(NlpQueryResponse nlpQueryResponse) {
         StringBuilder builder = new StringBuilder();
-        builder.append(nlpQueryResponse.getLocation()).append(" ");
-        builder.append(nlpQueryResponse.getQueryObject());
+        builder.append(nlpQueryResponse.getLocation());
         logInfo("Generated Query for HERE: " + builder);
         return builder.toString();
     }
