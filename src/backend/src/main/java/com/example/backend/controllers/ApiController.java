@@ -71,9 +71,9 @@ public class ApiController {
     private void handleHereApiRequest(NlpQueryResponse nlpQueryResponse, List<ApiResult> result) {
         HereRoutingAttributes hereRoutingAttributes = new HereRoutingAttributes();
         if (nlpQueryResponse.getRouteAttributes().getTollRoads()) {
-            hereRoutingAttributes.includeTollRoads();
+            hereRoutingAttributes.avoidToll();
         } else {
-            hereRoutingAttributes.excludeTollRoads();
+            hereRoutingAttributes.includeTollRoads();
         }
 
         String hereApiResponseAsString = hereApiRestService.getPostsPlainJSON(generateHereQuery(nlpQueryResponse));

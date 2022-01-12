@@ -3,7 +3,7 @@ package com.example.backend.data.here;
 public class HereRoutingAttributes {
 
     private static boolean includeChargingStations = false;
-    private static boolean includeTollRoads = true;
+    private static boolean avoidTollRoads = true;
     private final static String DELIMITER = "&";
     private String returnType = "";
 
@@ -19,15 +19,15 @@ public class HereRoutingAttributes {
         includeChargingStations = false;
     }
 
+    public void avoidToll() {
+        avoidTollRoads = true;
+    }
+
     public void includeTollRoads() {
-        includeTollRoads = true;
+        avoidTollRoads = false;
     }
 
-    public void excludeTollRoads() {
-        includeTollRoads = false;
-    }
-
-    public String getUrlArguments() {
+    public String getUrlArguments(boolean guidance) {
         String url_query_attributes = "";
         if (includeChargingStations) {
             url_query_attributes += "ev[connectorTypes]=iec62196Type2Combo" + DELIMITER +
@@ -42,7 +42,7 @@ public class HereRoutingAttributes {
                     "ev[chargingCurve]=0,239,32,199,56,167,60,130,64,111,68,83,72,55,76,33,78,17,80,1" + DELIMITER +
                     "ev[maxChargeAfterChargingStation]=72" + DELIMITER;
         }
-        if (!includeTollRoads) {
+        if (avoidTollRoads && guidance) {
             url_query_attributes += "avoid[features]=tollRoad" + DELIMITER;
         }
         url_query_attributes += "return=" + returnType + DELIMITER;

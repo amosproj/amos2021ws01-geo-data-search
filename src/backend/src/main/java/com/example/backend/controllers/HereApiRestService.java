@@ -45,7 +45,7 @@ public class HereApiRestService {
     }
 
     public String getRoutingResponse(String origin, String destination, String transportMode, HereRoutingAttributes hereRoutingAttributes) {
-        String url_query_attributes = hereRoutingAttributes.getUrlArguments();
+        String url_query_attributes = hereRoutingAttributes.getUrlArguments(false);
         String url = HERE_ROUTING_URL + SEPARATOR + URL_QUERY_API_KEY + DELIMITER +  //
                 URL_QUERY_TRANSPORT_MODE + transportMode + DELIMITER + //
                 URL_QUERY_ORIGIN + origin + DELIMITER + //
@@ -59,7 +59,7 @@ public class HereApiRestService {
 
     public HereGuidanceResponse getGuidanceResponse(String origin, String destination, String transportMode, HereRoutingAttributes hereRoutingAttributes) {
         hereRoutingAttributes.setReturnTypeToPolylineAndTurnByTurnActions();
-        String url_query_attributes = hereRoutingAttributes.getUrlArguments();
+        String url_query_attributes = hereRoutingAttributes.getUrlArguments(true);
         String url = HERE_ROUTING_URL + SEPARATOR + URL_QUERY_API_KEY + DELIMITER + //
                 URL_QUERY_TRANSPORT_MODE + transportMode + DELIMITER +
                 URL_QUERY_ORIGIN + origin + DELIMITER + //
@@ -128,7 +128,7 @@ public class HereApiRestService {
                     int id = new Random().nextInt();
                     String lat = "" + section.departure.place.location.lat;
                     String lng = "" + section.departure.place.location.lng;
-                    String name = "HERE: " + origin;
+                    String name = origin;
                     generalRoutePoints.add(new SingleLocationResult(type, id, lat, lng, name));
                     type = section.arrival.place.type;
                     id = new Random().nextInt();
