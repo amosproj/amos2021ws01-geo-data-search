@@ -6,9 +6,9 @@ from typing import Optional
 
 import spacy
 from pydantic.dataclasses import dataclass
-from .helper_service import convert_number_to_meter
+from helper_service import convert_number_to_meter
 
-from .utils import get_entity_synonyms, get_keyword_from_synonyms, get_alias_synonyms
+from utils import get_entity_synonyms, get_keyword_from_synonyms, get_alias_synonyms
 
 # get os specific file separator
 SEP = os.path.sep
@@ -42,6 +42,7 @@ def process_string(string: str) -> object:
 
 
 def get_query(string: str) -> object:
+    print(string)
     default_tokens = nlp_default(string)
 
     result = Query()
@@ -74,7 +75,7 @@ def get_query(string: str) -> object:
             number = int(number)
 
             # extract query parameters
-            param_1, param_2 = get_query_parameters(token)
+            param_1, param_2 = get_query_parameters(index, ner_tokens)
             # check if parameters were found
             if param_2 == "height":
                 if index != (len(ner_tokens) - 1):
@@ -84,22 +85,32 @@ def get_query(string: str) -> object:
                 else:
                     number = convert_to_meter(token)
                 # select min parameter by default
-                if param_1 in ["min", ""]:
+                if param_1 in ["min", None]:
                     result.route_attributes.height.min = number
                 elif param_1 == "max":
                     result.route_attributes.height.max = number
             elif param_2 == "length":
                 # select min parameter by default
-                if param_1 in ["min", ""]:
+                if param_1 in ["min", None]:
                     result.route_attributes.length.min = number
                 elif param_1 == "max":
                     result.route_attributes.length.max = number
             elif param_2 == "gradiant":
                 # select min parameter by default
-                if param_1 in ["min", ""]:
+                if param_1 in ["min", None]:
                     result.route_attributes.gradiant.min = number
                 elif param_1 == "max":
                     result.route_attributes.gradiant.max = number
+            elif param_2 == "curves_left":
+                if param_1 in ["min", None]:
+                    result.route_attributes.curves.left.min = number
+                elif param_1 == "max":
+                    result.route_attributes.curves.left.max = number
+            elif param_2 == "curves_right":
+                if param_1 in ["min", None]:
+                    result.route_attributes.curves.right.min = number
+                elif param_1 == "max":
+                    result.route_attributes.curves.right.max = number
 
     # set default value
     if result.query_object == "":
@@ -108,69 +119,103 @@ def get_query(string: str) -> object:
     return result
 
 
-def get_query_parameters(origin: spacy.tokens.token.Token) -> (str, str):
+def get_query_parameters(origin: int, tokens: [spacy.tokens.token.Token]) -> (str, str):
     """
-    :param origin token which requires the attribute it is referring to
-    :return query attributes found in sting. Example: min height
+    @param origin token which requires the attribute it is referring to
+    @param tokens all tokens of the sentence
+    @return query attributes found in sting. Example: min height
     """
 
-    dependencies = get_dependencies(origin)
-    param_1, param_2 = "", ""
+    dependencies, next_amount, previous_amount = get_dependencies(origin, tokens)
+    param_1, param_2 = None, None
 
     for dep in dependencies:
         lemma = str(dep.lemma_).lower()
 
         # extract parameter 1
-        if param_1 == "":
-            if lemma in ["mindestens", "min"]:
+        if param_1 is None:
+            if lemma in ["mindestens", "min", "über"]:
                 param_1 = "min"
             elif lemma in ["maximal", "max", "höchstens"]:
                 param_1 = "max"
-            elif lemma == "über":
-                param_1 = "min"
 
         # extract parameter 2
-        if param_2 == "":
-            if lemma in ["hoch", "höhe"]:
+        if param_2 is None:
+            if lemma in ["hoch", "höhe", "lage"]:
                 param_2 = "height"
             elif lemma in ["lang", "länge"]:
                 param_2 = "length"
             elif lemma == "steigung":
                 param_2 = "gradiant"
+            elif lemma == "linkskurve":
+                param_2 = "curves_left"
+            elif lemma == "rechtskurve":
+                param_2 = "curves_right"
+
+    print("Dependencies for", tokens[origin], ":", dependencies, "->", param_1, param_2)
+
     return param_1, param_2
 
 
-def get_dependencies(origin: spacy.tokens.token.Token) -> [spacy.tokens.token.Token]:
+def get_dependencies(origin: int, tokens: [spacy.tokens.token.Token], discovery_right: int = 3, discovery_left: int = 3,
+                     stop_on_amount: bool = True) -> ([spacy.tokens.token.Token], spacy.tokens.token.Token, spacy.tokens.token.Token):
     """
-    :param origin token which requires its closest dependencies
-    :return tokens ordered by proximity to origin
+    Extracts dependencies of a token, starting its search to the left, then to the right
+    @param origin: token from which the search is started
+    @param tokens: list of tokens containing origin
+    @param discovery_right: max search radius to the right
+    @param discovery_left: max search radius to the left
+    @param stop_on_amount: stop searching in that direction if another token labeled with amount was found
+    @return: (list of dependencies, next amount token (if any), previous amount token (if any))
     """
 
-    # initialise list of results
-    results = []
+    result = []
+    next_token = None
+    previous_token = None
+    count = len(tokens)
 
-    # initialise list of tokens to explore
-    discovery_queue = [origin]
+    # look for values to the left of amount object
+    for i in range(1, discovery_left + 1):
+        # make sure the min array size is not exceeded
+        index = origin - i
+        if index < 0:
+            break
 
-    # search through entire dependency tree, ordering elements by vicinity to origin
-    while len(discovery_queue) > 0:
-        # get next token to process
-        current_token = discovery_queue.pop(0)
+        token = tokens[index]
 
-        # add current token to results
-        results.append(current_token)
+        # if next token is specifying amount
+        if token.ent_type_ == "amount":
+            # save it
+            if previous_token is None:
+                previous_token = token
+            # stop search in that direction
+            if stop_on_amount:
+                break
 
-        # add children to discovery queue, if it wasnt discovered already
-        for child in current_token.children:
-            if child not in discovery_queue and child not in results:
-                discovery_queue.append(child)
+        result.append(token)
 
-        # add head to discovery queue, if it wasn't discovered already
-        current_head = current_token.head
-        if current_head not in discovery_queue and current_head not in results:
-            discovery_queue.append(current_head)
+    # look for values to the right of amount object
+    for i in range(1, discovery_right + 1):
+        # make sure the max array size is not exceeded
+        index = origin + i
+        if index >= count:
+            break
 
-    return results
+        # get token
+        token = tokens[index]
+
+        # if next token is specifying amount
+        if token.ent_type_ == "amount":
+            # save it
+            if next_token is None:
+                next_token = token
+            # stop search in that direction
+            if stop_on_amount:
+                break
+
+        result.append(token)
+
+    return result, next_token, previous_token
 
 
 def check_unit(token: spacy.tokens.token.Token) -> str:
@@ -183,8 +228,7 @@ def check_unit(token: spacy.tokens.token.Token) -> str:
 
 
 def convert_to_meter(
-    amount_token: spacy.tokens.token.Token, next_token: spacy.tokens.token.Token = None
-) -> int:
+    amount_token: spacy.tokens.token.Token, next_token: spacy.tokens.token.Token = None) -> int:
     if next_token is None:
         amount_unit = "km"
     else:
@@ -264,9 +308,5 @@ class Query:
         self.route_attributes = RouteAttributes()
 
 
-# print(get_query("Finde eine Strecke in Italien mit mindestens 10 meilen länge in einer lage über 1000  mit einem Anteil von 500 kilometer Linkskurven mit einem Anteil von 600m Steigung über 7% auf einer Höhe von maximal 10"))
-print(
-    get_query(
-        "Plane mir eine Route nach Paris mit einem Anteil von 500 meter Steigung von maximal 7%"
-    )
-)
+print(get_query("Finde eine Strecke in Italien mit mindestens 10 meilen länge in einer lage über 1000 mit einem Anteil von 500 kilometer Linkskurven mit einem Anteil von 600m Steigung über 7% auf einer Höhe von maximal 10 km"))
+# print(get_query("Plane mir eine Route nach Paris mit einem Anteil von 500 meter Steigung von maximal 7%"))
