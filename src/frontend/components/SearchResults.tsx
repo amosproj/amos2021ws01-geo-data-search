@@ -5,14 +5,18 @@ import SearchListResult from './SearchListResult';
 
 const SearchResults = ({ results }: { results: SearchResult[] | null }) => {
   const [, setCurrentSearchResult] = useAtom(currentSearchResultAtom);
-  
+
   return (
     <>
       {results &&
         (results.length > 0 ? (
           <ul className="sm:mt-4">
-            {results.map((result) => (
-              <SearchListResult key={result.id} result={result} onClick={setCurrentSearchResult} />
+            {results.map((result, index) => (
+              <SearchListResult
+                key={`${result.id}${index}`}
+                result={result}
+                onClick={setCurrentSearchResult}
+              />
             ))}
           </ul>
         ) : (

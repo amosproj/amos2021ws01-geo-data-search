@@ -18,3 +18,19 @@ body {
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.leaflet-container .leaflet-tooltip { 
+  box-shadow: none;
+  border: 0;
+  background: none;
+  font-weight: bold;
+  text-shadow:
+   -1px -1px 0 #fff,  
+    1px -1px 0 #fff,
+    -1px 1px 0 #fff,
+     1px 1px 0 #fff;
+}
+
+.leaflet-container .leaflet-tooltip::before { 
+  display: none;
+}
