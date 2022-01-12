@@ -45,7 +45,7 @@ public class HereApiRestService {
     }
 
     public String getRoutingResponse(String origin, String destination, String transportMode, HereRoutingAttributes hereRoutingAttributes) {
-        String url_query_attributes = hereRoutingAttributes.getUrlArguments();
+        String url_query_attributes = hereRoutingAttributes.getUrlArguments(false);
         String url = HERE_ROUTING_URL + SEPARATOR + URL_QUERY_API_KEY + DELIMITER +  //
                 URL_QUERY_TRANSPORT_MODE + transportMode + DELIMITER + //
                 URL_QUERY_ORIGIN + origin + DELIMITER + //
@@ -59,7 +59,7 @@ public class HereApiRestService {
 
     public HereGuidanceResponse getGuidanceResponse(String origin, String destination, String transportMode, HereRoutingAttributes hereRoutingAttributes) {
         hereRoutingAttributes.setReturnTypeToPolylineAndTurnByTurnActions();
-        String url_query_attributes = hereRoutingAttributes.getUrlArguments();
+        String url_query_attributes = hereRoutingAttributes.getUrlArguments(true);
         String url = HERE_ROUTING_URL + SEPARATOR + URL_QUERY_API_KEY + DELIMITER + //
                 URL_QUERY_TRANSPORT_MODE + transportMode + DELIMITER +
                 URL_QUERY_ORIGIN + origin + DELIMITER + //

@@ -45,15 +45,11 @@ public class RouteAttributes {
     }
 
     public Boolean getChargingStations() {
-        // TODO Remove when NLP supports charging stations
-        //return chargingStations;
-        return true;
+        return chargingStations;
     }
 
     public Boolean getTollRoads() {
-        // TODO Remove when NLP supports toll roads
-        //return tolLRoads;
-        return true;
+        return tolLRoads;
     }
 
     @Override
