@@ -1,3 +1,6 @@
+import logging
+LOGGER = logging.getLogger("[STRING INTERPRETER]")
+
 import os
 import pathlib
 import sys
@@ -44,6 +47,7 @@ def process_string(string: str) -> object:
 
 
 def get_query(string: str) -> object:
+    LOGGER.info("Received Request \"%s\"", string)
     default_tokens = nlp_default(string)
 
     result = Query()
@@ -60,7 +64,7 @@ def get_query(string: str) -> object:
     # checks if charging stations are queried
     if check_feature(ner_tokens, "charging_station"):
         result.route_attributes.charging_stations = True
-    
+
     # checks if toll roads are queried
     if check_feature(ner_tokens, "toll_road"):
         result.route_attributes.toll_roads = True
@@ -115,7 +119,7 @@ def get_query(string: str) -> object:
     # set default value
     if result.query_object == "":
         result.query_object = "route"
-
+    LOGGER.info("Send %s", result)
     return result
 
 
@@ -194,7 +198,8 @@ def check_unit(token: spacy.tokens.token.Token) -> str:
 
 
 def convert_to_meter(
-        amount_token: spacy.tokens.token.Token, next_token: spacy.tokens.token.Token = None
+        amount_token: spacy.tokens.token.Token,
+        next_token: spacy.tokens.token.Token = None
 ) -> int:
     if next_token is None:
         amount_unit = "km"
@@ -219,8 +224,8 @@ def check_feature(tokens: spacy.tokens.doc.Doc, feature="charging_station"):
         feature_synonyms = charging_station_synonyms
     elif feature == "toll_road":
         feature_synonyms = toll_road_synonyms
-        
-    #iterate over all tokens and check if feature is present  
+
+    #iterate over all tokens and check if feature is present
     for index in range(len(tokens)):
         token = tokens[index]
         normalized_token = normalize_token(token)
