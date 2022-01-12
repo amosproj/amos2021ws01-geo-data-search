@@ -43,7 +43,7 @@ async def root():
     tags=["Version Number"]
 )
 async def get_version():
-    logging.warning("[NLP Component] Requested current version number")
+    logging.info("Requested current version number")
     return {"version": "0.8.0"}
 
 
@@ -53,10 +53,8 @@ async def get_version():
     response_model=Query
 )
 async def request(text: str):
-    LOGGER.info('Received Request \"%s\"', text)
     write_log_to_file(f'Received Request \"{text}\"')
 
     answer = process_string(text)
-    LOGGER.info("Send %s", answer)
     write_log_to_file(f'Send \"{answer}\"')
     return answer
