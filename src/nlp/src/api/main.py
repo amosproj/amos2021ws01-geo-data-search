@@ -1,13 +1,25 @@
 import logging
+logging.basicConfig(format='%(asctime)s %(levelname)s %(name)s: %(message)s',
+                    datefmt='%d.%m.%Y %H:%M:%S',
+                    encoding='utf-8',
+                    level=logging.INFO)
+LOGGER = logging.getLogger("[NLP API]")
 
+import pathlib
+import os
+
+
+from datetime import datetime
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 
 from .string_interpreter import process_string, Query
 
-# Logging
-logger = logging.getLogger()
-logging.basicConfig(level=logging.INFO)
+# File Separator
+SEP = os.path.sep
+
+CURRENT_DIR = pathlib.Path(__file__).parent.resolve()
+
 
 # App title and landing page
 APP_TITLE = "API for NLP Component"

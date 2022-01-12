@@ -1,4 +1,7 @@
 import logging
+LOGGER = logging.getLogger("[STRING INTERPRETER]")
+
+
 import os
 import pathlib
 import sys
@@ -42,6 +45,7 @@ def process_string(string: str) -> object:
 
 
 def get_query(string: str) -> object:
+    LOGGER.info("Received Request \"%s\"", string)
     default_tokens = nlp_default(string)
 
     result = Query()
@@ -104,7 +108,7 @@ def get_query(string: str) -> object:
     # set default value
     if result.query_object == "":
         result.query_object = "route"
-
+    LOGGER.info("Send %s", result)
     return result
 
 
