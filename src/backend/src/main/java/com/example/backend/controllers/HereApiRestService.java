@@ -128,7 +128,7 @@ public class HereApiRestService {
                     int id = new Random().nextInt();
                     String lat = "" + section.departure.place.location.lat;
                     String lng = "" + section.departure.place.location.lng;
-                    String name = origin;
+                    String name = "HERE: " + origin;
                     generalRoutePoints.add(new SingleLocationResult(type, id, lat, lng, name));
                     type = section.arrival.place.type;
                     id = new Random().nextInt();

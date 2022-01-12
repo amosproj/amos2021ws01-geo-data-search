@@ -15,3 +15,8 @@ COPY --from=builder /opt/venv /opt/venv
 ENV PYTHONPATH=/app:/opt/venv
 ENV PATH=/opt/venv/bin:$PATH
 WORKDIR /app
+
+FROM runner AS deployment
+COPY entrypoint.sh /app
+COPY src /app/src
+USER 1000

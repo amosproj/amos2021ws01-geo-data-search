@@ -1,17 +1,36 @@
 import logging
+logging.basicConfig(format='%(asctime)s %(levelname)s %(name)s: %(message)s',
+                    datefmt='%d.%m.%Y %H:%M:%S',
+                    encoding='utf-8',
+                    level=logging.INFO)
+LOGGER = logging.getLogger("[NLP API]")
 
+import pathlib
+import os
+
+
+from datetime import datetime
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 
 from .string_interpreter import process_string, Query
 
-# Logging
-logger = logging.getLogger()
-logging.basicConfig(level=logging.INFO)
+# File Separator
+SEP = os.path.sep
+
+CURRENT_DIR = pathlib.Path(__file__).parent.resolve()
+
 
 # App title and landing page
 APP_TITLE = "API for NLP Component"
 app = FastAPI(title=APP_TITLE)
+
+
+def write_log_to_file(text):
+    log_dir = pathlib.Path(f'{CURRENT_DIR}{SEP}logs{SEP}')
+    file_path = f"{log_dir}{SEP}log_{datetime.now().date()}"
+    with open(file_path, "a") as logfile:
+        logfile.write(f"{datetime.now()} {text}\n")
 
 
 @app.get("/", include_in_schema=False, response_class=HTMLResponse)
@@ -25,7 +44,7 @@ async def root():
     tags=["Version Number"]
 )
 async def get_version():
-    logging.warning("[NLP Component] Requested current version number")
+    logging.info("Requested current version number")
     return {"version": "0.8.0"}
 
 
@@ -35,9 +54,8 @@ async def get_version():
     response_model=Query
 )
 async def request(text: str):
-    logging.warning(f"[NLP Component] Received Request: {text}")
+    write_log_to_file(f'Received Request \"{text}\"')
 
     answer = process_string(text)
-    logging.warning(f"[NLP Component] Answer: {answer}")
-
+    write_log_to_file(f'Send \"{answer}\"')
     return answer
