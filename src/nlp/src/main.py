@@ -37,11 +37,6 @@ else:
         generate_data(str(CURRENT_DIR) + f"{SEP}models{SEP}data")
 
         path = f'{CURRENT_DIR}{SEP}models{SEP}data{SEP}output'
-        # for host machine in order to be able to edit generated files, for docker to create files
-        if SEP == "/":
-            subprocess.call(['chmod', '-R', '777', path])
-        else:
-            os.chmod(path, 0o777)
 
     # train model with spaCy
     train(train_data_path=str(data_path),
@@ -50,19 +45,11 @@ else:
     # for host machine in order to be able to edit generated files, for docker to create files
     path = f'{CURRENT_DIR}{SEP}models{SEP}training{SEP}'
     pathlib.Path(path).mkdir(parents=True, exist_ok=True)
-    if SEP == "/":
-        subprocess.call(['chmod', '-R', '777',  path])
-    else:
-        os.chmod(path, 0o777)
 
 # prepare API log path
 log_path = pathlib.Path(f'{CURRENT_DIR}{SEP}api{SEP}logs{SEP}')
 if not log_path.exists():
     LOGGER.info("No log path found on path %s", log_path)
     pathlib.Path(log_path).mkdir(parents=True, exist_ok=True)
-    if SEP == "/":
-        subprocess.call(['chmod', '-R', '777',  log_path])
-    else:
-        os.chmod(log_path, 0o777)
 
     LOGGER.info("Created log path %s", log_path)

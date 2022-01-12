@@ -27,8 +27,9 @@ app = FastAPI(title=APP_TITLE)
 
 
 def write_log_to_file(text):
-    log_path = pathlib.Path(f'{CURRENT_DIR}{SEP}logs{SEP}')
-    with open(f"{log_path}{SEP}log_{datetime.now().date()}", "a") as logfile:
+    log_dir = pathlib.Path(f'{CURRENT_DIR}{SEP}logs{SEP}')
+    file_path = f"{log_dir}{SEP}log_{datetime.now().date()}"
+    with open(file_path, "a") as logfile:
         logfile.write(f"{datetime.now()} {text}\n")
 
 
