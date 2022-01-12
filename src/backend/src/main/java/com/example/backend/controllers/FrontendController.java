@@ -4,7 +4,6 @@ import com.example.backend.clients.NlpClient;
 import com.example.backend.clients.OsmApiClient;
 import com.example.backend.data.ApiResult;
 import com.example.backend.data.HttpResponse;
-import com.example.backend.data.api.HereApiGeocodeResponse;
 import com.example.backend.data.http.Error;
 import com.example.backend.data.http.*;
 import com.example.backend.helpers.BackendLogger;
@@ -12,26 +11,18 @@ import com.google.gson.Gson;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URLDecoder;
-
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 @RestController
 @RequestMapping("/backend")
 public class FrontendController {
 
-    public static final String QUERY_OBJECT_ROUTE_WITH_CHARGING = "route_with_charging";
-    public static final String QUERY_OBJECT_ROUTE = "route";
     private final NlpClient nlpClient;
     private final BackendLogger logger = new BackendLogger();
     private final ApiController apiController;
     private static final String LOG_PREFIX = "FRONTEND_CONTROLLER";
-
-    // Brandenburger Tor in Berlin
-    public static final String ROUTE_START_COORDINATES = "52.518462144205756,13.373228882261595";
-    // Arc de Triomphe de l’Étoile in Paris
-    public static final String ROUTE_DESTINATION_COORDINATES = "48.873970150314705,2.2949678134907785";
 
     public FrontendController(NlpClient nlpClient, OsmApiClient osmApiClient, HereApiRestService hereApiRestService) {
         this.nlpClient = nlpClient;
@@ -69,28 +60,16 @@ public class FrontendController {
             return handleError(throwable);
         }
 
-        ArrayList<ApiResult> apiQueryResults = apiController.querySearch(nlpQueryResponse);
+        List<ApiResult> apiQueryResults = apiController.querySearch(nlpQueryResponse);
 
-        if (nlpQueryResponse.getQueryObject().equals(QUERY_OBJECT_ROUTE_WITH_CHARGING)) {
-            logInfo("Searching for a route to " + nlpQueryResponse.getLocation() + " with charging stations...");
-            // TODO Replace this workaround and introduce a proper starting location (coordinates)
-            String position = apiQueryResults.get(0).getLat() + "," + apiQueryResults.get(0).getLon();
-            apiQueryResults.addAll(apiController.getChargingStationsAlongTheWay(ROUTE_START_COORDINATES, position));
-        } else if (nlpQueryResponse.getQueryObject().equals(QUERY_OBJECT_ROUTE)) {
-            logInfo("Searching for a route to " + nlpQueryResponse.getLocation() + " without charging stations...");
-            // TODO Replace this workaround and introduce a proper starting location (coordinates)
-            String position = apiQueryResults.get(0).getLat() + "," + apiQueryResults.get(0).getLon();
-            apiQueryResults.addAll(apiController.getGuidanceForRoute(ROUTE_START_COORDINATES, position, false));
-        }
-
-        logInfo("SENDING THIS RESPONSE TO FRONTEND:");
-        logInfo(apiQueryResults.toString());
         ResultResponse response;
         if (apiQueryResults.isEmpty()) {
             response = new ResultResponse(null);
         } else {
             response = new ResultResponse(apiQueryResults);
         }
+        logInfo("Sending this respond to FRONTEND:");
+        logInfo(response.toString());
         return response;
     }
 
