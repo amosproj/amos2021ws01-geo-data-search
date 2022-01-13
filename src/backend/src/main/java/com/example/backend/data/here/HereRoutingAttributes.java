@@ -9,12 +9,16 @@ import com.google.gson.Gson;
 
 public class HereRoutingAttributes {
 
+    private static final String LOG_PREFIX = "HERE_ROUTING_ATTRIBUTES";
+    private static final String LOCATIONS_SEPARATOR = ",";
+    private final static String DELIMITER = "&";
+
     private static boolean includeChargingStations = false;
     private static boolean avoidTollRoads = true;
+
     private final BackendLogger logger = new BackendLogger();
-    private static final String LOG_PREFIX = "HERE_ROUTING_ATTRIBUTES";
-    private final static String DELIMITER = "&";
     private final HereApiRestService hereApiRestService;
+
     private String returnType = "";
     private RoutingWaypoint startLocation;
     private RoutingWaypoint finishLocation;
@@ -24,22 +28,6 @@ public class HereRoutingAttributes {
      */
     public HereRoutingAttributes(HereApiRestService hereApiRestService) {
         this.hereApiRestService = hereApiRestService;
-    }
-
-    public void includeChargingStations() {
-        includeChargingStations = true;
-    }
-
-    public void excludeChargingStations() {
-        includeChargingStations = false;
-    }
-
-    public void avoidToll() {
-        avoidTollRoads = true;
-    }
-
-    public void includeTollRoads() {
-        avoidTollRoads = false;
     }
 
     public String getUrlArguments(boolean guidance) {
@@ -76,14 +64,6 @@ public class HereRoutingAttributes {
         return includeChargingStations;
     }
 
-    public void setOrigin(RoutingWaypoint startLocation) {
-        this.startLocation = startLocation;
-    }
-
-    public void setDestination(RoutingWaypoint finishLocation) {
-        this.finishLocation = finishLocation;
-    }
-
     public RoutingWaypoint getOrigin() {
         return startLocation;
     }
@@ -99,39 +79,53 @@ public class HereRoutingAttributes {
      * @throws MissingLocationException when the NlpQueryResponse contains no location, this exception will be thrown
      */
     public void extractRoutingAttributes(NlpQueryResponse nlpQueryResponse) throws MissingLocationException {
-        if (nlpQueryResponse.getLocation().equals("")) {
+        if (nlpQueryResponse.getLocation() == null || nlpQueryResponse.getLocation().equals("")) {
             logError("No value found for location! Abort!");
             throw new MissingLocationException("The value for \"location\" cannot be empty when trying to calculate a route!");
         }
+        extractOriginLocation(nlpQueryResponse);
+        extractDestinationLocation(nlpQueryResponse);
+        extractTollRoads(nlpQueryResponse);
+        extractChargingStations(nlpQueryResponse);
+    }
 
-        String[] locations = nlpQueryResponse.getLocation().split(",");
-        String nameOfDesiredFinishLocation = locations[0];
-
-        RoutingWaypoint finishLocation = callHereApiToRetrieveCoordinatesForLocation(nameOfDesiredFinishLocation);
-        logInfo("We will take this value as the end of the route: " + finishLocation);
-        setDestination(finishLocation);
-
+    private void extractOriginLocation(NlpQueryResponse nlpQueryResponse) {
+        String[] locations = nlpQueryResponse.getLocation().split(LOCATIONS_SEPARATOR);
         RoutingWaypoint startLocation;
         if (locations.length > 1) {
             startLocation = callHereApiToRetrieveCoordinatesForLocation(locations[1]);
-            logInfo("We will take this value as the start of the route: " + startLocation.getName());
+            logInfo("We will take this value as the start of the route: \"" + startLocation.getName() + "\"");
         } else {
             startLocation = new RoutingWaypoint("Berlin");
             startLocation.updateCoordinates(52.52782311436024, 13.386253770286528);
-            logInfo("No location found to start our route! We will take this one as default: " + startLocation.getName());
+            logInfo("No location found to start our route! We will take this one as default: \"" + startLocation.getName() + "\"");
         }
-        setOrigin(startLocation);
+        this.startLocation = startLocation;
+    }
+
+    private void extractDestinationLocation(NlpQueryResponse nlpQueryResponse) {
+        String[] locations = nlpQueryResponse.getLocation().split(LOCATIONS_SEPARATOR);
+        String nameOfDesiredFinishLocation = locations[0];
+        RoutingWaypoint finishLocation = callHereApiToRetrieveCoordinatesForLocation(nameOfDesiredFinishLocation);
+        logInfo("We will take this value as the end of the route: \"" + finishLocation + "\"");
+        this.finishLocation = finishLocation;
+    }
+
+    private void extractTollRoads(NlpQueryResponse nlpQueryResponse) {
         if (nlpQueryResponse.getRouteAttributes().getTollRoads()) {
-            avoidToll();
-            logInfo("Route shall avoid tolls!");
+            avoidTollRoads = true;
+            logInfo("Route will avoid tolls!");
         } else {
-            includeTollRoads();
+            avoidTollRoads = false;
         }
+    }
+
+    private void extractChargingStations(NlpQueryResponse nlpQueryResponse) {
         if (nlpQueryResponse.getRouteAttributes().getChargingStations()) {
-            includeChargingStations();
-            logInfo("Route shall include charging stations!");
+            includeChargingStations = true;
+            logInfo("Route will include charging stations!");
         } else {
-            excludeChargingStations();
+            includeChargingStations = false;
         }
     }
 

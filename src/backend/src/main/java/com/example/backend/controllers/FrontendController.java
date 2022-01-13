@@ -32,10 +32,11 @@ public class FrontendController {
 
     /**
      * Receives the query from Frontend and forwards it to NLP
-     * Receives the response from NLP and forwards it to OSM/HERE API
-     * Receives the response from OSM/HERE API and logs it
+     * Receives the response from NLP and forwards it to OSM or HERE API
+     * Receives the response from OSM or HERE API and logs it
      *
      * @param query the input coming from the Frontend
+     * @return result the answers from the OSM or HERE API for the Frontend
      */
     @PostMapping("/user_query")
     @ResponseBody
@@ -63,7 +64,7 @@ public class FrontendController {
 
         List<ApiResult> apiQueryResults = null;
         try {
-            // The API decision and calling starts here:
+            // The API decision and calling happens here:
             apiQueryResults = apiController.querySearch(nlpQueryResponse);
         } catch (MissingLocationException e) {
             e.printStackTrace();
@@ -103,6 +104,7 @@ public class FrontendController {
             nlpVersion = "unknown";
         }
 
+        // TODO How to version better?
         return new VersionResponse(Version.createVersion("0.8.0", nlpVersion));
     }
 

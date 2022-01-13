@@ -18,9 +18,6 @@ import java.util.Random;
 @Service
 public class HereApiRestService {
 
-    private static final String HERE_API_KEY = HereApiKey.getKey();
-    public static final String URL_QUERY_API_KEY = "apiKey=" + HERE_API_KEY;
-    private static final String LOG_PREFIX = "HERE_API_REST_SERVICE";
     public static final String HERE_GEOCODE_URL = "https://geocode.search.hereapi.com/v1/geocode";
     public static final String HERE_ROUTING_URL = "https://router.hereapi.com/v8/routes";
     public static final String SEPARATOR = "?";
@@ -29,6 +26,11 @@ public class HereApiRestService {
     public static final String URL_QUERY_TRANSPORT_MODE = "transportMode=";
     public static final String URL_QUERY_ORIGIN = "origin=";
     public static final String URL_QUERY_DESTINATION = "destination=";
+
+    private static final String HERE_API_KEY = HereApiKey.getKey();
+    private static final String URL_QUERY_API_KEY = "apiKey=" + HERE_API_KEY;
+    private static final String LOG_PREFIX = "HERE_API_REST_SERVICE";
+
     private final RestTemplate restTemplate;
     private final BackendLogger logger = new BackendLogger();
 
@@ -55,7 +57,7 @@ public class HereApiRestService {
         try {
             hereRoutingAttributes.setReturnTypeToSummary();
             String hereApiRoutingResponseString =
-                    getRoutingResponse(origin.getCoordinatesAsString(), destination.getCoordinatesAsString(), TransportMode.CAR, hereRoutingAttributes);
+                    getRoutingResponse(origin.getCoordinatesAsString(), destination.getCoordinatesAsString(), hereRoutingAttributes);
             logInfo("HERE / ROUTING / CHARGING STATIONS:");
             logInfo(hereApiRoutingResponseString);
             HereApiRoutingResponse hereApiRoutingResponse = new Gson().fromJson(hereApiRoutingResponseString, HereApiRoutingResponse.class);
@@ -64,7 +66,7 @@ public class HereApiRestService {
             for (Route route : hereApiRoutingResponse.routes) {
                 chargingStations.addAll(route.getAlLChargingStations());
             }
-            logInfo("A selection of charging stations found between " + origin.getName() + " and " + destination.getName() + ":");
+            logInfo("A selection of charging stations found between \"" + origin.getName() + "\" and \"" + destination.getName() + "\":");
             int i = 1;
             listOfPointsAlongTheRoute.add(new SingleLocationResult("Start", 0, origin.getName(), origin.getCoordinatesAsString()));
             int total = chargingStations.size();
@@ -94,7 +96,7 @@ public class HereApiRestService {
         List<ApiResult> generalRoutePoints = new ArrayList<>();
         try {
             HereGuidanceResponse hereApiRoutingResponse =
-                    getGuidanceResponse(origin.getCoordinatesAsString(), destination.getCoordinatesAsString(), TransportMode.CAR, hereRoutingAttributes);
+                    getGuidanceResponse(origin.getCoordinatesAsString(), destination.getCoordinatesAsString(), hereRoutingAttributes);
             logInfo("HERE / GUIDANCE:");
             logInfo(hereApiRoutingResponse.toString(""));
             for (Route route : hereApiRoutingResponse.routes) {
@@ -120,10 +122,10 @@ public class HereApiRestService {
         return generalRoutePoints;
     }
 
-    private String getRoutingResponse(String origin, String destination, String transportMode, HereRoutingAttributes hereRoutingAttributes) {
+    private String getRoutingResponse(String origin, String destination, HereRoutingAttributes hereRoutingAttributes) {
         String url_query_attributes = hereRoutingAttributes.getUrlArguments(false);
         String url = HERE_ROUTING_URL + SEPARATOR + URL_QUERY_API_KEY + DELIMITER +  //
-                URL_QUERY_TRANSPORT_MODE + transportMode + DELIMITER + //
+                URL_QUERY_TRANSPORT_MODE + TransportMode.CAR + DELIMITER + //
                 URL_QUERY_ORIGIN + origin + DELIMITER + //
                 url_query_attributes + //
                 URL_QUERY_DESTINATION + destination;
@@ -133,11 +135,11 @@ public class HereApiRestService {
         return response;
     }
 
-    private HereGuidanceResponse getGuidanceResponse(String origin, String destination, String transportMode, HereRoutingAttributes hereRoutingAttributes) {
+    private HereGuidanceResponse getGuidanceResponse(String origin, String destination, HereRoutingAttributes hereRoutingAttributes) {
         hereRoutingAttributes.setReturnTypeToPolylineAndTurnByTurnActions();
         String url_query_attributes = hereRoutingAttributes.getUrlArguments(true);
         String url = HERE_ROUTING_URL + SEPARATOR + URL_QUERY_API_KEY + DELIMITER + //
-                URL_QUERY_TRANSPORT_MODE + transportMode + DELIMITER +
+                URL_QUERY_TRANSPORT_MODE + TransportMode.CAR + DELIMITER +
                 URL_QUERY_ORIGIN + origin + DELIMITER + //
                 url_query_attributes + //
                 URL_QUERY_DESTINATION + destination;
