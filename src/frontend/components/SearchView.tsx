@@ -59,7 +59,7 @@ const SearchView = () => {
       } else {
         setErrorData({
           type: 'client',
-          message: 'Looks like the server is down',
+          message: "Looks like the server is down or there's an internal server error",
           trace: new Error(`${response.status} ${response.statusText}`).stack,
         });
       }

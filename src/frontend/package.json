@@ -5,7 +5,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "jest --watch",
+    "test:ci": "jest --ci"
   },
   "dependencies": {
     "@headlessui/react": "^1.4.2",
@@ -13,7 +15,7 @@
     "framer-motion": "^5.5.1",
     "jotai": "^1.4.3",
     "leaflet": "^1.7.1",
-    "next": "12.0.1",
+    "next": "^12.0.8",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-leaflet": "^3.2.2",
@@ -21,12 +23,16 @@
   },
   "devDependencies": {
     "@svgr/webpack": "^6.1.1",
-    "@types/leaflet": "^1.7.6",
+    "@testing-library/jest-dom": "^5.16.1",
+    "@testing-library/react": "^12.1.2",
+    "@testing-library/react-hooks": "^7.0.2",
+    "@types/leaflet": "^1.7.8",
     "@types/node": "16.11.6",
     "@types/react": "17.0.33",
     "autoprefixer": "^10.4.0",
     "eslint": "7",
     "eslint-config-next": "12.0.2",
+    "jest": "^27.4.7",
     "postcss": "^8.3.11",
     "tailwindcss": "^2.2.19",
     "typescript": "4.4.4"

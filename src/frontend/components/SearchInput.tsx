@@ -29,7 +29,8 @@ const SearchInput = ({ value, onChange, onCancelSearchRequest, placeholder, load
     <div className="flex mb-4 rounded w-full border-2 border-solid border-[#DAE5EA]">
       <div className={cc(['relative w-full'])}>
         <input
-          className="border-solid rounded-l p-2 w-full focus:outline-none"
+          className="border-solid rounded-l p-2 pr-8 w-full focus:outline-none"
+          aria-label="Search term"
           name="searchValue"
           type="text"
           placeholder={placeholder}
@@ -37,6 +38,7 @@ const SearchInput = ({ value, onChange, onCancelSearchRequest, placeholder, load
           onChange={onInputChange}
         />
         <button
+          aria-label='Clear search term'
           disabled={!value}
           type="button"
           className="px-2 text-black disabled:text-gray-400 disabled:cursor-default absolute top-0 right-0 h-full"
@@ -46,6 +48,7 @@ const SearchInput = ({ value, onChange, onCancelSearchRequest, placeholder, load
         </button>
       </div>
       <button
+        aria-label='Search'
         className="bg-red-500 text-white rounded-r px-3 disabled:opacity-70 disabled:cursor-default"
         type="submit"
         disabled={searchTermEmpty || loading}

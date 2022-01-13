@@ -10,7 +10,7 @@ const SearchResults = ({ results }: { results: SearchResult[] | null }) => {
     <>
       {results &&
         (results.length > 0 ? (
-          <ul className="sm:mt-4">
+          <ul aria-label='Search results' className="sm:mt-4">
             {results.map((result, index) => (
               <SearchListResult
                 key={`${result.id}${index}`}

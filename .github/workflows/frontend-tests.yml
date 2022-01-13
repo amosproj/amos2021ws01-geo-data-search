@@ -20,3 +20,5 @@ jobs:
         run: docker compose up -d --build frontend
       - name: check the container is still running
         run: sleep 5 && docker compose exec frontend echo healthy
+      - name: run tests
+        run: docker compose exec frontend yarn test:ci

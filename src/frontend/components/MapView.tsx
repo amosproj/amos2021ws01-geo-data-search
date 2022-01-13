@@ -12,7 +12,7 @@ import Leaflet, { LatLngExpression } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useAtom } from 'jotai';
 import { currentSearchResultAtom, searchResultsAtom } from '@lib/store';
-import { largeMarkerIcon, regularMarkerIcon } from './markerIcon';
+import { generalMarker, markersByType } from './markerIcon';
 
 // Berlin center
 const position: LatLngExpression = [52.520008, 13.404954];
@@ -35,6 +35,7 @@ const MapInner = () => {
 
     for (let i = 0; i < labelsRef.current.length; i++) {
       const label = labelsRef.current[i];
+      if (!label) continue;
       const rect1 = label._container.getBoundingClientRect();
 
       let colliding = false;
@@ -62,7 +63,9 @@ const MapInner = () => {
 
     for (let i = 0; i < labelsRef.current.length; i++) {
       const label = labelsRef.current[i];
-      label._container.style.opacity = visibleIdx.includes(i) ? 1 : 0;
+      if (label) {
+        label._container.style.opacity = visibleIdx.includes(i) ? 1 : 0;
+      }
     }
   };
 
@@ -100,8 +103,10 @@ const MapInner = () => {
       <ZoomControl position="bottomright" />
       {results &&
         results.map((result, index) => {
+          const markerIconSet = markersByType[result.type] || generalMarker;
           const markerIcon =
-            currentSearchResult?.id === result.id ? largeMarkerIcon : regularMarkerIcon;
+            currentSearchResult?.id === result.id ? markerIconSet.large : markerIconSet.regular;
+
           const id = `${result.id}${index}`;
           // @ts-ignore
           const height = markerIcon.options.iconSize?.[0] ?? 0;
