@@ -7,6 +7,7 @@ import com.example.backend.data.here.*;
 import com.example.backend.data.http.NlpQueryResponse;
 import com.example.backend.helpers.BackendLogger;
 import com.example.backend.helpers.HereApiKey;
+import com.example.backend.helpers.LocationNotFoundException;
 import com.example.backend.helpers.MissingLocationException;
 import com.google.gson.Gson;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -48,7 +49,7 @@ public class HereApiRestService {
         return response;
     }
 
-    public void handleRequest(NlpQueryResponse nlpQueryResponse, List<ApiResult> result) throws MissingLocationException {
+    public void handleRequest(NlpQueryResponse nlpQueryResponse, List<ApiResult> result) throws MissingLocationException, LocationNotFoundException {
         HereRoutingAttributes hereRoutingAttributes = new HereRoutingAttributes(this);
         hereRoutingAttributes.extractRoutingAttributes(nlpQueryResponse);
         if (hereRoutingAttributes.getIfChargingStationsIncluded()) {
@@ -140,7 +141,7 @@ public class HereApiRestService {
 
     @SuppressWarnings("ConstantConditions")
     private String getRoutingResponse(String origin, String destination, HereRoutingAttributes hereRoutingAttributes) {
-        String url_query_attributes = hereRoutingAttributes.getUrlArguments(false);
+        String url_query_attributes = hereRoutingAttributes.getUrlArgumentsForRouting();
         String url = HERE_ROUTING_URL + SEPARATOR + URL_QUERY_API_KEY + DELIMITER +  //
                 URL_QUERY_TRANSPORT_MODE + TransportMode.CAR + DELIMITER + //
                 URL_QUERY_ORIGIN + origin + DELIMITER + //
@@ -158,7 +159,7 @@ public class HereApiRestService {
     @SuppressWarnings("ConstantConditions")
     private HereGuidanceResponse getGuidanceResponse(String origin, String destination, HereRoutingAttributes hereRoutingAttributes) {
         hereRoutingAttributes.setReturnTypeToPolylineAndTurnByTurnActions();
-        String url_query_attributes = hereRoutingAttributes.getUrlArguments(true);
+        String url_query_attributes = hereRoutingAttributes.getUrlArgumentsForGuidance();
         String url = HERE_ROUTING_URL + SEPARATOR + URL_QUERY_API_KEY + DELIMITER + //
                 URL_QUERY_TRANSPORT_MODE + TransportMode.CAR + DELIMITER +
                 URL_QUERY_ORIGIN + origin + DELIMITER + //

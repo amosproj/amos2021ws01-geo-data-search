@@ -6,10 +6,7 @@ import com.example.backend.data.ApiResult;
 import com.example.backend.data.HttpResponse;
 import com.example.backend.data.http.Error;
 import com.example.backend.data.http.*;
-import com.example.backend.helpers.BackendLogger;
-import com.example.backend.helpers.MissingLocationException;
-import com.example.backend.helpers.NoPrefferedApiFoundException;
-import com.example.backend.helpers.UnknownQueryObjectException;
+import com.example.backend.helpers.*;
 import com.google.gson.Gson;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,7 +40,7 @@ public class FrontendController {
     @PostMapping("/user_query")
     @ResponseBody
     public HttpResponse handleQueryRequest(@RequestBody String query) {
-        logInfo("+ -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- +");
+        logInfo("+ -- + -- + START + -- + -- + START + -- + -- + START + -- + -- + START + -- + -- + START + -- + -- + START + -- + -- + START + -- + -- + START + -- + -- + START + -- + -- +");
         logInfo("New query received! Query = \"" + query + "\"");
 
         query = prepareQuery(query);
@@ -61,14 +58,14 @@ public class FrontendController {
         try {
             // The API decision and calling happens here:
             apiQueryResults = apiController.querySearch(nlpQueryResponse);
-        } catch (MissingLocationException | UnknownQueryObjectException | NoPrefferedApiFoundException e) {
-            e.printStackTrace();
+        } catch (MissingLocationException | UnknownQueryObjectException | NoPrefferedApiFoundException | LocationNotFoundException e) {
             handleError(e);
         }
 
         ResultResponse response = prepareResponse(apiQueryResults);
 
         logInfo("Sending this respond to FRONTEND:\n" + response.toString());
+        logInfo("+ -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +");
         return response;
     }
 
@@ -102,7 +99,7 @@ public class FrontendController {
     }
 
     private ErrorResponse handleError(Throwable throwable) {
-        logError("...ERROR!" + "\n" + "\t" + throwable.toString() + "\n" + "\t" + throwable.getMessage());
+        logError("...ERROR!" + "\n" + "\t" + throwable.toString());
         return new ErrorResponse(Error.createError(throwable.getMessage(), Arrays.toString(throwable.getStackTrace())));
     }
 

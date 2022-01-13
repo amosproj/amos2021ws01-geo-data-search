@@ -4,6 +4,7 @@ import com.example.backend.controllers.HereApiRestService;
 import com.example.backend.data.api.HereApiGeocodeResponse;
 import com.example.backend.data.http.NlpQueryResponse;
 import com.example.backend.helpers.BackendLogger;
+import com.example.backend.helpers.LocationNotFoundException;
 import com.example.backend.helpers.MissingLocationException;
 import com.google.gson.Gson;
 
@@ -30,7 +31,7 @@ public class HereRoutingAttributes {
         this.hereApiRestService = hereApiRestService;
     }
 
-    public String getUrlArguments(boolean guidance) {
+    public String getUrlArgumentsForGuidance() {
         String url_query_attributes = "";
         if (includeChargingStations) {
             url_query_attributes += "ev[connectorTypes]=iec62196Type2Combo" + DELIMITER +
@@ -45,8 +46,30 @@ public class HereRoutingAttributes {
                     "ev[chargingCurve]=0,239,32,199,56,167,60,130,64,111,68,83,72,55,76,33,78,17,80,1" + DELIMITER +
                     "ev[maxChargeAfterChargingStation]=72" + DELIMITER;
         }
-        if (avoidTollRoads && guidance) {
+        if (avoidTollRoads) {
             url_query_attributes += "avoid[features]=tollRoad" + DELIMITER;
+        }
+        url_query_attributes += "return=" + returnType + DELIMITER;
+        return url_query_attributes;
+    }
+
+    public String getUrlArgumentsForRouting() {
+        String url_query_attributes = "";
+        if (includeChargingStations) {
+            url_query_attributes += "ev[connectorTypes]=iec62196Type2Combo" + DELIMITER +
+                    "ev[freeFlowSpeedTable]=0,0.239,27,0.239,45,0.259,60,0.196,75,0.207,90,0.238,100,0.26,110,0.296,120,0.337,130,0.351,250,0.351" + DELIMITER +
+                    "ev[trafficSpeedTable]=0,0.349,27,0.319,45,0.329,60,0.266,75,0.287,90,0.318,100,0.33,110,0.335,120,0.35,130,0.36,250,0.36" + DELIMITER +
+                    "ev[auxiliaryConsumption]=1.8" + DELIMITER +
+                    "ev[ascent]=9" + DELIMITER +
+                    "ev[descent]=4.3" + DELIMITER +
+                    "ev[makeReachable]=true" + DELIMITER +
+                    "ev[initialCharge]=48" + DELIMITER +
+                    "ev[maxCharge]=80" + DELIMITER +
+                    "ev[chargingCurve]=0,239,32,199,56,167,60,130,64,111,68,83,72,55,76,33,78,17,80,1" + DELIMITER +
+                    "ev[maxChargeAfterChargingStation]=72" + DELIMITER;
+        }
+        if (avoidTollRoads) {
+            url_query_attributes += "mode=tollroad:-3" + DELIMITER;
         }
         url_query_attributes += "return=" + returnType + DELIMITER;
         return url_query_attributes;
@@ -78,7 +101,7 @@ public class HereRoutingAttributes {
      * @param nlpQueryResponse the answer from NLP containing general routing request
      * @throws MissingLocationException when the NlpQueryResponse contains no location, this exception will be thrown
      */
-    public void extractRoutingAttributes(NlpQueryResponse nlpQueryResponse) throws MissingLocationException {
+    public void extractRoutingAttributes(NlpQueryResponse nlpQueryResponse) throws MissingLocationException, LocationNotFoundException {
         if (nlpQueryResponse.getLocation() == null || nlpQueryResponse.getLocation().equals("")) {
             logError("No value found for location! Abort!");
             throw new MissingLocationException("The value for \"location\" cannot be empty when trying to calculate a route!");
@@ -89,11 +112,11 @@ public class HereRoutingAttributes {
         extractChargingStations(nlpQueryResponse);
     }
 
-    private void extractOriginLocation(NlpQueryResponse nlpQueryResponse) {
+    private void extractOriginLocation(NlpQueryResponse nlpQueryResponse) throws LocationNotFoundException {
         String[] locations = nlpQueryResponse.getLocation().split(LOCATIONS_SEPARATOR);
         RoutingWaypoint startLocation;
-        if (locations.length > 1) {
-            startLocation = callHereApiToRetrieveCoordinatesForLocation(locations[1]);
+        if (locations.length > 1 && !locations[1].isEmpty()) {
+            startLocation = callHereApiToRetrieveCoordinatesForLocation(locations[0]);
             logInfo("We will take this value as the START of the route: \"" + startLocation.getName() + "\"");
         } else {
             startLocation = new RoutingWaypoint("Berlin");
@@ -103,16 +126,21 @@ public class HereRoutingAttributes {
         this.startLocation = startLocation;
     }
 
-    private void extractDestinationLocation(NlpQueryResponse nlpQueryResponse) {
+    private void extractDestinationLocation(NlpQueryResponse nlpQueryResponse) throws LocationNotFoundException {
         String[] locations = nlpQueryResponse.getLocation().split(LOCATIONS_SEPARATOR);
-        String nameOfDesiredFinishLocation = locations[0];
+        String nameOfDesiredFinishLocation;
+        if (locations.length > 1 && !locations[1].isEmpty()) {
+            nameOfDesiredFinishLocation = locations[1];
+        } else {
+            nameOfDesiredFinishLocation = locations[0];
+        }
         RoutingWaypoint finishLocation = callHereApiToRetrieveCoordinatesForLocation(nameOfDesiredFinishLocation);
         logInfo("We will take this value as the END of the route: \"" + finishLocation.getName() + "\"");
         this.finishLocation = finishLocation;
     }
 
     private void extractTollRoads(NlpQueryResponse nlpQueryResponse) {
-        if (nlpQueryResponse.getRouteAttributes().getTollRoads()) {
+        if (nlpQueryResponse.getRouteAttributes().shouldTollRoutesBeAvoided()) {
             avoidTollRoads = true;
             logInfo("Route will AVOID tolls!");
         } else {
@@ -131,9 +159,12 @@ public class HereRoutingAttributes {
         }
     }
 
-    private RoutingWaypoint callHereApiToRetrieveCoordinatesForLocation(String nameOfDesiredLocation) {
+    private RoutingWaypoint callHereApiToRetrieveCoordinatesForLocation(String nameOfDesiredLocation) throws LocationNotFoundException {
         String hereApiResponseAsString = hereApiRestService.getPostsPlainJSON(nameOfDesiredLocation);
         HereApiGeocodeResponse hereResults = new Gson().fromJson(hereApiResponseAsString, HereApiGeocodeResponse.class);
+        if (hereResults.items.isEmpty()) {
+            throw new LocationNotFoundException("HERE API GEOCODE could not find this location: \"" + nameOfDesiredLocation + "\"!");
+        }
         RoutingWaypoint routingWaypoint = new RoutingWaypoint(nameOfDesiredLocation);
         // The first entry has the highest probability of best fulfilling the request:
         routingWaypoint.updateCoordinates(hereResults.getSearchResults().get(0).position.lat, hereResults.getSearchResults().get(0).position.lng);

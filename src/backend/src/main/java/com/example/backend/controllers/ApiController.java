@@ -47,7 +47,7 @@ public class ApiController {
      * @return the results from the called API's
      * @throws MissingLocationException if Routing is selected and the location is empty, this Exception will be thrown
      */
-    public List<ApiResult> querySearch(NlpQueryResponse nlpQueryResponse) throws MissingLocationException, UnknownQueryObjectException, NoPrefferedApiFoundException {
+    public List<ApiResult> querySearch(NlpQueryResponse nlpQueryResponse) throws MissingLocationException, UnknownQueryObjectException, NoPrefferedApiFoundException, LocationNotFoundException {
         ApiType preferredApi = ApiSelectionHelper.getApiPreference(nlpQueryResponse);
         List<ApiResult> result = new ArrayList<>();
         if (preferredApi == ApiType.OSM_API) {
