@@ -303,7 +303,7 @@ class RouteAttributes:
     gradiant: Optional[GradiantAttributes]
     curves: Optional[Curves]
     charging_stations: bool
-    toll_roads: bool
+    toll_road_avoidance: bool
 
     def __init__(self):
         self.height = BaseAttributes()
@@ -311,7 +311,7 @@ class RouteAttributes:
         self.gradiant = GradiantAttributes()
         self.curves = Curves()
         self.charging_stations = False
-        self.toll_roads = False
+        self.toll_road_avoidance = False
 
 
 @dataclass
