@@ -44,7 +44,83 @@ public class HereApiRestService {
         return response;
     }
 
-    public String getRoutingResponse(String origin, String destination, String transportMode, HereRoutingAttributes hereRoutingAttributes) {
+    /**
+     * @param hereRoutingAttributes containing general routing request information
+     * @return a list of ApiResult containing the origin, a selection of charging stations along the way and the destination
+     */
+    public List<ApiResult> getChargingStationsOnRoute(HereRoutingAttributes hereRoutingAttributes) {
+        RoutingWaypoint origin = hereRoutingAttributes.getOrigin();
+        RoutingWaypoint destination = hereRoutingAttributes.getDestination();
+        List<ApiResult> listOfPointsAlongTheRoute = new ArrayList<>();
+        try {
+            hereRoutingAttributes.setReturnTypeToSummary();
+            String hereApiRoutingResponseString =
+                    getRoutingResponse(origin.getCoordinatesAsString(), destination.getCoordinatesAsString(), TransportMode.CAR, hereRoutingAttributes);
+            logInfo("HERE / ROUTING / CHARGING STATIONS:");
+            logInfo(hereApiRoutingResponseString);
+            HereApiRoutingResponse hereApiRoutingResponse = new Gson().fromJson(hereApiRoutingResponseString, HereApiRoutingResponse.class);
+            logInfo(hereApiRoutingResponse.toString(""));
+            List<Place> chargingStations = new ArrayList<>();
+            for (Route route : hereApiRoutingResponse.routes) {
+                chargingStations.addAll(route.getAlLChargingStations());
+            }
+            logInfo("A selection of charging stations found between " + origin.getName() + " and " + destination.getName() + ":");
+            int i = 1;
+            listOfPointsAlongTheRoute.add(new SingleLocationResult("Start", 0, origin.getName(), origin.getCoordinatesAsString()));
+            int total = chargingStations.size();
+            for (Place chargingStation : chargingStations) {
+                String type = chargingStation.type;
+                String name = "Charging Station " + i + "/" + total;
+                String lat = "" + chargingStation.location.lat;
+                String lng = "" + chargingStation.location.lng;
+                listOfPointsAlongTheRoute.add(new SingleLocationResult(type, i, name, lat, lng));
+                i++;
+            }
+            listOfPointsAlongTheRoute.add(new SingleLocationResult("Finish", i, destination.getName(), destination.getCoordinatesAsString()));
+        } catch (Throwable throwable) {
+            logError(throwable.toString());
+            logError(throwable.getMessage());
+        }
+        return listOfPointsAlongTheRoute;
+    }
+
+    /**
+     * @param hereRoutingAttributes containing general routing request information
+     * @return a list of ApiResult containing the origin and the destination
+     */
+    public List<ApiResult> getGuidanceForRoute(HereRoutingAttributes hereRoutingAttributes) {
+        RoutingWaypoint origin = hereRoutingAttributes.getOrigin();
+        RoutingWaypoint destination = hereRoutingAttributes.getDestination();
+        List<ApiResult> generalRoutePoints = new ArrayList<>();
+        try {
+            HereGuidanceResponse hereApiRoutingResponse =
+                    getGuidanceResponse(origin.getCoordinatesAsString(), destination.getCoordinatesAsString(), TransportMode.CAR, hereRoutingAttributes);
+            logInfo("HERE / GUIDANCE:");
+            logInfo(hereApiRoutingResponse.toString(""));
+            for (Route route : hereApiRoutingResponse.routes) {
+                for (Section section : route.sections) {
+                    String type = "Start";
+                    int id = new Random().nextInt();
+                    String lat = "" + section.departure.place.location.lat;
+                    String lng = "" + section.departure.place.location.lng;
+                    String name = origin.getName();
+                    generalRoutePoints.add(new SingleLocationResult(type, id, name, lat, lng));
+                    type = "Finish";
+                    id = new Random().nextInt();
+                    lat = "" + section.arrival.place.location.lat;
+                    lng = "" + section.arrival.place.location.lng;
+                    name = destination.getName();
+                    generalRoutePoints.add(new SingleLocationResult(type, id, name, lat, lng));
+                }
+            }
+        } catch (Throwable throwable) {
+            logError(throwable.toString());
+            logError(throwable.getMessage());
+        }
+        return generalRoutePoints;
+    }
+
+    private String getRoutingResponse(String origin, String destination, String transportMode, HereRoutingAttributes hereRoutingAttributes) {
         String url_query_attributes = hereRoutingAttributes.getUrlArguments(false);
         String url = HERE_ROUTING_URL + SEPARATOR + URL_QUERY_API_KEY + DELIMITER +  //
                 URL_QUERY_TRANSPORT_MODE + transportMode + DELIMITER + //
@@ -57,7 +133,7 @@ public class HereApiRestService {
         return response;
     }
 
-    public HereGuidanceResponse getGuidanceResponse(String origin, String destination, String transportMode, HereRoutingAttributes hereRoutingAttributes) {
+    private HereGuidanceResponse getGuidanceResponse(String origin, String destination, String transportMode, HereRoutingAttributes hereRoutingAttributes) {
         hereRoutingAttributes.setReturnTypeToPolylineAndTurnByTurnActions();
         String url_query_attributes = hereRoutingAttributes.getUrlArguments(true);
         String url = HERE_ROUTING_URL + SEPARATOR + URL_QUERY_API_KEY + DELIMITER + //
@@ -71,80 +147,6 @@ public class HereApiRestService {
         return new Gson().fromJson(response, HereGuidanceResponse.class);
     }
 
-    public List<ApiResult> getChargingStationsOnRoute(String origin, String destination, HereRoutingAttributes hereRoutingAttributes) {
-        List<ApiResult> listOfChargingStations = new ArrayList<>();
-        try {
-            hereRoutingAttributes.setReturnTypeToSummary();
-            String hereApiRoutingResponseString =
-                    getRoutingResponse(origin, destination, TransportMode.CAR, hereRoutingAttributes);
-            logInfo("HERE / ROUTING / CHARGING STATIONS:");
-            logInfo(hereApiRoutingResponseString);
-            HereApiRoutingResponse hereApiRoutingResponse = new Gson().fromJson(hereApiRoutingResponseString, HereApiRoutingResponse.class);
-            logInfo(hereApiRoutingResponse.toString(""));
-            List<Place> chargingStations = new ArrayList<>();
-            for (Route route : hereApiRoutingResponse.routes) {
-                chargingStations.addAll(route.getAlLChargingStations());
-            }
-            logInfo("A selection of charging stations found between " + origin + " and " + destination + ":");
-            int i = 1;
-            for (Place chargingStation : chargingStations) {
-                // TODO Deactivating logging for better overall logs
-                // logInfo("ChargingStation " + i + "/" + size + ": " + chargingStation.toString(""));
-                String lat = "" + chargingStation.location.lat;
-                String lng = "" + chargingStation.location.lng;
-                String name = "Charging Station";
-                int id = i - 1;
-                String type = chargingStation.type;
-                listOfChargingStations.add(new SingleLocationResult(type, id, lat, lng, name));
-                i++;
-            }
-        } catch (Throwable throwable) {
-            logError(throwable.toString());
-            logError(throwable.getMessage());
-        }
-        return listOfChargingStations;
-    }
-
-
-    private void logInfo(String logMsg) {
-        logger.info(LOG_PREFIX, logMsg);
-    }
-
-    private void logError(String logMsg) {
-        logger.error(LOG_PREFIX, logMsg);
-    }
-
-    // TODO Proper way of sending guidance to FrontEnd is still not established
-    public List<ApiResult> getGuidanceForRoute(String origin, String destination, HereRoutingAttributes hereRoutingAttributes) {
-        List<ApiResult> generalRoutePoints = new ArrayList<>();
-        try {
-            HereGuidanceResponse hereApiRoutingResponse =
-                    getGuidanceResponse(origin, destination, TransportMode.CAR, hereRoutingAttributes);
-            logInfo("HERE / GUIDANCE:");
-            logInfo(hereApiRoutingResponse.toString(""));
-            for (Route route : hereApiRoutingResponse.routes) {
-                for (Section section : route.sections) {
-                    String type = section.departure.place.type;
-                    int id = new Random().nextInt();
-                    String lat = "" + section.departure.place.location.lat;
-                    String lng = "" + section.departure.place.location.lng;
-                    String name = "HERE: " + origin;
-                    generalRoutePoints.add(new SingleLocationResult(type, id, lat, lng, name));
-                    type = section.arrival.place.type;
-                    id = new Random().nextInt();
-                    lat = "" + section.arrival.place.location.lat;
-                    lng = "" + section.arrival.place.location.lng;
-                    name = "HERE: " + destination;
-                    generalRoutePoints.add(new SingleLocationResult(type, id, lat, lng, name));
-                }
-            }
-        } catch (Throwable throwable) {
-            logError(throwable.toString());
-            logError(throwable.getMessage());
-        }
-        return generalRoutePoints;
-    }
-
     private static class SingleLocationResult implements ApiResult {
 
         private String type;
@@ -153,12 +155,21 @@ public class HereApiRestService {
         private final String lon;
         private final String name;
 
-        public SingleLocationResult(String type, int id, String lat, String lon, String name) {
+        public SingleLocationResult(String type, int id, String name, String lat, String lon) {
             this.type = type;
             this.id = id;
             this.lat = lat;
             this.lon = lon;
             this.name = name;
+        }
+
+        public SingleLocationResult(String type, int id, String name, String coordinates) {
+            this.type = type;
+            this.id = id;
+            this.name = name;
+            String[] coordinatesArray = coordinates.split(",");
+            this.lat = coordinatesArray[0];
+            this.lon = coordinatesArray[1];
         }
 
         @Override
@@ -190,5 +201,13 @@ public class HereApiRestService {
         public String getName() {
             return name;
         }
+    }
+
+    private void logInfo(String logMsg) {
+        logger.info(LOG_PREFIX, logMsg);
+    }
+
+    private void logError(String logMsg) {
+        logger.error(LOG_PREFIX, logMsg);
     }
 }

@@ -7,6 +7,7 @@ import com.example.backend.data.HttpResponse;
 import com.example.backend.data.http.Error;
 import com.example.backend.data.http.*;
 import com.example.backend.helpers.BackendLogger;
+import com.example.backend.helpers.MissingLocationException;
 import com.google.gson.Gson;
 import org.springframework.web.bind.annotation.*;
 
@@ -60,9 +61,17 @@ public class FrontendController {
             return handleError(throwable);
         }
 
-        List<ApiResult> apiQueryResults = apiController.querySearch(nlpQueryResponse);
+        List<ApiResult> apiQueryResults = null;
+        try {
+            // The API decision and calling starts here:
+            apiQueryResults = apiController.querySearch(nlpQueryResponse);
+        } catch (MissingLocationException e) {
+            e.printStackTrace();
+            handleError(e);
+        }
 
         ResultResponse response;
+        assert apiQueryResults != null;
         if (apiQueryResults.isEmpty()) {
             response = new ResultResponse(null);
         } else {
@@ -93,7 +102,6 @@ public class FrontendController {
         } catch (Throwable t) {
             nlpVersion = "unknown";
         }
-
 
         return new VersionResponse(Version.createVersion("0.8.0", nlpVersion));
     }

@@ -1,14 +1,29 @@
 package com.example.backend.data.here;
 
+import com.example.backend.controllers.HereApiRestService;
+import com.example.backend.data.api.HereApiGeocodeResponse;
+import com.example.backend.data.http.NlpQueryResponse;
+import com.example.backend.helpers.BackendLogger;
+import com.example.backend.helpers.MissingLocationException;
+import com.google.gson.Gson;
+
 public class HereRoutingAttributes {
 
     private static boolean includeChargingStations = false;
     private static boolean avoidTollRoads = true;
+    private final BackendLogger logger = new BackendLogger();
+    private static final String LOG_PREFIX = "HERE_ROUTING_ATTRIBUTES";
     private final static String DELIMITER = "&";
+    private final HereApiRestService hereApiRestService;
     private String returnType = "";
+    private RoutingWaypoint startLocation;
+    private RoutingWaypoint finishLocation;
 
-    public HereRoutingAttributes() {
-        // empty constructor
+    /**
+     * @param hereApiRestService we need this service to get the coordinates for the origin and destination of the requested route
+     */
+    public HereRoutingAttributes(HereApiRestService hereApiRestService) {
+        this.hereApiRestService = hereApiRestService;
     }
 
     public void includeChargingStations() {
@@ -55,5 +70,85 @@ public class HereRoutingAttributes {
 
     public void setReturnTypeToPolylineAndTurnByTurnActions() {
         returnType = "polyline,turnbyturnactions";
+    }
+
+    public boolean getIfChargingStationsIncluded() {
+        return includeChargingStations;
+    }
+
+    public void setOrigin(RoutingWaypoint startLocation) {
+        this.startLocation = startLocation;
+    }
+
+    public void setDestination(RoutingWaypoint finishLocation) {
+        this.finishLocation = finishLocation;
+    }
+
+    public RoutingWaypoint getOrigin() {
+        return startLocation;
+    }
+
+    public RoutingWaypoint getDestination() {
+        return finishLocation;
+    }
+
+    /**
+     * Will analyze the NlpQueryResponse and try to extract as much information out of it as possible.
+     *
+     * @param nlpQueryResponse the answer from NLP containing general routing request
+     * @throws MissingLocationException when the NlpQueryResponse contains no location, this exception will be thrown
+     */
+    public void extractRoutingAttributes(NlpQueryResponse nlpQueryResponse) throws MissingLocationException {
+        if (nlpQueryResponse.getLocation().equals("")) {
+            logError("No value found for location! Abort!");
+            throw new MissingLocationException("The value for \"location\" cannot be empty when trying to calculate a route!");
+        }
+
+        String[] locations = nlpQueryResponse.getLocation().split(",");
+        String nameOfDesiredFinishLocation = locations[0];
+
+        RoutingWaypoint finishLocation = callHereApiToRetrieveCoordinatesForLocation(nameOfDesiredFinishLocation);
+        logInfo("We will take this value as the end of the route: " + finishLocation);
+        setDestination(finishLocation);
+
+        RoutingWaypoint startLocation;
+        if (locations.length > 1) {
+            startLocation = callHereApiToRetrieveCoordinatesForLocation(locations[1]);
+            logInfo("We will take this value as the start of the route: " + startLocation.getName());
+        } else {
+            startLocation = new RoutingWaypoint("Berlin");
+            startLocation.updateCoordinates(52.52782311436024, 13.386253770286528);
+            logInfo("No location found to start our route! We will take this one as default: " + startLocation.getName());
+        }
+        setOrigin(startLocation);
+        if (nlpQueryResponse.getRouteAttributes().getTollRoads()) {
+            avoidToll();
+            logInfo("Route shall avoid tolls!");
+        } else {
+            includeTollRoads();
+        }
+        if (nlpQueryResponse.getRouteAttributes().getChargingStations()) {
+            includeChargingStations();
+            logInfo("Route shall include charging stations!");
+        } else {
+            excludeChargingStations();
+        }
+    }
+
+    private RoutingWaypoint callHereApiToRetrieveCoordinatesForLocation(String nameOfDesiredLocation) {
+        String hereApiResponseAsString = hereApiRestService.getPostsPlainJSON(nameOfDesiredLocation);
+        HereApiGeocodeResponse hereResults = new Gson().fromJson(hereApiResponseAsString, HereApiGeocodeResponse.class);
+        RoutingWaypoint routingWaypoint = new RoutingWaypoint(nameOfDesiredLocation);
+        // The first entry has the highest probability of best fulfilling the request:
+        routingWaypoint.updateCoordinates(hereResults.getSearchResults().get(0).position.lat, hereResults.getSearchResults().get(0).position.lng);
+        return routingWaypoint;
+    }
+
+    private void logInfo(String logMsg) {
+        logger.info(LOG_PREFIX, logMsg);
+    }
+
+    private void logError(String logMsg) {
+        logger.error(LOG_PREFIX, logMsg);
     }
 }

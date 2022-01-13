@@ -2,7 +2,6 @@ package com.example.backend.controllers;
 
 import com.example.backend.clients.OsmApiClient;
 import com.example.backend.data.ApiResult;
-import com.example.backend.data.api.HereApiGeocodeResponse;
 import com.example.backend.data.api.NodeInfo;
 import com.example.backend.data.api.OSMQuery;
 import com.example.backend.data.api.OSMSearchResult;
@@ -10,7 +9,7 @@ import com.example.backend.data.here.HereRoutingAttributes;
 import com.example.backend.data.http.NlpQueryResponse;
 import com.example.backend.helpers.ApiSelectionHelper.ApiType;
 import com.example.backend.helpers.BackendLogger;
-import com.google.gson.Gson;
+import com.example.backend.helpers.MissingLocationException;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,9 +29,6 @@ public class ApiController {
     private static final String dummyNodeID = "305293190";
     private final HereApiRestService hereApiRestService;
 
-    // Brandenburger Tor in Berlin
-    public static final String ROUTE_START_COORDINATES = "52.518462144205756,13.373228882261595";
-
     public ApiController(OsmApiClient osmApiClient, HereApiRestService hereApiRestService) {
         this.osmApiClient = osmApiClient;
         this.hereApiRestService = hereApiRestService;
@@ -49,7 +45,14 @@ public class ApiController {
         return apiXMLResponse;
     }
 
-    public List<ApiResult> querySearch(NlpQueryResponse nlpQueryResponse) {
+    /**
+     * This method will make the decision, which API will be used and then calls this API
+     *
+     * @param nlpQueryResponse the answer from NLP containing information from the query
+     * @return the results from the called API's
+     * @throws MissingLocationException if Routing is selected and the location is empty, this Exception will be thrown
+     */
+    public List<ApiResult> querySearch(NlpQueryResponse nlpQueryResponse) throws MissingLocationException {
         ApiType preferredApi = getInstance().getApiPreference(nlpQueryResponse);
         List<ApiResult> result = new ArrayList<>();
         logInfo("Selected Api: " + preferredApi);
@@ -68,37 +71,16 @@ public class ApiController {
         result.addAll(osmResults.getSearchResults());
     }
 
-    private void handleHereApiRequest(NlpQueryResponse nlpQueryResponse, List<ApiResult> result) {
-        HereRoutingAttributes hereRoutingAttributes = new HereRoutingAttributes();
-        if (nlpQueryResponse.getRouteAttributes().getTollRoads()) {
-            hereRoutingAttributes.avoidToll();
+    private void handleHereApiRequest(NlpQueryResponse nlpQueryResponse, List<ApiResult> result) throws MissingLocationException {
+        HereRoutingAttributes hereRoutingAttributes = new HereRoutingAttributes(hereApiRestService);
+        hereRoutingAttributes.extractRoutingAttributes(nlpQueryResponse);
+        if (hereRoutingAttributes.getIfChargingStationsIncluded()) {
+            logInfo("Searching for a route to " + hereRoutingAttributes.getDestination().getName() + " with charging stations...");
+            result.addAll(hereApiRestService.getChargingStationsOnRoute(hereRoutingAttributes));
         } else {
-            hereRoutingAttributes.includeTollRoads();
+            logInfo("Searching for a route to " + hereRoutingAttributes.getDestination().getName() + " without charging stations...");
+            result.addAll(hereApiRestService.getGuidanceForRoute(hereRoutingAttributes));
         }
-
-        String hereApiResponseAsString = hereApiRestService.getPostsPlainJSON(generateHereQuery(nlpQueryResponse));
-        HereApiGeocodeResponse hereResults = new Gson().fromJson(hereApiResponseAsString, HereApiGeocodeResponse.class);
-        String position = hereResults.getSearchResults().get(0).position.lat + "," + hereResults.getSearchResults().get(0).position.lng;
-
-        if (nlpQueryResponse.getRouteAttributes().getChargingStations()) {
-            logInfo("Searching for a route to " + nlpQueryResponse.getLocation() + " with charging stations...");
-            // TODO Replace this workaround and introduce a proper starting location (coordinates)
-            hereRoutingAttributes.includeChargingStations();
-            result.addAll(getChargingStationsAlongTheWay(ROUTE_START_COORDINATES, position, hereRoutingAttributes));
-        } else {
-            logInfo("Searching for a route to " + nlpQueryResponse.getLocation() + " without charging stations...");
-            // TODO Replace this workaround and introduce a proper starting location (coordinates)
-            hereRoutingAttributes.excludeChargingStations();
-            result.addAll(getGuidanceForRoute(ROUTE_START_COORDINATES, position, hereRoutingAttributes));
-        }
-    }
-
-    public List<ApiResult> getChargingStationsAlongTheWay(String origin, String destination, HereRoutingAttributes hereRoutingAttributes) {
-        return hereApiRestService.getChargingStationsOnRoute(origin, destination, hereRoutingAttributes);
-    }
-
-    public List<ApiResult> getGuidanceForRoute(String origin, String destination, HereRoutingAttributes hereRoutingAttributes) {
-        return hereApiRestService.getGuidanceForRoute(origin, destination, hereRoutingAttributes);
     }
 
     private OSMQuery generateOsmQuery(NlpQueryResponse nlpQueryResponse) {
@@ -111,13 +93,6 @@ public class ApiController {
         osmQuery.setArea(nlpQueryResponse.getLocation());
         logInfo("Generated Query for OSM: " + osmQuery.toQuery());
         return osmQuery;
-    }
-
-    private String generateHereQuery(NlpQueryResponse nlpQueryResponse) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(nlpQueryResponse.getLocation());
-        logInfo("Generated Query for HERE: " + builder);
-        return builder.toString();
     }
 
     private void adjustTypeValues(List<ApiResult> result, NlpQueryResponse nlpQueryResponse) {
