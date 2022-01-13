@@ -4,8 +4,10 @@ import com.example.backend.data.ApiResult;
 import com.example.backend.data.api.HereApiRoutingResponse;
 import com.example.backend.data.api.HereGuidanceResponse;
 import com.example.backend.data.here.*;
+import com.example.backend.data.http.NlpQueryResponse;
 import com.example.backend.helpers.BackendLogger;
 import com.example.backend.helpers.HereApiKey;
+import com.example.backend.helpers.MissingLocationException;
 import com.google.gson.Gson;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
@@ -46,11 +48,20 @@ public class HereApiRestService {
         return response;
     }
 
-    /**
-     * @param hereRoutingAttributes containing general routing request information
-     * @return a list of ApiResult containing the origin, a selection of charging stations along the way and the destination
-     */
-    public List<ApiResult> getChargingStationsOnRoute(HereRoutingAttributes hereRoutingAttributes) {
+    public void handleRequest(NlpQueryResponse nlpQueryResponse, List<ApiResult> result) throws MissingLocationException {
+        HereRoutingAttributes hereRoutingAttributes = new HereRoutingAttributes(this);
+        hereRoutingAttributes.extractRoutingAttributes(nlpQueryResponse);
+        if (hereRoutingAttributes.getIfChargingStationsIncluded()) {
+            logInfo("Searching for a route from \"" + hereRoutingAttributes.getOrigin().getName() + "\" to \"" + hereRoutingAttributes.getDestination().getName() + "\" with charging stations...");
+            result.addAll(getChargingStationsOnRoute(hereRoutingAttributes));
+        } else {
+            logInfo("Searching for a route from \"" + hereRoutingAttributes.getOrigin().getName() + "\" to \"" + hereRoutingAttributes.getDestination().getName() + "\" without charging stations...");
+            result.addAll(getGuidanceForRoute(hereRoutingAttributes));
+        }
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    private List<ApiResult> getChargingStationsOnRoute(HereRoutingAttributes hereRoutingAttributes) {
         RoutingWaypoint origin = hereRoutingAttributes.getOrigin();
         RoutingWaypoint destination = hereRoutingAttributes.getDestination();
         List<ApiResult> listOfPointsAlongTheRoute = new ArrayList<>();
@@ -58,15 +69,20 @@ public class HereApiRestService {
             hereRoutingAttributes.setReturnTypeToSummary();
             String hereApiRoutingResponseString =
                     getRoutingResponse(origin.getCoordinatesAsString(), destination.getCoordinatesAsString(), hereRoutingAttributes);
-            logInfo("HERE / ROUTING / CHARGING STATIONS:");
-            logInfo(hereApiRoutingResponseString);
+            // TODO log only when debugging
+            if (false) {
+                logInfo("HERE / ROUTING / CHARGING STATIONS:");
+                logInfo(hereApiRoutingResponseString);
+            }
             HereApiRoutingResponse hereApiRoutingResponse = new Gson().fromJson(hereApiRoutingResponseString, HereApiRoutingResponse.class);
-            logInfo(hereApiRoutingResponse.toString(""));
+            // TODO log only when debugging
+            if (false) {
+                logInfo(hereApiRoutingResponse.toString(""));
+            }
             List<Place> chargingStations = new ArrayList<>();
             for (Route route : hereApiRoutingResponse.routes) {
                 chargingStations.addAll(route.getAlLChargingStations());
             }
-            logInfo("A selection of charging stations found between \"" + origin.getName() + "\" and \"" + destination.getName() + "\":");
             int i = 1;
             listOfPointsAlongTheRoute.add(new SingleLocationResult("Start", 0, origin.getName(), origin.getCoordinatesAsString()));
             int total = chargingStations.size();
@@ -86,11 +102,8 @@ public class HereApiRestService {
         return listOfPointsAlongTheRoute;
     }
 
-    /**
-     * @param hereRoutingAttributes containing general routing request information
-     * @return a list of ApiResult containing the origin and the destination
-     */
-    public List<ApiResult> getGuidanceForRoute(HereRoutingAttributes hereRoutingAttributes) {
+    @SuppressWarnings("ConstantConditions")
+    private List<ApiResult> getGuidanceForRoute(HereRoutingAttributes hereRoutingAttributes) {
         RoutingWaypoint origin = hereRoutingAttributes.getOrigin();
         RoutingWaypoint destination = hereRoutingAttributes.getDestination();
         List<ApiResult> generalRoutePoints = new ArrayList<>();
@@ -98,7 +111,10 @@ public class HereApiRestService {
             HereGuidanceResponse hereApiRoutingResponse =
                     getGuidanceResponse(origin.getCoordinatesAsString(), destination.getCoordinatesAsString(), hereRoutingAttributes);
             logInfo("HERE / GUIDANCE:");
-            logInfo(hereApiRoutingResponse.toString(""));
+            // TODO log only when debugging
+            if (false) {
+                logInfo(hereApiRoutingResponse.toString(""));
+            }
             for (Route route : hereApiRoutingResponse.routes) {
                 for (Section section : route.sections) {
                     String type = "Start";
@@ -122,6 +138,7 @@ public class HereApiRestService {
         return generalRoutePoints;
     }
 
+    @SuppressWarnings("ConstantConditions")
     private String getRoutingResponse(String origin, String destination, HereRoutingAttributes hereRoutingAttributes) {
         String url_query_attributes = hereRoutingAttributes.getUrlArguments(false);
         String url = HERE_ROUTING_URL + SEPARATOR + URL_QUERY_API_KEY + DELIMITER +  //
@@ -131,10 +148,14 @@ public class HereApiRestService {
                 URL_QUERY_DESTINATION + destination;
         logInfo("URL for HERE ROUTING = " + url);
         String response = this.restTemplate.getForObject(url, String.class);
-        logInfo("HereApiRestService.getRoutingResponse() = " + response);
+        // TODO log only when debugging
+        if (false) {
+            logInfo("HereApiRestService.getRoutingResponse() = " + response);
+        }
         return response;
     }
-
+    
+    @SuppressWarnings("ConstantConditions")
     private HereGuidanceResponse getGuidanceResponse(String origin, String destination, HereRoutingAttributes hereRoutingAttributes) {
         hereRoutingAttributes.setReturnTypeToPolylineAndTurnByTurnActions();
         String url_query_attributes = hereRoutingAttributes.getUrlArguments(true);
@@ -145,7 +166,10 @@ public class HereApiRestService {
                 URL_QUERY_DESTINATION + destination;
         logInfo("URL for HERE GUIDANCE = " + url);
         String response = this.restTemplate.getForObject(url, String.class);
-        logInfo("HereApiRestService.getGuidanceResponse() = " + "DEACTIVATED PRINT OUTS NOW");
+        // TODO log only when debugging
+        if (false) {
+            logInfo("HereApiRestService.getGuidanceResponse() = " + response);
+        }
         return new Gson().fromJson(response, HereGuidanceResponse.class);
     }
 

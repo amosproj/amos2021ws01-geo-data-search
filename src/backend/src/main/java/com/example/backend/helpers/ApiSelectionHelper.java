@@ -3,55 +3,34 @@ package com.example.backend.helpers;
 import com.example.backend.data.http.NlpQueryResponse;
 
 public class ApiSelectionHelper {
-    private static ApiSelectionHelper instance;
-    private static final String ELEVATION = "elevation";
-    private static final String PLACE = "place";
-    private static final String ROUTE = "route";
 
     private ApiSelectionHelper() {
+        // empty constructor
     }
 
-    public static ApiSelectionHelper getInstance() {
-        if (instance == null) {
-            instance = new ApiSelectionHelper();
-        }
-        return instance;
-    }
-
-    public RequestType getRequestType(NlpQueryResponse nlpQueryResponse){
-        RequestType requestType;
-        switch (nlpQueryResponse.getQueryObject()) {
-            case ELEVATION:
-                requestType = RequestType.ELEVATION;
-                break;
-            case PLACE:
-                requestType = RequestType.PLACE;
-                break;
-            case ROUTE:
-                requestType = RequestType.ROUTING;
-                break;
+    /**
+     * Decides which API should be used based on query_object in NlpQueryResponse.
+     *
+     * @param nlpQueryResponse the answer from the NLP
+     * @return ApiType to be used for this query_object
+     * @throws UnknownQueryObjectException when the query_object is unknown
+     */
+    @SuppressWarnings("DuplicateBranchesInSwitch")
+    public static ApiType getApiPreference(NlpQueryResponse nlpQueryResponse) throws UnknownQueryObjectException {
+        String queryObject = nlpQueryResponse.getQueryObject();
+        switch (queryObject) {
+            case NlpQueryResponse.QUERY_OBJECT_ROUTE:
+                return ApiType.HERE_API;
+            case NlpQueryResponse.QUERY_OBJECT_ELEVATION:
+                return ApiType.OSM_API;
+            case NlpQueryResponse.QUERY_OBJECT_PLACE:
+                return ApiType.OSM_API;
             default:
-                requestType = RequestType.PLACE;
-                break;
+                throw new UnknownQueryObjectException("Query object \"" + queryObject + "\" is unknown! No decision possible, on which API to use!");
         }
-        return requestType;
-    }
-
-    public ApiType getApiPreference(NlpQueryResponse nlpQueryResponse) {
-        ApiType preference;
-        if (getRequestType(nlpQueryResponse) == RequestType.ROUTING) {
-            preference = ApiType.HERE_API;
-        } else {
-            preference = ApiType.OSM_API;
-        }
-        return preference;
     }
 
     public enum ApiType {
         OSM_API, HERE_API
     }
-    public enum RequestType {
-        ELEVATION, ROUTING, PLACE
-    }
 }
-

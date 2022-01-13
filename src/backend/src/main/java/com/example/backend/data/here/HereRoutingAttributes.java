@@ -94,11 +94,11 @@ public class HereRoutingAttributes {
         RoutingWaypoint startLocation;
         if (locations.length > 1) {
             startLocation = callHereApiToRetrieveCoordinatesForLocation(locations[1]);
-            logInfo("We will take this value as the start of the route: \"" + startLocation.getName() + "\"");
+            logInfo("We will take this value as the START of the route: \"" + startLocation.getName() + "\"");
         } else {
             startLocation = new RoutingWaypoint("Berlin");
             startLocation.updateCoordinates(52.52782311436024, 13.386253770286528);
-            logInfo("No location found to start our route! We will take this one as default: \"" + startLocation.getName() + "\"");
+            logInfo("No location found to START our route! We will take this one as default: \"" + startLocation.getName() + "\"");
         }
         this.startLocation = startLocation;
     }
@@ -107,25 +107,27 @@ public class HereRoutingAttributes {
         String[] locations = nlpQueryResponse.getLocation().split(LOCATIONS_SEPARATOR);
         String nameOfDesiredFinishLocation = locations[0];
         RoutingWaypoint finishLocation = callHereApiToRetrieveCoordinatesForLocation(nameOfDesiredFinishLocation);
-        logInfo("We will take this value as the end of the route: \"" + finishLocation + "\"");
+        logInfo("We will take this value as the END of the route: \"" + finishLocation.getName() + "\"");
         this.finishLocation = finishLocation;
     }
 
     private void extractTollRoads(NlpQueryResponse nlpQueryResponse) {
         if (nlpQueryResponse.getRouteAttributes().getTollRoads()) {
             avoidTollRoads = true;
-            logInfo("Route will avoid tolls!");
+            logInfo("Route will AVOID tolls!");
         } else {
             avoidTollRoads = false;
+            logInfo("Route will NOT avoid tolls!");
         }
     }
 
     private void extractChargingStations(NlpQueryResponse nlpQueryResponse) {
         if (nlpQueryResponse.getRouteAttributes().getChargingStations()) {
             includeChargingStations = true;
-            logInfo("Route will include charging stations!");
+            logInfo("Route will INCLUDE charging stations!");
         } else {
             includeChargingStations = false;
+            logInfo("Route will NOT include charging stations!");
         }
     }
 

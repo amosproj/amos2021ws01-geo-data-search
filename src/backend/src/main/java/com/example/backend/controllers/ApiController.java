@@ -5,19 +5,14 @@ import com.example.backend.data.ApiResult;
 import com.example.backend.data.api.NodeInfo;
 import com.example.backend.data.api.OSMQuery;
 import com.example.backend.data.api.OSMSearchResult;
-import com.example.backend.data.here.HereRoutingAttributes;
 import com.example.backend.data.http.NlpQueryResponse;
+import com.example.backend.helpers.*;
 import com.example.backend.helpers.ApiSelectionHelper.ApiType;
-import com.example.backend.helpers.BackendLogger;
-import com.example.backend.helpers.MissingLocationException;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.example.backend.helpers.ApiSelectionHelper.RequestType;
-import static com.example.backend.helpers.ApiSelectionHelper.getInstance;
 
 @RestController
 @RequestMapping("/backend")
@@ -52,14 +47,18 @@ public class ApiController {
      * @return the results from the called API's
      * @throws MissingLocationException if Routing is selected and the location is empty, this Exception will be thrown
      */
-    public List<ApiResult> querySearch(NlpQueryResponse nlpQueryResponse) throws MissingLocationException {
-        ApiType preferredApi = getInstance().getApiPreference(nlpQueryResponse);
+    public List<ApiResult> querySearch(NlpQueryResponse nlpQueryResponse) throws MissingLocationException, UnknownQueryObjectException, NoPrefferedApiFoundException {
+        ApiType preferredApi = ApiSelectionHelper.getApiPreference(nlpQueryResponse);
         List<ApiResult> result = new ArrayList<>();
-        logInfo("Selected Api: " + preferredApi);
         if (preferredApi == ApiType.OSM_API) {
+            logInfo("Based on the query_object \"" + nlpQueryResponse.getQueryObject() + "\", OSM API will now handle the request.");
             handleOsmApiRequest(nlpQueryResponse, result);
         } else if (preferredApi == ApiType.HERE_API) {
-            handleHereApiRequest(nlpQueryResponse, result);
+            logInfo("Based on the query_object \"" + nlpQueryResponse.getQueryObject() + "\", HERE API will now handle the request.");
+            hereApiRestService.handleRequest(nlpQueryResponse, result);
+        } else {
+            logError("The preferred API does not match any of our implemented API's!");
+            throw new NoPrefferedApiFoundException("No preferred API to use based on this query_object: \"" + nlpQueryResponse.getQueryObject() + "\"");
         }
         adjustTypeValues(result, nlpQueryResponse);
         return result;
@@ -71,23 +70,12 @@ public class ApiController {
         result.addAll(osmResults.getSearchResults());
     }
 
-    private void handleHereApiRequest(NlpQueryResponse nlpQueryResponse, List<ApiResult> result) throws MissingLocationException {
-        HereRoutingAttributes hereRoutingAttributes = new HereRoutingAttributes(hereApiRestService);
-        hereRoutingAttributes.extractRoutingAttributes(nlpQueryResponse);
-        if (hereRoutingAttributes.getIfChargingStationsIncluded()) {
-            logInfo("Searching for a route to " + hereRoutingAttributes.getDestination().getName() + " with charging stations...");
-            result.addAll(hereApiRestService.getChargingStationsOnRoute(hereRoutingAttributes));
-        } else {
-            logInfo("Searching for a route to " + hereRoutingAttributes.getDestination().getName() + " without charging stations...");
-            result.addAll(hereApiRestService.getGuidanceForRoute(hereRoutingAttributes));
-        }
-    }
-
+    // TODO This method contains hard coded values and should be edited
     private OSMQuery generateOsmQuery(NlpQueryResponse nlpQueryResponse) {
         OSMQuery osmQuery = new OSMQuery();
-        if (getInstance().getRequestType(nlpQueryResponse) == RequestType.ELEVATION) {
+        if (nlpQueryResponse.getQueryObject().equals(NlpQueryResponse.QUERY_OBJECT_ELEVATION)) {
             osmQuery.setNatural("peak");
-        } else if (getInstance().getRequestType(nlpQueryResponse) == RequestType.PLACE) {
+        } else if (nlpQueryResponse.getQueryObject().equals(NlpQueryResponse.QUERY_OBJECT_PLACE)) {
             osmQuery.setAmenity("restaurant");
         }
         osmQuery.setArea(nlpQueryResponse.getLocation());
@@ -105,5 +93,9 @@ public class ApiController {
 
     private void logInfo(String logMsg) {
         logger.info(LOG_PREFIX, logMsg);
+    }
+
+    private void logError(String logMsg) {
+        logger.error(LOG_PREFIX, logMsg);
     }
 }

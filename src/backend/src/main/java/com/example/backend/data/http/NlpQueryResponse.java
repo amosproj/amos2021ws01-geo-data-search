@@ -18,6 +18,10 @@ public class NlpQueryResponse implements HttpResponse {
     @SerializedName("route_attributes")
     private final RouteAttributes routeAttributes;
 
+    public static final String QUERY_OBJECT_ROUTE = "route";
+    public static final String QUERY_OBJECT_PLACE = "place";
+    public static final String QUERY_OBJECT_ELEVATION = "elevation";
+
     public NlpQueryResponse(String location, Integer maxDistance, String queryObject, RouteAttributes routeAttributes) {
         this.location = location;
         this.maxDistance = maxDistance;

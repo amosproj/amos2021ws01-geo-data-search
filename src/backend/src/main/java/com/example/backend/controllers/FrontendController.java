@@ -8,6 +8,8 @@ import com.example.backend.data.http.Error;
 import com.example.backend.data.http.*;
 import com.example.backend.helpers.BackendLogger;
 import com.example.backend.helpers.MissingLocationException;
+import com.example.backend.helpers.NoPrefferedApiFoundException;
+import com.example.backend.helpers.UnknownQueryObjectException;
 import com.google.gson.Gson;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,22 +43,15 @@ public class FrontendController {
     @PostMapping("/user_query")
     @ResponseBody
     public HttpResponse handleQueryRequest(@RequestBody String query) {
+        logInfo("+ -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- + -- +");
         logInfo("New query received! Query = \"" + query + "\"");
 
-        query = URLDecoder.decode(query, StandardCharsets.UTF_8);
-        query = query.replace("query=", "");
+        query = prepareQuery(query);
 
-        logInfo("WORK AROUND! Query = \"" + query + "\"");
         NlpQueryResponse nlpQueryResponse;
         try {
-            logInfo("Sending data to NLP...");
-            String nlpResponse = nlpClient.sendToNlp(query);
-            logInfo("...SUCCESS!, response from NLP received:" + nlpResponse);
-            logInfo("NLP RESPONSE:");
-            logInfo(nlpResponse);
-            logInfo("INTERPRETED NLP RESPONSE:");
-            nlpQueryResponse = new Gson().fromJson(nlpResponse, NlpQueryResponse.class);
-            logInfo(nlpQueryResponse.toString());
+            // Sending the query to the NLP and receiving its response here
+            nlpQueryResponse = getNlpQueryResponse(query);
         } catch (Throwable throwable) {
             throwable.printStackTrace();
             return handleError(throwable);
@@ -66,25 +61,48 @@ public class FrontendController {
         try {
             // The API decision and calling happens here:
             apiQueryResults = apiController.querySearch(nlpQueryResponse);
-        } catch (MissingLocationException e) {
+        } catch (MissingLocationException | UnknownQueryObjectException | NoPrefferedApiFoundException e) {
             e.printStackTrace();
             handleError(e);
         }
 
-        ResultResponse response;
-        assert apiQueryResults != null;
-        if (apiQueryResults.isEmpty()) {
-            response = new ResultResponse(null);
-        } else {
-            response = new ResultResponse(apiQueryResults);
-        }
-        logInfo("Sending this respond to FRONTEND:");
-        logInfo(response.toString());
+        ResultResponse response = prepareResponse(apiQueryResults);
+
+        logInfo("Sending this respond to FRONTEND:\n" + response.toString());
         return response;
     }
 
+    private String prepareQuery(String query) {
+        query = URLDecoder.decode(query, StandardCharsets.UTF_8);
+        query = query.replace("query=", "");
+        logInfo("WORK AROUND! Query = \"" + query + "\"");
+        return query;
+    }
+
+    private NlpQueryResponse getNlpQueryResponse(String query) {
+        NlpQueryResponse nlpQueryResponse;
+        logInfo("Sending data to NLP...");
+        String nlpResponse = nlpClient.sendToNlp(query);
+        logInfo("...SUCCESS!, response from NLP received:" + nlpResponse);
+        logInfo("NLP RESPONSE:");
+        logInfo(nlpResponse);
+        logInfo("INTERPRETED NLP RESPONSE:");
+        nlpQueryResponse = new Gson().fromJson(nlpResponse, NlpQueryResponse.class);
+        logInfo(nlpQueryResponse.toString());
+        return nlpQueryResponse;
+    }
+
+    // TODO Maybe we should throw an exception in the case of an empty response?
+    private ResultResponse prepareResponse(List<ApiResult> apiQueryResults) {
+        if (apiQueryResults == null || apiQueryResults.isEmpty()) {
+            return new ResultResponse(null);
+        } else {
+            return new ResultResponse(apiQueryResults);
+        }
+    }
+
     private ErrorResponse handleError(Throwable throwable) {
-        logError("...ERROR!" + "\n" + "\t" + throwable.getMessage());
+        logError("...ERROR!" + "\n" + "\t" + throwable.toString() + "\n" + "\t" + throwable.getMessage());
         return new ErrorResponse(Error.createError(throwable.getMessage(), Arrays.toString(throwable.getStackTrace())));
     }
 
