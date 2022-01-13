@@ -67,7 +67,9 @@ def get_query(string: str) -> object:
 
     # checks if toll roads are queried
     if check_feature(ner_tokens, "toll_road"):
-        result.route_attributes.toll_roads = True
+        result.route_attributes.toll_road_avoidance = False
+    else:
+        result.route_attributes.toll_road_avoidance = True
 
     for index in range(len(ner_tokens)):
         token = ner_tokens[index]
