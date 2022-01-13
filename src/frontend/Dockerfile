@@ -18,7 +18,7 @@ ENV BACKEND_API_ROOT=${BACKEND_API_ROOT}
 ARG ENVIRONMENT
 ENV ENVIRONMENT=${ENVIRONMENT}
 
-RUN yarn build && yarn install --ignore-scripts --prefer-offline
+RUN yarn build && yarn install --production --ignore-scripts --prefer-offline
 
 # Production image, copy all the files and run next
 FROM node:16-alpine AS runner
