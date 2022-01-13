@@ -10,7 +10,7 @@ export type SearchResult = {
   lat: string;
   lon: string;
   name: string;
-  tags: {
+  tags?: {
     'addr:city': string;
     'addr:country': string;
     'addr:housenumber': string;
