@@ -14,6 +14,7 @@ const SearchListResult = ({ result, onClick }: Props) => {
 
   return (
     <li
+      aria-label='Select search result'
       className="p-2 flex items-center hover:bg-[#E6F2F8] rounded cursor-pointer"
       onClick={handleResultClick}
       role="button"
