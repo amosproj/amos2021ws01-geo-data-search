@@ -45,7 +45,7 @@ async def root():
 )
 async def get_version():
     logging.info("Requested current version number")
-    return {"version": "0.8.0"}
+    return {"version": "0.9.3"}
 
 
 @app.get(

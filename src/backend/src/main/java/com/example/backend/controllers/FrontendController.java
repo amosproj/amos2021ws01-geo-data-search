@@ -95,7 +95,7 @@ public class FrontendController {
         }
 
 
-        return new VersionResponse(Version.createVersion("0.8.0", nlpVersion));
+        return new VersionResponse(Version.createVersion("0.9.3", nlpVersion));
     }
 
     private void logInfo(String logMsg) {
