@@ -1,6 +1,7 @@
 from api.string_interpreter import get_query, Query
 import pytest
 
+
 def get_query_objects_test_data():
     queries = [
         ["Finde alle Berge in Berlin die höher als 100m sind", "elevation"],
@@ -17,8 +18,8 @@ def get_gradient_test_data():
     queries = [
         ["Zeige mir einen Weg von Essen nach Köln mit einer Steigung von maximal 7", "max", 7],
         ["Plane mir eine Route nach Paris mit einer Steigung von über 30%", "min", 30],
-        ["Plane mir eine Route nach Paris mit einem Anteil von 500 meter Steigung von maximal 9%", "max", 9,],
-        ["Plane mir eine Route nach Paris mit einer Steigung von mindestens 22%","min", 22],
+        ["Plane mir eine Route nach Paris mit einem Anteil von 500 meter Steigung von maximal 9%", "max", 9, ],
+        ["Plane mir eine Route nach Paris mit einer Steigung von mindestens 22%", "min", 22],
         ["Plane mir eine Route nach Paris mit einer Steigung von 8%", "min", 8],
     ]
     return queries
@@ -42,6 +43,7 @@ def get_keyword_test_data():
     ]
     return queries
 
+
 def get_charging_station_test_data():
     queries = [
         ["Plane mir eine Route nach Paris mit einer Steigung von maximal 7% mit ladestationen", True],
@@ -52,6 +54,7 @@ def get_charging_station_test_data():
         ["Plane mir eine Route nach Paris mit keinen charging stations", False],
     ]
     return queries
+
 
 def get_toll_roads_test_data():
     queries = [
@@ -73,6 +76,7 @@ def get_toll_roads_test_data():
     ]
     return queries
 
+
 def get_query_test_data():
     queries = []
     query = Query()
@@ -80,30 +84,30 @@ def get_query_test_data():
     query.query_object = "route"
     query.route_attributes.gradiant.max = 7
     queries.append(["Plane mir eine Route nach Paris mit einer Steigung von maximal 7%", query])
-    
+
     query = Query()
     query.location = "Essen, Köln"
     query.query_object = "route"
     query.route_attributes.gradiant.max = 7
-    queries.append(["Zeige mir einen Weg von Essen nach Köln mit einer Steigung von maximal 7",query])
+    queries.append(["Zeige mir einen Weg von Essen nach Köln mit einer Steigung von maximal 7", query])
 
     query = Query()
     query.location = "Berlin"
     query.query_object = "elevation"
     query.route_attributes.height.min = 1000000
-    queries.append(["Gibt es Hügel in Berlin mit einer Höhe von mindestens 1000 metern",query])
+    queries.append(["Gibt es Hügel in Berlin mit einer Höhe von mindestens 1000 metern", query])
 
     query = Query()
     query.location = "Spanien"
     query.query_object = "route"
     query.route_attributes.length.min = 1000
-    queries.append(["Finde eine Strecke in Spanien mit einer Länge von 10 kilometern in einer lage über 1000m",query])
-    
+    queries.append(["Finde eine Strecke in Spanien mit einer Länge von 10 kilometern in einer lage über 1000m", query])
+
     query = Query()
     query.location = "Hamburg"
     query.query_object = "elevation"
     query.route_attributes.height.min = 1609
-    queries.append([" Zeige mir Berge mit einer Höhe von 1 meile in Hamburg",query])
+    queries.append([" Zeige mir Berge mit einer Höhe von 1 meile in Hamburg", query])
     return queries
 
 
@@ -112,30 +116,36 @@ def test_query_objects(query):
     result = get_query(query[0])
     assert result.query_object == query[1]
 
+
 @pytest.mark.parametrize("query", get_gradient_test_data())
 def test_route_gradient(query):
     result = get_query(query[0])
     assert getattr(result.route_attributes.gradiant, query[1]) == query[2]
+
 
 @pytest.mark.parametrize("query", get_keyword_test_data())
 def test_query_objects_keyword(query):
     result = get_query(query[0])
     assert result.query_object == query[1]
 
+
 @pytest.mark.parametrize("query", get_query_test_data())
 def test_query(query):
     result = get_query(query[0])
     assert result == query[1]
+
 
 @pytest.mark.parametrize("query", get_charging_station_test_data())
 def test_charging_station(query):
     result = get_query(query[0])
     assert result.route_attributes.charging_stations == query[1]
 
+
 @pytest.mark.parametrize("query", get_toll_roads_test_data())
 def test_toll_roads(query):
     result = get_query(query[0])
     assert result.route_attributes.toll_road_avoidance == query[1]
+
 
 def test_default_keyword():
     result = get_query("Wo sind Almen in Brandenburg")
@@ -164,6 +174,7 @@ def test_long_string_interpretation():
     assert result.location == "Italien"
     assert result.query_object == "route"
     assert result.route_attributes.height.max == 10000
+
 
 def test_convert_units():
     result = get_query("Zeige mir Berge in Hamburg mit einer Höhe von 1 kilometern")
