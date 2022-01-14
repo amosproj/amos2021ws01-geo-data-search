@@ -227,7 +227,7 @@ def check_feature(tokens: spacy.tokens.doc.Doc, feature="charging_station"):
     elif feature == "toll_road":
         feature_synonyms = toll_road_synonyms
 
-    #iterate over all tokens and check if feature is present
+    # iterate over all tokens and check if feature is present
     for index in range(len(tokens)):
         token = tokens[index]
         normalized_token = normalize_token(token)
@@ -237,6 +237,16 @@ def check_feature(tokens: spacy.tokens.doc.Doc, feature="charging_station"):
                 normalized_previous_token = normalize_token(tokens[index - 1])
                 if not check_negation(normalized_previous_token):
                     return True
+                else:
+                    return False
+
+        # check in-token-negation
+        if feature == "toll_road" and (check_similarity("kostenfrei", normalized_token, threshold=0.85)
+                                       or check_similarity("gebührenfrei", normalized_token, threshold=0.85)):
+            return False
+
+    if feature == "toll_road":
+        return True
     return False
 
 
