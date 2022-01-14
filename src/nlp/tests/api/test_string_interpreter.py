@@ -68,7 +68,8 @@ def get_toll_roads_test_data():
         ["Plane mir eine Route nach Paris mit keinen mautstellen", True],
         ["Plane mir eine Route nach Paris ohne gebühren zu zahlen", True],
         ["Plane mir eine Route nach Paris mit Autobahnen, kann auch gebühren enthalten", False],
-        ["Plane mir eine Route nach Paris ohne Mautstraßen", True]
+        ["Plane mir eine Route nach Paris ohne Mautstraßen", True],
+        ["Plane mir eine Route nach Paris", False]
     ]
     return queries
 
