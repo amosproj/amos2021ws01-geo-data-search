@@ -9,7 +9,7 @@ from typing import Optional
 import spacy
 from pydantic.dataclasses import dataclass
 
-from .helper_service import convert_number_to_meter, check_similarity
+from .helper_service import convert_number_to_meter, check_similarity, check_similarity_in_list
 from .utils import get_entity_synonyms, get_keyword_from_synonyms, get_alias_synonyms
 
 # get os specific file separator
@@ -39,6 +39,7 @@ unit_synonyms = get_alias_synonyms(title="unit")["unit"]
 charging_station_synonyms = get_alias_synonyms(title="charging_station")["charging_station"]
 toll_road_synonyms = get_alias_synonyms(title="toll_road")["toll_road"]
 negation_synonyms = get_alias_synonyms(title="negation")["negation"]
+toll_free_synonyms = get_alias_synonyms(title="toll_free")["toll_free"]
 
 
 def process_string(string: str) -> object:
@@ -67,7 +68,9 @@ def get_query(string: str) -> object:
 
     # checks if toll roads are queried
     if check_feature(ner_tokens, "toll_road"):
-        result.route_attributes.toll_roads = True
+        result.route_attributes.toll_road_avoidance = False
+    else:
+        result.route_attributes.toll_road_avoidance = True
 
     for index in range(len(ner_tokens)):
         token = ner_tokens[index]
@@ -225,7 +228,7 @@ def check_feature(tokens: spacy.tokens.doc.Doc, feature="charging_station"):
     elif feature == "toll_road":
         feature_synonyms = toll_road_synonyms
 
-    #iterate over all tokens and check if feature is present
+    # iterate over all tokens and check if feature is present
     for index in range(len(tokens)):
         token = tokens[index]
         normalized_token = normalize_token(token)
@@ -235,6 +238,15 @@ def check_feature(tokens: spacy.tokens.doc.Doc, feature="charging_station"):
                 normalized_previous_token = normalize_token(tokens[index - 1])
                 if not check_negation(normalized_previous_token):
                     return True
+                else:
+                    return False
+
+        # check in-token-negation
+        if feature == "toll_road" and check_similarity_in_list( normalized_token, toll_free_synonyms, threshold=0.85):
+            return False
+
+    if feature == "toll_road":
+        return True
     return False
 
 
@@ -303,7 +315,7 @@ class RouteAttributes:
     gradiant: Optional[GradiantAttributes]
     curves: Optional[Curves]
     charging_stations: bool
-    toll_roads: bool
+    toll_road_avoidance: bool
 
     def __init__(self):
         self.height = BaseAttributes()
@@ -311,7 +323,7 @@ class RouteAttributes:
         self.gradiant = GradiantAttributes()
         self.curves = Curves()
         self.charging_stations = False
-        self.toll_roads = False
+        self.toll_road_avoidance = False
 
 
 @dataclass
