@@ -19,6 +19,9 @@
 
 see http://127.0.0.1:8000/docs
 
+### Logs
+Logs are always output to the console. In addition to that there are log files in `src/nlp/src/api/logs` where all requests received and answers given by the NLP component are stored.
+
 ## Named Entity Recognition (NER) Model
 
 ### Generate Data Set
