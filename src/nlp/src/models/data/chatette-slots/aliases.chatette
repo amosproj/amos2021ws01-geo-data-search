@@ -78,6 +78,11 @@
     beitrag
     mautstraßen
 
+~[&toll_free]
+    kostenfrei
+    gebührenfrei
+    kostenlos
+
 ~[&negation]
     keine
     ohne

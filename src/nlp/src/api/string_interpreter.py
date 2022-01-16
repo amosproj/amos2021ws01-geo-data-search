@@ -9,7 +9,7 @@ from typing import Optional
 import spacy
 from pydantic.dataclasses import dataclass
 
-from .helper_service import convert_number_to_meter, check_similarity
+from .helper_service import convert_number_to_meter, check_similarity, check_similarity_in_list
 from .utils import get_entity_synonyms, get_keyword_from_synonyms, get_alias_synonyms
 
 # get os specific file separator
@@ -39,6 +39,7 @@ unit_synonyms = get_alias_synonyms(title="unit")["unit"]
 charging_station_synonyms = get_alias_synonyms(title="charging_station")["charging_station"]
 toll_road_synonyms = get_alias_synonyms(title="toll_road")["toll_road"]
 negation_synonyms = get_alias_synonyms(title="negation")["negation"]
+toll_free_synonyms = get_alias_synonyms(title="toll_free")["toll_free"]
 
 
 def process_string(string: str) -> object:
@@ -241,8 +242,7 @@ def check_feature(tokens: spacy.tokens.doc.Doc, feature="charging_station"):
                     return False
 
         # check in-token-negation
-        if feature == "toll_road" and (check_similarity("kostenfrei", normalized_token, threshold=0.85)
-                                       or check_similarity("gebührenfrei", normalized_token, threshold=0.85)):
+        if feature == "toll_road" and check_similarity_in_list( normalized_token, toll_free_synonyms, threshold=0.85):
             return False
 
     if feature == "toll_road":

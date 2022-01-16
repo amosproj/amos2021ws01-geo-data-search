@@ -1,3 +1,4 @@
+from array import array
 import numpy as np
 
 def convert_number_to_meter(unit: str, number: int) -> int:
@@ -12,6 +13,18 @@ def convert_number_to_meter(unit: str, number: int) -> int:
         return int(number * 1609.34)
     # assumed default unit is km
     return number * 1000
+
+def check_similarity_in_list(token_1: str, token_list: array, threshold: int) -> bool:
+    """ 
+    :param token_1
+    :param token_list
+    :return true, if token_1 and at least one token in token_list are equal due to levenshtein distance and a given threshold, otherwise false 
+    """
+    
+    for token in token_list:
+        if check_similarity(token_1, token, threshold):
+            return True
+    return False
 
 def check_similarity(token_1: str, token_2: str, threshold: int) -> bool:
     """ 
