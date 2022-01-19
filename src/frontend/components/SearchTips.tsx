@@ -9,7 +9,7 @@ const searchTermExamples = [
   'Zeige mir einen Weg von Essen nach Köln',
   'Plane mir eine Route nach Paris mit Stromtankstellen',
   'Gibt es hohe Hügel in Bayern',
-  'Restaurants in Spanien',
+  'Route von Cannes nach Nizza ohne Mautstraßen',
 ];
 
 type Props = { onSearchTipSelected: (searchTerm: string) => void };
