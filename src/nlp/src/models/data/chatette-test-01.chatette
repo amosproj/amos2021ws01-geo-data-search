@@ -17,13 +17,13 @@
    ~[Finde?] ~[value] hohe @[queryObject#elevation] [in ~[region]?]
 
 %[orte](150)
-   ~[Finde?] @[queryObject#place][ der höher liegt als @[amount] ~[unit#without-area]?] [in ~[region]?]
+   ~[Finde?] @[queryObject#place][ der höher liegt als @[amount] ~[unit]?] [in ~[region]?]
 
 %[routen](100)
     ~[Finde?][ eine?] @[queryObject#route][ mit einem Anstieg von [@[amount#plural-number]\%|@[amount#plural-numeral] Prozent]?/70][ in ~[region]?][ [mit|~[negation]] ~[charging_station]?]
-    ~[Finde?][ eine?] @[queryObject#route][ in einer Höhe[ von?] @[amount] ~[unit#without-area]?/70][ in ~[region]?] [und?] [~[negation]|mit] ~[toll_road]
-    ~[Finde?][ eine?] @[queryObject#route][ mit einer Länge von @[amount] ~[unit#without-area]?/70][ in ~[region]?] [[mit|~[negation]] ~[charging_station]?][ [mit|~[negation]] ~[toll_road]?]
-    ~[Finde?][ eine?] @[queryObject#route] von ~[region] bis ~[region][ mit einer Länge von @[amount] ~[unit#without-area]?/70] [und?] [~[negation]|mit] ~[toll_road]
+    ~[Finde?][ eine?] @[queryObject#route][ in einer Höhe[ von?] @[amount] ~[unit]?/70][ in ~[region]?] [und?] [~[negation]|mit] ~[toll_road]
+    ~[Finde?][ eine?] @[queryObject#route][ mit einer Länge von @[amount] ~[unit]?/70][ in ~[region]?] [[mit|~[negation]] ~[charging_station]?][ [mit|~[negation]] ~[toll_road]?]
+    ~[Finde?][ eine?] @[queryObject#route] von ~[region] bis ~[region][ mit einer Länge von @[amount] ~[unit]?/70] [und?] [~[negation]|mit] ~[toll_road]
     ~[Finde?][ eine?] @[queryObject#route] von ~[region] bis ~[region][ mit einem Anstieg von [@[amount#plural-number]\%|@[amount#plural-numeral] Prozent]?/70] [[mit|~[negation]] ~[charging_station]?]
     [~[Finde?][ eine?] [~[toll_free]?] @[queryObject#route]|Wie komme ich ~[toll_free?]] von ~[region] bis ~[region] [[mit|~[negation]] ~[charging_station]?]
     ~[Finde?][ eine?] @[queryObject#route] von ~[region] bis ~[region][ [mit|~[negation]] ~[charging_station]?][ und?][ ~[negation]| mit] ~[toll_road]
@@ -36,7 +36,7 @@
 
 // Test sentences
 %[routen-test](training:0, testing:20)
-    [~[Finde] mir?][ in ~[region]?][ eine?] @[amount] ~[unit#without-area][ lange?] @[queryObject#route]
+    [~[Finde] mir?][ in ~[region]?][ eine?] @[amount] ~[unit][ lange?] @[queryObject#route]
 
 
 // imports
