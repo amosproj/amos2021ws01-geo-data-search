@@ -15,7 +15,7 @@
     Tiefe
 
 ~[value]
-    [mindestens|höchstens|genau] @[amount] ~[unit#without-area]
+    [mindestens|höchstens|genau] @[amount] [~[unit#km]|~[unit#m]|~[unit#miles]]
 
 ~[unit#km]
     km
@@ -28,12 +28,6 @@
 
 ~[unit#miles]
     meile[n?]
-
-~[unit#without-area]
-    ~[unit#km]
-    ~[unit#m]
-    ~[unit#miles]
-
 
 ~[unit#area]
     quadratkilometer[n?]
@@ -93,12 +87,12 @@
     beitrag
     mautstraßen
 
-~[toll_free]
+~[&toll_free]
     kostenfrei
     gebührenfrei
     kostenlos
 
-~[negation]
+~[&negation]
     keine
     ohne
     meide
