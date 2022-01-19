@@ -9,6 +9,7 @@ import { useAtom } from 'jotai';
 import { currentSearchResultAtom, searchResultsAtom } from '@lib/store';
 import SearchResults from './SearchResults';
 import SearchResultDetail from './SearchResultDetail';
+import SearchTips from './SearchTips';
 
 const SearchView = () => {
   const [searchValue, setSearchValue] = useState('');
@@ -18,9 +19,13 @@ const SearchView = () => {
   const [loading, setLoading] = useState(false);
   const searchQueryPromise = useRef<CancelablePromise<any> | null>(null);
 
-  const getSearchSuggestions = async (e: FormEvent) => {
-    e.preventDefault();
+  const onFormSubmit = (e: FormEvent) => {
+    e && e.preventDefault();
 
+    getSearchSuggestions(searchValue);
+  };
+
+  const getSearchSuggestions = async (query: string) => {
     // Wait until the previous search query is finished
     // Normally we should never land here, but just in case
     if (loading) return;
@@ -33,7 +38,7 @@ const SearchView = () => {
       // Search request promise
       const promise = apiClient('/user_query', {
         body: {
-          query: searchValue,
+          query,
         },
       });
       // Save the promise to cancel it if the user wants to
@@ -97,9 +102,14 @@ const SearchView = () => {
     setCurrentSearchResult(null);
   };
 
+  const onSearchTipSelected = (searchTerm: string) => {
+    setSearchValue(searchTerm);
+    getSearchSuggestions(searchTerm);
+  };
+
   return (
     <div className="my-4">
-      <form onSubmit={getSearchSuggestions}>
+      <form onSubmit={onFormSubmit}>
         <div className="flex items-center w-full">
           <div className="h-20 w-20 mr-2 sm:hidden">
             <Image
@@ -122,6 +132,8 @@ const SearchView = () => {
           />
         </div>
       </form>
+
+      {!currentSearchResult && <SearchTips onSearchTipSelected={onSearchTipSelected} />}
 
       {currentSearchResult ? (
         <SearchResultDetail onBackClick={onCloseSearchResultDetail} result={currentSearchResult} />
