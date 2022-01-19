@@ -105,11 +105,16 @@ def resolve_extracted_query_parameters(token_keywords: []) -> object:
         if keyword not in unresolved_keywords:
             continue
 
+        # the algorithm only knows how to extract additional attributes from adjacent results.
+        # If the attribute is known no further information can be extracted
+        if keyword.attribute is not None:
+            continue
+
         # if a previous element exists
         if i != 0:
             prev_keyword = token_keywords[i - 1]
             # check if they are related to each other
-            if prev_keyword.min_or_max != keyword.min_or_max:
+            if prev_keyword.min_or_max != keyword.min_or_max and prev_keyword.min_or_max is not None:
                 # if they are, add missing information
                 keyword.attribute = prev_keyword.attribute
                 continue
@@ -118,7 +123,7 @@ def resolve_extracted_query_parameters(token_keywords: []) -> object:
         if i + 1 < count:
             next_keyword = token_keywords[i + 1]
             # check if they are related to each other
-            if next_keyword.min_or_max != keyword.min_or_max:
+            if next_keyword.min_or_max != keyword.min_or_max and next_keyword.min_or_max is not None:
                 # if they are, add missing information
                 keyword.attribute = next_keyword.attribute
 
@@ -189,7 +194,9 @@ def apply_query_parameters(token_keywords: [], query: object) -> []:
         # parameters could not be assigned
         unresolved_keywords.append(keywords)
 
-    print("Failed to resolve", len(unresolved_keywords), "extracted query parameters")
+    if len(unresolved_keywords) != 0:
+        print("Failed to resolve", len(unresolved_keywords), "extracted query parameters")
+
     return unresolved_keywords
 
 
@@ -395,6 +402,6 @@ class TokenKeywords:
         self.number = number
 
 
-print(get_query("Finde eine Strecke in Italien mit mindestens 10 meilen länge in einer lage über 1000 mit einem Anteil von 500 kilometer Linkskurven mit einem Anteil von 600m Steigung über 7% auf einer Höhe von maximal 10 km"))
+# print(get_query("Finde eine Strecke in Italien mit mindestens 10 meilen länge in einer lage über 1000 mit einem Anteil von 500 kilometer Linkskurven mit einem Anteil von 600m Steigung über 7% auf einer Höhe von maximal 10 km"))
 # print(get_query("Plane mir eine Route nach Paris mit einem Anteil von 500 meter Steigung von maximal 7%"))
-# print(get_query("Plane mir eine Route nach Paris mit einer länge von mindestens 100 und maximal 1000 metern"))
+print(get_query("Plane mir eine Route nach Paris mit einer länge von mindestens 100 und maximal 1000 metern"))
