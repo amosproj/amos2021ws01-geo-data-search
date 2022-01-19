@@ -54,7 +54,11 @@ def get_query(string: str) -> object:
                 result.location += ", "
             result.location += token.lemma_
 
+    # tokens of NER model
     ner_tokens = ner_model(string)
+
+    # extracted parameters of NER model
+    token_keywords = []
     for index in range(len(ner_tokens)):
         token = ner_tokens[index]
 
@@ -76,47 +80,118 @@ def get_query(string: str) -> object:
 
             # extract query parameters
             param_1, param_2 = get_query_parameters(index, ner_tokens)
-            # check if parameters were found
-            if param_2 == "height":
-                if index != (len(ner_tokens) - 1):
-                    next_token = ner_tokens[index + 1]
-                    number = convert_to_meter(token, next_token)
-                # last token is an amount but has no unit
-                else:
-                    number = convert_to_meter(token)
-                # select min parameter by default
-                if param_1 in ["min", None]:
-                    result.route_attributes.height.min = number
-                elif param_1 == "max":
-                    result.route_attributes.height.max = number
-            elif param_2 == "length":
-                # select min parameter by default
-                if param_1 in ["min", None]:
-                    result.route_attributes.length.min = number
-                elif param_1 == "max":
-                    result.route_attributes.length.max = number
-            elif param_2 == "gradiant":
-                # select min parameter by default
-                if param_1 in ["min", None]:
-                    result.route_attributes.gradiant.min = number
-                elif param_1 == "max":
-                    result.route_attributes.gradiant.max = number
-            elif param_2 == "curves_left":
-                if param_1 in ["min", None]:
-                    result.route_attributes.curves.left.min = number
-                elif param_1 == "max":
-                    result.route_attributes.curves.left.max = number
-            elif param_2 == "curves_right":
-                if param_1 in ["min", None]:
-                    result.route_attributes.curves.right.min = number
-                elif param_1 == "max":
-                    result.route_attributes.curves.right.max = number
+
+            token_keywords.append(TokenKeywords(token, param_1, param_2, number))
+
+    return resolve_extracted_query_parameters(token_keywords)
+
+
+def resolve_extracted_query_parameters(token_keywords: []) -> object:
+    result = Query()
+
+    # try to apply all extracted parameters to query object
+    unresolved_keywords = apply_query_parameters(token_keywords, result)
+
+    count = len(token_keywords)
+
+    # no need for further postprocessing if all query parameters could be applied to query object
+    if count == 0:
+        return result
+
+    # resolve parameters which could not be extracted earlier
+    for i in range(count):
+        keyword = token_keywords[i]
+
+        # skip keyword analysis if it was resolved
+        if keyword not in unresolved_keywords:
+            continue
+
+        # if a previous element exists
+        if i != 0:
+            prev_keyword = token_keywords[i - 1]
+            # check if they are related to each other
+            if prev_keyword.min_or_max != keyword.min_or_max:
+                # if they are, add missing information
+                keyword.attribute = prev_keyword.attribute
+                continue
+
+        # if a next element exists
+        if i + 1 < count:
+            next_keyword = token_keywords[i + 1]
+            # check if they are related to each other
+            if next_keyword.min_or_max != keyword.min_or_max:
+                # if they are, add missing information
+                keyword.attribute = next_keyword.attribute
+
+    # try to apply unresolved keywords with additional information
+    apply_query_parameters(unresolved_keywords, result)
 
     # set default value
     if result.query_object == "":
         result.query_object = "route"
 
     return result
+
+
+def apply_query_parameters(token_keywords: [], query: object) -> []:
+    """
+    Given an array of tokenKeywords, this functions tries to apply all of them to a query object
+    @param token_keywords: list of tokenKeywords
+    @param query: query object
+    @return: array of tokenKeywords containing not enough information to be applied
+    """
+    unresolved_keywords = []
+
+    # assign parameters which were found
+    for keywords in token_keywords:
+        param_1 = keywords.min_or_max
+        param_2 = keywords.attribute
+        number = keywords.number
+
+        if param_2 == "height":
+            # select min parameter by default
+            if param_1 in ["min", None]:
+                query.route_attributes.height.min = number
+                continue
+            if param_1 == "max":
+                query.route_attributes.height.max = number
+                continue
+        if param_2 == "length":
+            # select min parameter by default
+            if param_1 in ["min", None]:
+                query.route_attributes.length.min = number
+                continue
+            if param_1 == "max":
+                query.route_attributes.length.max = number
+                continue
+        if param_2 == "gradiant":
+            # select min parameter by default
+            if param_1 in ["min", None]:
+                query.route_attributes.gradiant.min = number
+                continue
+            if param_1 == "max":
+                query.route_attributes.gradiant.max = number
+                continue
+        if param_2 == "curves_left":
+            if param_1 in ["min", None]:
+                query.route_attributes.curves.left.min = number
+                continue
+            if param_1 == "max":
+                query.route_attributes.curves.left.max = number
+                continue
+        if param_2 == "curves_right":
+            if param_1 in ["min", None]:
+                query.route_attributes.curves.right.min = number
+                continue
+            if param_1 == "max":
+                query.route_attributes.curves.right.max = number
+                continue
+
+        # parameters could not be assigned
+        unresolved_keywords.append(keywords)
+
+    print("Failed to resolve", len(unresolved_keywords), "extracted query parameters")
+    return unresolved_keywords
 
 
 def get_query_parameters(origin: int, tokens: [spacy.tokens.token.Token]) -> (str, str):
@@ -126,7 +201,7 @@ def get_query_parameters(origin: int, tokens: [spacy.tokens.token.Token]) -> (st
     @return query attributes found in sting. Example: min height
     """
 
-    dependencies, next_amount, previous_amount = get_dependencies(origin, tokens)
+    dependencies, next_amount, previous_amount = get_token_dependencies(origin, tokens)
     param_1, param_2 = None, None
 
     for dep in dependencies:
@@ -157,8 +232,8 @@ def get_query_parameters(origin: int, tokens: [spacy.tokens.token.Token]) -> (st
     return param_1, param_2
 
 
-def get_dependencies(origin: int, tokens: [spacy.tokens.token.Token], discovery_right: int = 3, discovery_left: int = 3,
-                     stop_on_amount: bool = True) -> ([spacy.tokens.token.Token], spacy.tokens.token.Token, spacy.tokens.token.Token):
+def get_token_dependencies(origin: int, tokens: [spacy.tokens.token.Token], discovery_right: int = 3, discovery_left: int = 3,
+                           stop_on_amount: bool = True) -> ([spacy.tokens.token.Token], spacy.tokens.token.Token, spacy.tokens.token.Token):
     """
     Extracts dependencies of a token, starting its search to the left, then to the right
     @param origin: token from which the search is started
@@ -308,5 +383,19 @@ class Query:
         self.route_attributes = RouteAttributes()
 
 
-print(get_query("Finde eine Strecke in Italien mit mindestens 10 meilen länge in einer lage über 1000 mit einem Anteil von 500 kilometer Linkskurven mit einem Anteil von 600m Steigung über 7% auf einer Höhe von maximal 10 km"))
-# print(get_query("Plane mir eine Route nach Paris mit einem Anteil von 500 meter Steigung von maximal 7%"))
+class TokenKeywords:
+    token: spacy.tokens.token.Token
+    min_or_max: str
+    attribute: str
+    number: int
+
+    def __init__(self, token, min_or_max, attribute, number):
+        self.token = token
+        self.min_or_max = min_or_max
+        self.attribute = attribute
+        self.number = number
+
+
+# print(get_query("Finde eine Strecke in Italien mit mindestens 10 meilen länge in einer lage über 1000 mit einem Anteil von 500 kilometer Linkskurven mit einem Anteil von 600m Steigung über 7% auf einer Höhe von maximal 10 km"))
+print(get_query("Plane mir eine Route nach Paris mit einem Anteil von 500 meter Steigung von maximal 7%"))
+# print(get_query("Plane mir eine Route nach Paris mit einer länge von mindestens 100 und maximal 1000 metern"))
