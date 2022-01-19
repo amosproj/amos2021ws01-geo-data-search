@@ -92,13 +92,12 @@ def resolve_extracted_query_parameters(token_keywords: []) -> object:
     # try to apply all extracted parameters to query object
     unresolved_keywords = apply_query_parameters(token_keywords, result)
 
-    count = len(token_keywords)
-
     # no need for further postprocessing if all query parameters could be applied to query object
-    if count == 0:
+    if len(unresolved_keywords) == 0:
         return result
 
     # resolve parameters which could not be extracted earlier
+    count = len(token_keywords)
     for i in range(count):
         keyword = token_keywords[i]
 
@@ -396,6 +395,6 @@ class TokenKeywords:
         self.number = number
 
 
-# print(get_query("Finde eine Strecke in Italien mit mindestens 10 meilen länge in einer lage über 1000 mit einem Anteil von 500 kilometer Linkskurven mit einem Anteil von 600m Steigung über 7% auf einer Höhe von maximal 10 km"))
-print(get_query("Plane mir eine Route nach Paris mit einem Anteil von 500 meter Steigung von maximal 7%"))
+print(get_query("Finde eine Strecke in Italien mit mindestens 10 meilen länge in einer lage über 1000 mit einem Anteil von 500 kilometer Linkskurven mit einem Anteil von 600m Steigung über 7% auf einer Höhe von maximal 10 km"))
+# print(get_query("Plane mir eine Route nach Paris mit einem Anteil von 500 meter Steigung von maximal 7%"))
 # print(get_query("Plane mir eine Route nach Paris mit einer länge von mindestens 100 und maximal 1000 metern"))
