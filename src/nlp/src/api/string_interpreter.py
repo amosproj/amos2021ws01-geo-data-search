@@ -9,8 +9,8 @@ from typing import Optional
 import spacy
 from pydantic.dataclasses import dataclass
 
-from .helper_service import convert_number_to_meter, check_similarity, check_similarity_in_list
-from .utils import get_entity_synonyms, get_keyword_from_synonyms, get_alias_synonyms
+from .helper_service import convert_number_to_meter, check_similarity, check_similarity_in_list, get_keyword_from_synonyms
+from .utils import get_entity_synonyms, get_alias_synonyms
 
 # get os specific file separator
 SEP = os.path.sep
