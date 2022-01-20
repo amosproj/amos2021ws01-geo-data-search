@@ -5,7 +5,6 @@ import com.example.backend.data.api.HereApiRoutingResponse;
 import com.example.backend.data.api.HereGuidanceResponse;
 import com.example.backend.data.here.*;
 import com.example.backend.data.http.NlpQueryResponse;
-import com.example.backend.helpers.BackendLogger;
 import com.example.backend.helpers.HereApiKey;
 import com.example.backend.helpers.LocationNotFoundException;
 import com.example.backend.helpers.MissingLocationException;
