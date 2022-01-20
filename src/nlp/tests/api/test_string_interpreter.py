@@ -184,8 +184,19 @@ def test_convert_units():
     result = get_query("Zeige mir Berge mit einer Höhe von 1 meile in Hamburg")
     assert result.route_attributes.height.min == int(1609.34)
 
+    # without a unit, it should km should be assumed as unit
     result = get_query("Berge in Berlin Höhe von maximal 1")
     assert result.route_attributes.height.max == 1000
+
+    # without a unit, it should km should be assumed as unit
+    result = get_query("Route von Berlin nach Bremen mit Länge maximal 500")
+    assert result.route_attributes.length.max == 500000
+
+    result = get_query("Route von Berlin nach Bremen mit Länge maximal 500 km")
+    assert result.route_attributes.length.max == 500000
+
+    result = get_query("Route von Berlin nach Bremen mit Länge mindestens 50 km")
+    assert result.route_attributes.length.min == 50000
 
 
 def test_no_input():
