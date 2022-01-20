@@ -5,10 +5,10 @@ import useInterval from '@lib/useInterval';
 
 const searchTermExamples = [
   'Zeige mir Berge in Berlin',
-  'Wo liegt Hamburg',
-  'Zeige mir einen Weg von Essen nach Köln',
-  'Plane mir eine Route nach Paris mit Stromtankstellen',
-  'Gibt es hohe Hügel in Bayern',
+  // 'Zeige mir einen Weg von Essen nach Köln',
+  'Wie komme ich von Essaouira nach Ourzazate?',
+  'Plane mir eine Route von Berlin nach Paris mit Stromtankstellen',
+  'Gibt es hohe Hügel in Garmisch-Partenkirchen',
   'Route von Cannes nach Nizza ohne Mautstraßen',
 ];
 
