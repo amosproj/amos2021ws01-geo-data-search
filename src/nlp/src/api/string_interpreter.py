@@ -111,7 +111,8 @@ def resolve_extracted_query_parameters(result, token_keywords: []) -> object:
 
         # the algorithm only knows how to extract additional attributes from adjacent results.
         # If the attribute is known no further information can be extracted
-        if keyword.attribute is not None:
+
+        if keyword.attribute is not None and keyword.unit is not None:
             continue
 
         # if a previous element exists
@@ -120,7 +121,10 @@ def resolve_extracted_query_parameters(result, token_keywords: []) -> object:
             # check if they are related to each other
             if prev_keyword.min_or_max != keyword.min_or_max and prev_keyword.min_or_max is not None:
                 # if they are, add missing information
-                keyword.attribute = prev_keyword.attribute
+                if keyword.attribute is None:
+                    keyword.attribute = prev_keyword.attribute
+                if keyword.unit is None:
+                    keyword.unit = prev_keyword.unit
                 continue
 
         # if a next element exists
@@ -129,19 +133,23 @@ def resolve_extracted_query_parameters(result, token_keywords: []) -> object:
             # check if they are related to each other
             if next_keyword.min_or_max != keyword.min_or_max and next_keyword.min_or_max is not None:
                 # if they are, add missing information
-                keyword.attribute = next_keyword.attribute
+                if keyword.attribute is None:
+                    keyword.attribute = next_keyword.attribute
+                if keyword.unit is None:
+                    keyword.unit = next_keyword.unit
 
     # try to apply unresolved keywords with additional information
-    apply_query_parameters(unresolved_keywords, result)
+    apply_query_parameters(unresolved_keywords, result, False)
 
     return result
 
 
-def apply_query_parameters(token_keywords: [], query: object) -> []:
+def apply_query_parameters(token_keywords: [], query: object, require_units=True) -> []:
     """
     Given an array of tokenKeywords, this functions tries to apply all of them to a query object
     @param token_keywords: list of tokenKeywords
     @param query: query object
+    @param require_units: True if height and length parameters need a specified unit in order to be applied to query object
     @return: array of tokenKeywords containing not enough information to be applied
     """
     unresolved_keywords = []
@@ -152,7 +160,7 @@ def apply_query_parameters(token_keywords: [], query: object) -> []:
         param_2 = keywords.attribute
         number = keywords.number
 
-        if param_2 == "height" and keywords.unit is not None:
+        if param_2 == "height" and (keywords.unit is not None or not require_units):
             # select min parameter by default
             if param_1 in ["min", None]:
                 query.route_attributes.height.min = convert_number_to_meter(keywords.unit, number)
@@ -160,7 +168,7 @@ def apply_query_parameters(token_keywords: [], query: object) -> []:
             if param_1 == "max":
                 query.route_attributes.height.max = convert_number_to_meter(keywords.unit, number)
                 continue
-        if param_2 == "length":
+        if param_2 == "length" and (keywords.unit is not None or not require_units):
             # select min parameter by default
             if param_1 in ["min", None]:
                 query.route_attributes.length.min = convert_number_to_meter(keywords.unit, number)
