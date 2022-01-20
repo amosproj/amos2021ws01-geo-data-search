@@ -21,6 +21,7 @@ import java.util.List;
 @RequestMapping("/backend")
 public class FrontendController {
 
+    public static final String BACKEND_VERSION = "0.10.1";
     private final NlpClient nlpClient;
     private final ApiController apiController;
     private final Logger logger = LogManager.getLogger(this.getClass());
@@ -121,6 +122,6 @@ public class FrontendController {
         }
 
         // TODO How to version better?
-        return new VersionResponse(Version.createVersion("0.10.1", nlpVersion));
+        return new VersionResponse(Version.createVersion(BACKEND_VERSION, nlpVersion));
     }
 }

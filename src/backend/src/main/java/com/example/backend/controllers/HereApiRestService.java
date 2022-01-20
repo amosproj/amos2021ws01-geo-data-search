@@ -67,16 +67,10 @@ public class HereApiRestService {
             hereRoutingAttributes.setReturnTypeToSummary();
             String hereApiRoutingResponseString =
                     getRoutingResponse(origin.getCoordinatesAsString(), destination.getCoordinatesAsString(), hereRoutingAttributes);
-            // TODO log only when debugging
-            if (false) {
-                logger.info("HERE / ROUTING / CHARGING STATIONS:");
-                logger.info(hereApiRoutingResponseString);
-            }
+            logger.debug("HERE / ROUTING / CHARGING STATIONS:");
+            logger.debug(hereApiRoutingResponseString);
             HereApiRoutingResponse hereApiRoutingResponse = new Gson().fromJson(hereApiRoutingResponseString, HereApiRoutingResponse.class);
-            // TODO log only when debugging
-            if (false) {
-                logger.info(hereApiRoutingResponse.toString(""));
-            }
+            logger.debug(hereApiRoutingResponse.toString(""));
             List<Place> chargingStations = new ArrayList<>();
             for (Route route : hereApiRoutingResponse.routes) {
                 chargingStations.addAll(route.getAlLChargingStations());
@@ -108,11 +102,8 @@ public class HereApiRestService {
         try {
             HereGuidanceResponse hereApiRoutingResponse =
                     getGuidanceResponse(origin.getCoordinatesAsString(), destination.getCoordinatesAsString(), hereRoutingAttributes);
-            logger.info("HERE / GUIDANCE:");
-            // TODO log only when debugging
-            if (false) {
-                logger.info(hereApiRoutingResponse.toString(""));
-            }
+            logger.debug("HERE / GUIDANCE:");
+            logger.debug(hereApiRoutingResponse.toString(""));
             for (Route route : hereApiRoutingResponse.routes) {
                 for (Section section : route.sections) {
                     String type = "Start";
@@ -144,12 +135,9 @@ public class HereApiRestService {
                 URL_QUERY_ORIGIN + origin + DELIMITER + //
                 url_query_attributes + //
                 URL_QUERY_DESTINATION + destination;
-        logger.info("URL for HERE ROUTING = " + url);
+        logger.debug("URL for HERE ROUTING = " + url);
         String response = this.restTemplate.getForObject(url, String.class);
-        // TODO log only when debugging
-        if (false) {
-            logger.info("HereApiRestService.getRoutingResponse() = " + response);
-        }
+        logger.debug("HereApiRestService.getRoutingResponse() = " + response);
         return response;
     }
 
@@ -162,12 +150,9 @@ public class HereApiRestService {
                 URL_QUERY_ORIGIN + origin + DELIMITER + //
                 url_query_attributes + //
                 URL_QUERY_DESTINATION + destination;
-        logger.info("URL for HERE GUIDANCE = " + url);
+        logger.debug("URL for HERE GUIDANCE = " + url);
         String response = this.restTemplate.getForObject(url, String.class);
-        // TODO log only when debugging
-        if (false) {
-            logger.info("HereApiRestService.getGuidanceResponse() = " + response);
-        }
+        logger.debug("HereApiRestService.getGuidanceResponse() = " + response);
         return new Gson().fromJson(response, HereGuidanceResponse.class);
     }
 
