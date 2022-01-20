@@ -152,21 +152,21 @@ def apply_query_parameters(token_keywords: [], query: object) -> []:
         param_2 = keywords.attribute
         number = keywords.number
 
-        if param_2 == "height":
+        if param_2 == "height" and keywords.unit is not None:
             # select min parameter by default
             if param_1 in ["min", None]:
-                query.route_attributes.height.min = number
+                query.route_attributes.height.min = convert_number_to_meter(keywords.unit, number)
                 continue
             if param_1 == "max":
-                query.route_attributes.height.max = number
+                query.route_attributes.height.max = convert_number_to_meter(keywords.unit, number)
                 continue
         if param_2 == "length":
             # select min parameter by default
             if param_1 in ["min", None]:
-                query.route_attributes.length.min = number
+                query.route_attributes.length.min = convert_number_to_meter(keywords.unit, number)
                 continue
             if param_1 == "max":
-                query.route_attributes.length.max = number
+                query.route_attributes.length.max = convert_number_to_meter(keywords.unit, number)
                 continue
         if param_2 == "gradiant":
             # select min parameter by default
@@ -281,8 +281,8 @@ def get_token_dependencies(origin: int, tokens: [spacy.tokens.token.Token], disc
         # get token
         token = tokens[index]
 
-        # save found unit
-        if unit is None and token.lemma_ in ["km", "m", "%"]:
+        # try to extract amount unit
+        if unit is None and check_unit(token, "") != "":
             unit = token.lemma_
 
         # if next token is specifying amount
@@ -296,25 +296,14 @@ def get_token_dependencies(origin: int, tokens: [spacy.tokens.token.Token], disc
     return result, unit
 
 
-def check_unit(token: spacy.tokens.token.Token) -> str:
+def check_unit(token: spacy.tokens.token.Token, default_keyword="km") -> str:
     """
-    :param token the token which is checked for a unit
-    :return unit, if token has a unit, otherwise an empty string
+    @param token: the token which is checked for a unit
+    @param default_keyword: reuturned if no matching keyword was found
+    @return unit, if token has a unit, otherwise the default keyword
     """
-    synonym = get_keyword_from_synonyms(token.lemma_, "km", unit_synonyms)
+    synonym = get_keyword_from_synonyms(token.lemma_, default_keyword, unit_synonyms)
     return synonym
-
-
-def convert_to_meter(amount_token: spacy.tokens.token.Token, next_token: spacy.tokens.token.Token = None) -> int:
-    if next_token is None:
-        amount_unit = "km"
-    else:
-        amount_unit = check_unit(next_token)
-    if amount_unit != "":
-        number = int(amount_token.text)
-        converted_number = convert_number_to_meter(amount_unit, number)
-        return converted_number
-    return 0
 
 
 @dataclass
@@ -399,14 +388,8 @@ class TokenKeywords:
         self.number = number
         self.unit = unit
 
-    def get_transformed_number(self):
-        if self.unit is None or self.unit == "":
-            return self.number
-
-        # todo: transform number depending on unit, if necessary
-        return self.number
-
 
 # print(get_query("Finde eine Strecke in Italien mit mindestens 10 meilen länge in einer lage über 1000 mit einem Anteil von 500 kilometer Linkskurven mit einem Anteil von 600m Steigung über 7% auf einer Höhe von maximal 10 km"))
 # print(get_query("Plane mir eine Route nach Paris mit einem Anteil von 500 meter Steigung von maximal 7%"))
-print(get_query("Plane mir eine Route nach Paris mit einer länge von mindestens 100 und maximal 1000 km"))
+# print(get_query("Plane mir eine Route nach Paris mit einer länge von mindestens 100 und maximal 1000 km"))
+print(get_query("Plane mir eine Route nach Paris mit einer länge von mindestens 100 km"))
