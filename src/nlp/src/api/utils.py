@@ -151,24 +151,27 @@ def get_alias_synonyms(chatette_file_path: str = None,
     return aliases
 
 
-def get_keyword_from_synonyms(string: str, default_keyword: str, synonyms: dict):
+def get_keyword_from_synonyms(string: str, default_keyword: str, synonyms: dict, log_results=False):
     """
     checks if a word matches to a synonym from a given dictionary
-    :param  string token to be allocated to a synonym class
-    :param  default_keyword the keyword used in case if no keyword was found
-    :param  synonyms dictionary with keywords and their synonyms/aliases
-    :return key synonym if the word is in the synonym list, otherwise default_keyword for the synonym class
+    @param string: token to be allocated to a synonym class
+    @param default_keyword: the keyword used in case if no keyword was found
+    @param synonyms: dictionary with keywords and their synonyms/aliases
+    @param log_results: true if results are supposed to be logged
+    @return key synonym if the word is in the synonym list, otherwise default_keyword for the synonym class
     """
     # get keyword
     for keyword in synonyms.keys():
         if string.lower() in synonyms[keyword]:
-            logging.warning(f"[NLP COMPONENT][STRING INTERPRETER] Found matching keyword {keyword} for {string}")
+            if log_results:
+                logging.warning(f"[NLP COMPONENT][STRING INTERPRETER] Found matching keyword {keyword} for {string}")
             return keyword
 
-    logging.warning(
-        f"[NLP COMPONENT][STRING INTERPRETER] Couldn't find a matching keyword for {string}, "
-        f"using default keyword {default_keyword}"
-    )
+    if log_results:
+        logging.warning(
+            f"[NLP COMPONENT][STRING INTERPRETER] Couldn't find a matching keyword for {string}, "
+            f"using default keyword {default_keyword}"
+        )
     return default_keyword
 
 
@@ -186,5 +189,3 @@ def get_keyword(string: str, default_keyword: str, synonym_class: str, is_entity
     else:
         synonyms = get_alias_synonyms(title=synonym_class)
     return get_keyword_from_synonyms(string, default_keyword, synonyms[synonym_class])
-
-

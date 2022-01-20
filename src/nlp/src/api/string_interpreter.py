@@ -302,8 +302,7 @@ def check_unit(token: spacy.tokens.token.Token, default_keyword="km") -> str:
     @param default_keyword: reuturned if no matching keyword was found
     @return unit, if token has a unit, otherwise the default keyword
     """
-    synonym = get_keyword_from_synonyms(token.lemma_, default_keyword, unit_synonyms)
-    return synonym
+    return get_keyword_from_synonyms(token.lemma_, default_keyword, unit_synonyms)
 
 
 @dataclass
