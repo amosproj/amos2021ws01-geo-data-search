@@ -95,7 +95,7 @@ def get_query_test_data():
     query = Query()
     query.location = "Berlin"
     query.query_object = "elevation"
-    query.route_attributes.height.min = 1000000
+    query.route_attributes.height.min = 1000
     queries.append(["Gibt es Hügel in Berlin mit einer Höhe von mindestens 1000 metern", query])
 
     query = Query()
@@ -184,8 +184,19 @@ def test_convert_units():
     result = get_query("Zeige mir Berge mit einer Höhe von 1 meile in Hamburg")
     assert result.route_attributes.height.min == int(1609.34)
 
+    # without a unit, it should km should be assumed as unit
     result = get_query("Berge in Berlin Höhe von maximal 1")
     assert result.route_attributes.height.max == 1000
+
+    # without a unit, it should km should be assumed as unit
+    result = get_query("Route von Berlin nach Bremen mit Länge maximal 500")
+    assert result.route_attributes.length.max == 500000
+
+    result = get_query("Route von Berlin nach Bremen mit Länge maximal 500 km")
+    assert result.route_attributes.length.max == 500000
+
+    result = get_query("Route von Berlin nach Bremen mit Länge mindestens 50 km")
+    assert result.route_attributes.length.min == 50000
 
 
 def test_no_input():
@@ -197,7 +208,7 @@ def test_no_input():
 
 
 def test_route_length():
-    result = get_query("Plane mir eine Route nach Paris mit einer länge von mindestens 100 und maximal 1000 metern")
+    result = get_query("Plane mir eine Route nach Paris mit einer länge von mindestens 1 und maximal 1100 metern")
 
-    assert result.route_attributes.length.min == 100
-    assert result.route_attributes.length.max == 1000
+    assert result.route_attributes.length.min == 1000
+    assert result.route_attributes.length.max == 1100
