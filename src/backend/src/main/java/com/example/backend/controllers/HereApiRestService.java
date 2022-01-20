@@ -5,9 +5,7 @@ import com.example.backend.data.api.HereApiRoutingResponse;
 import com.example.backend.data.api.HereGuidanceResponse;
 import com.example.backend.data.here.*;
 import com.example.backend.data.http.NlpQueryResponse;
-import com.example.backend.helpers.HereApiKey;
-import com.example.backend.helpers.LocationNotFoundException;
-import com.example.backend.helpers.MissingLocationException;
+import com.example.backend.helpers.*;
 import com.google.gson.Gson;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -49,14 +47,13 @@ public class HereApiRestService {
         return response;
     }
 
-    public void handleRequest(NlpQueryResponse nlpQueryResponse, List<ApiResult> result) throws MissingLocationException, LocationNotFoundException {
+    public void handleRequest(NlpQueryResponse nlpQueryResponse, List<ApiResult> result) throws MissingLocationException, LocationNotFoundException, InvalidCalculationRequest {
         HereRoutingAttributes hereRoutingAttributes = new HereRoutingAttributes(this);
         hereRoutingAttributes.extractRoutingAttributes(nlpQueryResponse);
+        logger.info("Searching for a route from \"" + hereRoutingAttributes.getOrigin().getName() + "\" to \"" + hereRoutingAttributes.getDestination().getName() + "\"");
         if (hereRoutingAttributes.getIfChargingStationsIncluded()) {
-            logger.info("Searching for a route from \"" + hereRoutingAttributes.getOrigin().getName() + "\" to \"" + hereRoutingAttributes.getDestination().getName() + "\" with charging stations...");
             result.addAll(getChargingStationsOnRoute(hereRoutingAttributes));
         } else {
-            logger.info("Searching for a route from \"" + hereRoutingAttributes.getOrigin().getName() + "\" to \"" + hereRoutingAttributes.getDestination().getName() + "\" without charging stations...");
             result.addAll(getGuidanceForRoute(hereRoutingAttributes));
         }
     }
@@ -155,7 +152,7 @@ public class HereApiRestService {
         }
         return response;
     }
-    
+
     @SuppressWarnings("ConstantConditions")
     private HereGuidanceResponse getGuidanceResponse(String origin, String destination, HereRoutingAttributes hereRoutingAttributes) {
         hereRoutingAttributes.setReturnTypeToPolylineAndTurnByTurnActions();
@@ -172,6 +169,11 @@ public class HereApiRestService {
             logger.info("HereApiRestService.getGuidanceResponse() = " + response);
         }
         return new Gson().fromJson(response, HereGuidanceResponse.class);
+    }
+
+    public HereApiRoutingResponse getRoute(RoutingWaypoint origin, RoutingWaypoint destination) {
+        String hereApiRoutingResponseString = getRoutingResponse(origin.getCoordinatesAsString(), destination.getCoordinatesAsString(), new HereRoutingAttributes(this));
+        return new Gson().fromJson(hereApiRoutingResponseString, HereApiRoutingResponse.class);
     }
 
     private static class SingleLocationResult implements ApiResult {

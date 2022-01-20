@@ -59,7 +59,7 @@ public class FrontendController {
         try {
             // The API decision and calling happens here:
             apiQueryResults = apiController.querySearch(nlpQueryResponse);
-        } catch (MissingLocationException | UnknownQueryObjectException | NoPrefferedApiFoundException | LocationNotFoundException e) {
+        } catch (MissingLocationException | UnknownQueryObjectException | NoPrefferedApiFoundException | LocationNotFoundException | InvalidCalculationRequest e) {
             handleError(e);
         }
 
