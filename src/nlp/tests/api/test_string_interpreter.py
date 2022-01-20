@@ -208,7 +208,7 @@ def test_no_input():
 
 
 def test_route_length():
-    result = get_query("Plane mir eine Route nach Paris mit einer länge von mindestens 100 und maximal 1000 metern")
+    result = get_query("Plane mir eine Route nach Paris mit einer länge von mindestens 1 und maximal 1100 metern")
 
-    assert result.route_attributes.length.min == 100
-    assert result.route_attributes.length.max == 1000
+    assert result.route_attributes.length.min == 1000
+    assert result.route_attributes.length.max == 1100
