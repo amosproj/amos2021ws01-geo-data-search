@@ -121,10 +121,7 @@ def resolve_extracted_query_parameters(result, token_keywords: []) -> object:
             # check if they are related to each other
             if prev_keyword.min_or_max != keyword.min_or_max and prev_keyword.min_or_max is not None:
                 # if they are, add missing information
-                if keyword.attribute is None:
-                    keyword.attribute = prev_keyword.attribute
-                if keyword.unit is None:
-                    keyword.unit = prev_keyword.unit
+                add_keyword_information(prev_keyword, keyword)
                 continue
 
         # if a next element exists
@@ -133,15 +130,24 @@ def resolve_extracted_query_parameters(result, token_keywords: []) -> object:
             # check if they are related to each other
             if next_keyword.min_or_max != keyword.min_or_max and next_keyword.min_or_max is not None:
                 # if they are, add missing information
-                if keyword.attribute is None:
-                    keyword.attribute = next_keyword.attribute
-                if keyword.unit is None:
-                    keyword.unit = next_keyword.unit
+                add_keyword_information(next_keyword, keyword)
 
     # try to apply unresolved keywords with additional information
     apply_query_parameters(unresolved_keywords, result, False)
 
     return result
+
+
+def add_keyword_information(source, target):
+    """
+    Add information from source TokenKeywords to target TokenKeywords
+    @param source:
+    @param target:
+    """
+    if target.attribute is None:
+        target.attribute = source.attribute
+    if target.unit is None:
+        target.unit = source.unit
 
 
 def apply_query_parameters(token_keywords: [], query: object, require_units=True) -> []:
