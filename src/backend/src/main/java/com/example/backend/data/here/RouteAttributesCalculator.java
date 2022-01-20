@@ -14,7 +14,7 @@ public class RouteAttributesCalculator {
     private static final String LOG_PREFIX = "ROUTE_ATTRIBUTE_CALCULATOR";
     private static final double ONE_THOUSAND_METERS_IN_COORD = 0.000015060;
     private static final int MAX_RECURSIONS = 6;
-    public static final int RECURSION_STEPS_IN_METERS = 500;
+    private int recursionStepsInMeters = 500;
     private final BackendLogger logger = new BackendLogger();
     private final HereApiRestService hereApiRestService;
     private RoutingWaypoint origin;
@@ -34,10 +34,12 @@ public class RouteAttributesCalculator {
         }
         int recursionCounter = 0;
         if (minimumMeters > 0) {
+            recursionStepsInMeters = (int) (minimumMeters * 0.1);
             return calculateMinimumRoute(minimumMeters, recursionCounter);
         }
         recursionCounter = 0;
         if (maximumMeters > 0) {
+            recursionStepsInMeters = (int) (maximumMeters * 0.1);
             return calculateMaximumRoute(maximumMeters, recursionCounter);
         }
         throw new InvalidCalculationRequest("Minimum=" + minimumMeters + " and Maximum=" + maximumMeters + "! This is an invalid calculation request!");
@@ -57,7 +59,7 @@ public class RouteAttributesCalculator {
         }
         if (recursionCounter < MAX_RECURSIONS) {
             recursionCounter++;
-            return calculateMaximumRoute(localRequestedDistanceInMeters - RECURSION_STEPS_IN_METERS, recursionCounter);
+            return calculateMaximumRoute(localRequestedDistanceInMeters - recursionStepsInMeters, recursionCounter);
         } else {
             throw new InvalidCalculationRequest("Could not find a route with this maximum length: " + localRequestedDistanceInMeters);
         }
@@ -77,7 +79,7 @@ public class RouteAttributesCalculator {
         }
         if (recursionCounter < MAX_RECURSIONS) {
             recursionCounter++;
-            return calculateMinimumRoute(localRequestedDistanceInMeters + RECURSION_STEPS_IN_METERS, recursionCounter);
+            return calculateMinimumRoute(localRequestedDistanceInMeters + recursionStepsInMeters, recursionCounter);
         } else {
             throw new InvalidCalculationRequest("Could not find a route with this minimum length: " + localRequestedDistanceInMeters);
         }
@@ -95,28 +97,28 @@ public class RouteAttributesCalculator {
     private List<Route> tryNorth(double localRequestedDistanceInCoordinates) {
         RoutingWaypoint tempDestination = new RoutingWaypoint("point_north", origin.getLatitude() + localRequestedDistanceInCoordinates, origin.getLongitude());
         HereApiRoutingResponse hereApiRoutingResponse = hereApiRestService.getRoute(origin, tempDestination);
-        logInfo("NORTH: length=" + hereApiRoutingResponse.routes.get(0).sections.get(0).summary.length + ", lat=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lat + ", lng=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lng);
+        logInfo("NORTH: origin=(" + origin.getCoordinatesAsString() + "), length=" + hereApiRoutingResponse.routes.get(0).sections.get(0).summary.length + ", lat=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lat + ", lng=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lng);
         return hereApiRoutingResponse.routes;
     }
 
     private List<Route> tryEast(double localRequestedDistanceInCoordinates) {
         RoutingWaypoint tempDestination = new RoutingWaypoint("point_east", origin.getLatitude(), origin.getLongitude() + localRequestedDistanceInCoordinates);
         HereApiRoutingResponse hereApiRoutingResponse = hereApiRestService.getRoute(origin, tempDestination);
-        logInfo("EAST: length=" + hereApiRoutingResponse.routes.get(0).sections.get(0).summary.length + ", lat=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lat + ", lng=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lng);
+        logInfo("EAST: origin=(" + origin.getCoordinatesAsString() + "),length=" + hereApiRoutingResponse.routes.get(0).sections.get(0).summary.length + ", lat=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lat + ", lng=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lng);
         return hereApiRoutingResponse.routes;
     }
 
     private List<Route> trySouth(double localRequestedDistanceInCoordinates) {
         RoutingWaypoint tempDestination = new RoutingWaypoint("point_south", origin.getLatitude() - localRequestedDistanceInCoordinates, origin.getLongitude());
         HereApiRoutingResponse hereApiRoutingResponse = hereApiRestService.getRoute(origin, tempDestination);
-        logInfo("SOUTH: length=" + hereApiRoutingResponse.routes.get(0).sections.get(0).summary.length + ", lat=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lat + ", lng=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lng);
+        logInfo("SOUTH: origin=(" + origin.getCoordinatesAsString() + "),length=" + hereApiRoutingResponse.routes.get(0).sections.get(0).summary.length + ", lat=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lat + ", lng=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lng);
         return hereApiRoutingResponse.routes;
     }
 
     private List<Route> tryWest(double localRequestedDistanceInCoordinates) {
         RoutingWaypoint tempDestination = new RoutingWaypoint("point_west", origin.getLatitude(), origin.getLongitude() - localRequestedDistanceInCoordinates);
         HereApiRoutingResponse hereApiRoutingResponse = hereApiRestService.getRoute(origin, tempDestination);
-        logInfo("WEST: length=" + hereApiRoutingResponse.routes.get(0).sections.get(0).summary.length + ", lat=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lat + ", lng=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lng);
+        logInfo("WEST: origin=(" + origin.getCoordinatesAsString() + "),length=" + hereApiRoutingResponse.routes.get(0).sections.get(0).summary.length + ", lat=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lat + ", lng=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lng);
         return hereApiRoutingResponse.routes;
     }
 
