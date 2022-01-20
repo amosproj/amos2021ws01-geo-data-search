@@ -8,6 +8,8 @@ import com.example.backend.data.http.Error;
 import com.example.backend.data.http.*;
 import com.example.backend.helpers.*;
 import com.google.gson.Gson;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URLDecoder;
@@ -20,9 +22,8 @@ import java.util.List;
 public class FrontendController {
 
     private final NlpClient nlpClient;
-    private final BackendLogger logger = new BackendLogger();
     private final ApiController apiController;
-    private static final String LOG_PREFIX = "FRONTEND_CONTROLLER";
+    private final Logger logger = LogManager.getLogger(this.getClass());
 
     public FrontendController(NlpClient nlpClient, OsmApiClient osmApiClient, HereApiRestService hereApiRestService) {
         this.nlpClient = nlpClient;
@@ -40,8 +41,8 @@ public class FrontendController {
     @PostMapping("/user_query")
     @ResponseBody
     public HttpResponse handleQueryRequest(@RequestBody String query) {
-        logInfo("+ -- + -- + START + -- + -- + START + -- + -- + START + -- + -- + START + -- + -- + START + -- + -- + START + -- + -- + START + -- + -- + START + -- + -- + START + -- + -- +");
-        logInfo("New query received! Query = \"" + query + "\"");
+        logger.info("+ -- + -- + START + -- + -- + START + -- + -- + START + -- + -- + START + -- + -- + START + -- + -- + START + -- + -- + START + -- + -- + START + -- + -- + START + -- + -- +");
+        logger.info("New query received! Query = \"" + query + "\"");
 
         query = prepareQuery(query);
 
@@ -64,28 +65,28 @@ public class FrontendController {
 
         ResultResponse response = prepareResponse(apiQueryResults);
 
-        logInfo("Sending this respond to FRONTEND:\n" + response.toString());
-        logInfo("+ -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +");
+        logger.info("Sending this respond to FRONTEND:\n" + response.toString());
+        logger.info("+ -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +");
         return response;
     }
 
     private String prepareQuery(String query) {
         query = URLDecoder.decode(query, StandardCharsets.UTF_8);
         query = query.replace("query=", "");
-        logInfo("WORK AROUND! Query = \"" + query + "\"");
+        logger.info("WORK AROUND! Query = \"" + query + "\"");
         return query;
     }
 
     private NlpQueryResponse getNlpQueryResponse(String query) {
         NlpQueryResponse nlpQueryResponse;
-        logInfo("Sending data to NLP...");
+        logger.info("Sending data to NLP...");
         String nlpResponse = nlpClient.sendToNlp(query);
-        logInfo("...SUCCESS!, response from NLP received:" + nlpResponse);
-        logInfo("NLP RESPONSE:");
-        logInfo(nlpResponse);
-        logInfo("INTERPRETED NLP RESPONSE:");
+        logger.info("...SUCCESS!, response from NLP received:" + nlpResponse);
+        logger.info("NLP RESPONSE:");
+        logger.info(nlpResponse);
+        logger.info("INTERPRETED NLP RESPONSE:");
         nlpQueryResponse = new Gson().fromJson(nlpResponse, NlpQueryResponse.class);
-        logInfo(nlpQueryResponse.toString());
+        logger.info(nlpQueryResponse.toString());
         return nlpQueryResponse;
     }
 
@@ -99,20 +100,20 @@ public class FrontendController {
     }
 
     private ErrorResponse handleError(Throwable throwable) {
-        logError("...ERROR!" + "\n" + "\t" + throwable.toString());
+        logger.error("...ERROR!" + "\n" + "\t" + throwable.toString());
         return new ErrorResponse(Error.createError(throwable.getMessage(), Arrays.toString(throwable.getStackTrace())));
     }
 
     @GetMapping("/version")
     @ResponseBody
     public HttpResponse handleVersionRequest() {
-        logInfo("Version query received!");
+        logger.info("Version query received!");
 
         String nlpVersion;
         try {
             String nlpVersionResponse = nlpClient.fetchNlpVersion();
-            logInfo("NLP VERSION RESPONSE:");
-            logInfo(nlpVersionResponse);
+            logger.info("NLP VERSION RESPONSE:");
+            logger.info(nlpVersionResponse);
             Gson g = new Gson();
             nlpVersion = g.fromJson(nlpVersionResponse, NlpVersionResponse.class).getVersion();
         } catch (Throwable t) {
@@ -121,13 +122,5 @@ public class FrontendController {
 
         // TODO How to version better?
         return new VersionResponse(Version.createVersion("0.9.3", nlpVersion));
-    }
-
-    private void logInfo(String logMsg) {
-        logger.info(LOG_PREFIX, logMsg);
-    }
-
-    private void logError(String logMsg) {
-        logger.error(LOG_PREFIX, logMsg);
     }
 }

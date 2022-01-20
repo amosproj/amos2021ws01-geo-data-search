@@ -3,15 +3,15 @@ package com.example.backend.data.here;
 import com.example.backend.controllers.HereApiRestService;
 import com.example.backend.data.api.HereApiGeocodeResponse;
 import com.example.backend.data.http.NlpQueryResponse;
-import com.example.backend.helpers.BackendLogger;
 import com.example.backend.helpers.InvalidCalculationRequest;
 import com.example.backend.helpers.LocationNotFoundException;
 import com.example.backend.helpers.MissingLocationException;
 import com.google.gson.Gson;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class HereRoutingAttributes {
 
-    private static final String LOG_PREFIX = "HERE_ROUTING_ATTRIBUTES";
     private static final String LOCATIONS_SEPARATOR = ",";
     private final static String DELIMITER = "&";
     private static final RoutingWaypoint DEFAULT_START_LOCATION = new RoutingWaypoint("IAV GmbH", 52.522876680682884, 13.321046275244608);
@@ -19,8 +19,8 @@ public class HereRoutingAttributes {
     private static boolean includeChargingStations = false;
     private static boolean avoidTollRoads = false;
 
-    private final BackendLogger logger = new BackendLogger();
     private final HereApiRestService hereApiRestService;
+    private final Logger logger = LogManager.getLogger(this.getClass());
 
     private String returnType = "summary";
     private RoutingWaypoint startLocation;
@@ -106,7 +106,7 @@ public class HereRoutingAttributes {
      */
     public void extractRoutingAttributes(NlpQueryResponse nlpQueryResponse) throws MissingLocationException, LocationNotFoundException, InvalidCalculationRequest {
         if (!checkIfRouteAttributesMinMaxAreSet(nlpQueryResponse) && nlpQueryResponse.getLocation().equals("")) {
-            logError("No value found for location! Abort!");
+            logger.error("No value found for location! Abort!");
             throw new MissingLocationException("The value for \"location\" cannot be empty when trying to calculate a route!");
         }
         extractOriginLocation(nlpQueryResponse);
@@ -140,10 +140,10 @@ public class HereRoutingAttributes {
             logInfo("We will take this value as the START of the route: \"" + startLocation.getName() + "\"");
         } else if (locations.length > 1 && !locations[1].isEmpty()) {
             startLocation = callHereApiToRetrieveCoordinatesForLocation(locations[0]);
-            logInfo("We will take this value as the START of the route: \"" + startLocation.getName() + "\"");
+            logger.info("We will take this value as the START of the route: \"" + startLocation.getName() + "\"");
         } else {
             startLocation = DEFAULT_START_LOCATION;
-            logInfo("No location found to START our route! We will take this one as default: \"" + startLocation.getName() + "\"");
+            logger.info("No location found to START our route! We will take this one as default: \"" + startLocation.getName() + "\"");
         }
         this.startLocation = startLocation;
     }
@@ -161,26 +161,26 @@ public class HereRoutingAttributes {
             nameOfDesiredFinishLocation = locations[0];
             this.finishLocation = callHereApiToRetrieveCoordinatesForLocation(nameOfDesiredFinishLocation);
         }
-        logInfo("We will take this value as the END of the route: \"" + finishLocation.getName() + "\"");
+        logger.info("We will take this value as the END of the route: \"" + finishLocation.getName() + "\"");
     }
 
     private void extractTollRoads(NlpQueryResponse nlpQueryResponse) {
         if (nlpQueryResponse.getRouteAttributes().shouldTollRoutesBeAvoided()) {
             avoidTollRoads = true;
-            logInfo("Route will AVOID tolls!");
+            logger.info("Route will AVOID tolls!");
         } else {
             avoidTollRoads = false;
-            logInfo("Route will NOT avoid tolls!");
+            logger.info("Route will NOT avoid tolls!");
         }
     }
 
     private void extractChargingStations(NlpQueryResponse nlpQueryResponse) {
         if (nlpQueryResponse.getRouteAttributes().getChargingStations()) {
             includeChargingStations = true;
-            logInfo("Route will INCLUDE charging stations!");
+            logger.info("Route will INCLUDE charging stations!");
         } else {
             includeChargingStations = false;
-            logInfo("Route will NOT include charging stations!");
+            logger.info("Route will NOT include charging stations!");
         }
     }
 
@@ -194,13 +194,5 @@ public class HereRoutingAttributes {
         // The first entry has the highest probability of best fulfilling the request:
         routingWaypoint.updateCoordinates(hereResults.getSearchResults().get(0).position.lat, hereResults.getSearchResults().get(0).position.lng);
         return routingWaypoint;
-    }
-
-    private void logInfo(String logMsg) {
-        logger.info(LOG_PREFIX, logMsg);
-    }
-
-    private void logError(String logMsg) {
-        logger.error(LOG_PREFIX, logMsg);
     }
 }

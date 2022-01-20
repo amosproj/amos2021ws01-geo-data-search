@@ -5,6 +5,7 @@
     Halde
     Kuppe
     [Gipfel|Berggipfel]
+    Punkt[e?]
 
 @[&queryObject#place]
     [See[n?]|Seenplatte]
@@ -12,6 +13,9 @@
     [Wald|Wälder|Waldfläche[n?]]
     Ort[e?]
     Gebiet[e?]
+    Park[s?]
+    Café[s?]
+    Wiese[n?]
 
 @[&queryObject#route]
     Route[n?]
