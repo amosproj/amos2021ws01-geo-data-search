@@ -23,7 +23,6 @@ public class FrontendController {
 
     private final NlpClient nlpClient;
     private final ApiController apiController;
-    private static final String LOG_PREFIX = "FRONTEND_CONTROLLER";
     private final Logger logger = LogManager.getLogger(this.getClass());
 
     public FrontendController(NlpClient nlpClient, OsmApiClient osmApiClient, HereApiRestService hereApiRestService) {
