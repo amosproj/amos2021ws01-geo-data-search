@@ -124,6 +124,7 @@ def test_long_string_interpretation():
     assert result.query_object == "route"
     assert result.route_attributes.height.max == 10000
 
+
 def test_convert_units():
     result = get_query("Zeige mir Berge in Hamburg mit einer Höhe von 1 kilometern")
     assert result.route_attributes.height.min == 1000
@@ -148,3 +149,10 @@ def test_route_length():
 
     assert result.route_attributes.length.min == 100
     assert result.route_attributes.length.max == 1000
+
+
+def test_route_length_split_parameter():
+    result = get_query("Plane mir eine Route nach Paris mit einer länge von mindestens 2 und maximal 20 km")
+
+    assert result.route_attributes.length.min == 2000
+    assert result.route_attributes.length.max == 20000
