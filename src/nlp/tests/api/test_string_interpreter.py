@@ -95,7 +95,7 @@ def get_query_test_data():
     query = Query()
     query.location = "Berlin"
     query.query_object = "elevation"
-    query.route_attributes.height.min = 1000000
+    query.route_attributes.height.min = 1000
     queries.append(["Gibt es Hügel in Berlin mit einer Höhe von mindestens 1000 metern", query])
 
     query = Query()
