@@ -8,6 +8,8 @@ import com.example.backend.data.http.Error;
 import com.example.backend.data.http.*;
 import com.example.backend.helpers.*;
 import com.google.gson.Gson;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URLDecoder;
@@ -20,9 +22,9 @@ import java.util.List;
 public class FrontendController {
 
     private final NlpClient nlpClient;
-    private final BackendLogger logger = new BackendLogger();
     private final ApiController apiController;
     private static final String LOG_PREFIX = "FRONTEND_CONTROLLER";
+    private final Logger logger = LogManager.getLogger(this.getClass());
 
     public FrontendController(NlpClient nlpClient, OsmApiClient osmApiClient, HereApiRestService hereApiRestService) {
         this.nlpClient = nlpClient;
@@ -124,10 +126,10 @@ public class FrontendController {
     }
 
     private void logInfo(String logMsg) {
-        logger.info(LOG_PREFIX, logMsg);
+        logger.info(logMsg);
     }
 
     private void logError(String logMsg) {
-        logger.error(LOG_PREFIX, logMsg);
+        logger.error(logMsg);
     }
 }
