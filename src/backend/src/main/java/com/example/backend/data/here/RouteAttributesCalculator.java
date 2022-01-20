@@ -1,0 +1,133 @@
+package com.example.backend.data.here;
+
+import com.example.backend.controllers.HereApiRestService;
+import com.example.backend.data.api.HereApiRoutingResponse;
+import com.example.backend.data.nlp.RouteAttributes;
+import com.example.backend.helpers.BackendLogger;
+import com.example.backend.helpers.InvalidCalculationRequest;
+
+import java.util.LinkedList;
+import java.util.List;
+
+public class RouteAttributesCalculator {
+
+    private static final String LOG_PREFIX = "ROUTE_ATTRIBUTE_CALCULATOR";
+    private static final double ONE_THOUSAND_METERS_IN_COORD = 0.000015060;
+    private static final int MAX_RECURSIONS = 6;
+    public static final int RECURSION_STEPS_IN_METERS = 500;
+    private final BackendLogger logger = new BackendLogger();
+    private final HereApiRestService hereApiRestService;
+    private RoutingWaypoint origin;
+    private int minimumMeters, maximumMeters;
+
+    public RouteAttributesCalculator(HereApiRestService hereApiRestService) {
+        this.hereApiRestService = hereApiRestService;
+    }
+
+    public RoutingWaypoint getDestinationOnGivenRouteAttributes(RoutingWaypoint origin, RouteAttributes routeAttributes) throws InvalidCalculationRequest {
+        this.origin = origin;
+        minimumMeters = routeAttributes.getLength().getMin();
+        maximumMeters = routeAttributes.getLength().getMax();
+
+        if (minimumMeters > maximumMeters && maximumMeters != 0) {
+            throw new InvalidCalculationRequest("Minimum (" + minimumMeters + ") cannot be greater than maximum (" + maximumMeters + ")!");
+        }
+        int recursionCounter = 0;
+        if (minimumMeters > 0) {
+            return calculateMinimumRoute(minimumMeters, recursionCounter);
+        }
+        recursionCounter = 0;
+        if (maximumMeters > 0) {
+            return calculateMaximumRoute(maximumMeters, recursionCounter);
+        }
+        throw new InvalidCalculationRequest("Minimum=" + minimumMeters + " and Maximum=" + maximumMeters + "! This is an invalid calculation request!");
+    }
+
+    private RoutingWaypoint calculateMaximumRoute(double localRequestedDistanceInMeters, int recursionCounter) throws InvalidCalculationRequest {
+        double localRequestedDistanceInCoordinates = localRequestedDistanceInMeters * ONE_THOUSAND_METERS_IN_COORD;
+        logInfo("We will try to calculate a route with maximum length = " + localRequestedDistanceInMeters + "m (" + localRequestedDistanceInCoordinates + " in coordinates)...");
+        List<Route> potentialRoutes = tryInAllDirections(localRequestedDistanceInCoordinates);
+        for (Route route : potentialRoutes) {
+            for (Section section : route.sections) {
+                if (section.summary.length <= maximumMeters) {
+                    logInfo(section.summary.length + " <= " + maximumMeters);
+                    return createRoutingWaypoint(section);
+                }
+            }
+        }
+        if (recursionCounter < MAX_RECURSIONS) {
+            recursionCounter++;
+            return calculateMaximumRoute(localRequestedDistanceInMeters - RECURSION_STEPS_IN_METERS, recursionCounter);
+        } else {
+            throw new InvalidCalculationRequest("Could not find a route with this maximum length: " + localRequestedDistanceInMeters);
+        }
+    }
+
+    private RoutingWaypoint calculateMinimumRoute(double localRequestedDistanceInMeters, int recursionCounter) throws InvalidCalculationRequest {
+        double localRequestedDistanceInCoordinates = localRequestedDistanceInMeters * ONE_THOUSAND_METERS_IN_COORD;
+        logInfo("We will try to calculate a route with minimum length = " + localRequestedDistanceInMeters + "m (" + localRequestedDistanceInCoordinates + " in coordinates)...");
+        List<Route> potentialRoutes = tryInAllDirections(localRequestedDistanceInCoordinates);
+        for (Route route : potentialRoutes) {
+            for (Section section : route.sections) {
+                if (section.summary.length >= minimumMeters) {
+                    logInfo(section.summary.length + " >= " + minimumMeters);
+                    return createRoutingWaypoint(section);
+                }
+            }
+        }
+        if (recursionCounter < MAX_RECURSIONS) {
+            recursionCounter++;
+            return calculateMinimumRoute(localRequestedDistanceInMeters + RECURSION_STEPS_IN_METERS, recursionCounter);
+        } else {
+            throw new InvalidCalculationRequest("Could not find a route with this minimum length: " + localRequestedDistanceInMeters);
+        }
+    }
+
+    private List<Route> tryInAllDirections(double localRequestedDistanceInKm) {
+        List<Route> potentialRoutes = new LinkedList<>();
+        potentialRoutes.addAll(tryNorth(localRequestedDistanceInKm));
+        potentialRoutes.addAll(tryEast(localRequestedDistanceInKm));
+        potentialRoutes.addAll(trySouth(localRequestedDistanceInKm));
+        potentialRoutes.addAll(tryWest(localRequestedDistanceInKm));
+        return potentialRoutes;
+    }
+
+    private List<Route> tryNorth(double localRequestedDistanceInCoordinates) {
+        RoutingWaypoint tempDestination = new RoutingWaypoint("point_north", origin.getLatitude() + localRequestedDistanceInCoordinates, origin.getLongitude());
+        HereApiRoutingResponse hereApiRoutingResponse = hereApiRestService.getRoute(origin, tempDestination);
+        logInfo("NORTH: length=" + hereApiRoutingResponse.routes.get(0).sections.get(0).summary.length + ", lat=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lat + ", lng=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lng);
+        return hereApiRoutingResponse.routes;
+    }
+
+    private List<Route> tryEast(double localRequestedDistanceInCoordinates) {
+        RoutingWaypoint tempDestination = new RoutingWaypoint("point_east", origin.getLatitude(), origin.getLongitude() + localRequestedDistanceInCoordinates);
+        HereApiRoutingResponse hereApiRoutingResponse = hereApiRestService.getRoute(origin, tempDestination);
+        logInfo("EAST: length=" + hereApiRoutingResponse.routes.get(0).sections.get(0).summary.length + ", lat=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lat + ", lng=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lng);
+        return hereApiRoutingResponse.routes;
+    }
+
+    private List<Route> trySouth(double localRequestedDistanceInCoordinates) {
+        RoutingWaypoint tempDestination = new RoutingWaypoint("point_south", origin.getLatitude() - localRequestedDistanceInCoordinates, origin.getLongitude());
+        HereApiRoutingResponse hereApiRoutingResponse = hereApiRestService.getRoute(origin, tempDestination);
+        logInfo("SOUTH: length=" + hereApiRoutingResponse.routes.get(0).sections.get(0).summary.length + ", lat=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lat + ", lng=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lng);
+        return hereApiRoutingResponse.routes;
+    }
+
+    private List<Route> tryWest(double localRequestedDistanceInCoordinates) {
+        RoutingWaypoint tempDestination = new RoutingWaypoint("point_west", origin.getLatitude(), origin.getLongitude() - localRequestedDistanceInCoordinates);
+        HereApiRoutingResponse hereApiRoutingResponse = hereApiRestService.getRoute(origin, tempDestination);
+        logInfo("WEST: length=" + hereApiRoutingResponse.routes.get(0).sections.get(0).summary.length + ", lat=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lat + ", lng=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lng);
+        return hereApiRoutingResponse.routes;
+    }
+
+    private RoutingWaypoint createRoutingWaypoint(Section section) {
+        double lng = section.arrival.place.location.lng;
+        double lat = section.arrival.place.location.lat;
+        String name = section.arrival.place.type;
+        return new RoutingWaypoint(name, lat, lng);
+    }
+
+    private void logInfo(String logMsg) {
+        logger.info(LOG_PREFIX, logMsg);
+    }
+}
