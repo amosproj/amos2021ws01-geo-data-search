@@ -13,4 +13,6 @@ public interface ApiResult {
     String getLon();
 
     String getName();
+
+    String getPolyline();
 }

@@ -30,7 +30,8 @@ public class ResultResponse implements HttpResponse {
                 output += "name=" + singleResult.getName() + ", ";
                 output += "id=" + singleResult.getId() + ", ";
                 output += "lat=" + singleResult.getLat() + ", ";
-                output += "lon=" + singleResult.getLon();
+                output += "lon=" + singleResult.getLon() + ", ";
+                output += "polyline=" + singleResult.getPolyline();
                 output += "}";
             }
         }

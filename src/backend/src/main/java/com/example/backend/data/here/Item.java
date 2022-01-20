@@ -87,4 +87,9 @@ public class Item implements HereApiElement, ApiResult {
     public String getName() {
         return title;
     }
+
+    @Override
+    public String getPolyline() {
+        return "";
+    }
 }
