@@ -121,6 +121,6 @@ public class FrontendController {
         }
 
         // TODO How to version better?
-        return new VersionResponse(Version.createVersion("0.9.3", nlpVersion));
+        return new VersionResponse(Version.createVersion("0.10.1", nlpVersion));
     }
 }
