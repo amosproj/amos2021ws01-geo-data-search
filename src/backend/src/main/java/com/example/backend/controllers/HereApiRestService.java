@@ -49,11 +49,10 @@ public class HereApiRestService {
     public void handleRequest(NlpQueryResponse nlpQueryResponse, List<ApiResult> result) throws MissingLocationException, LocationNotFoundException, InvalidCalculationRequest {
         HereRoutingAttributes hereRoutingAttributes = new HereRoutingAttributes(this);
         hereRoutingAttributes.extractRoutingAttributes(nlpQueryResponse);
+        logInfo("Searching for a route from \"" + hereRoutingAttributes.getOrigin().getName() + "\" to \"" + hereRoutingAttributes.getDestination().getName() + "\"");
         if (hereRoutingAttributes.getIfChargingStationsIncluded()) {
-            logInfo("Searching for a route from \"" + hereRoutingAttributes.getOrigin().getName() + "\" to \"" + hereRoutingAttributes.getDestination().getName() + "\" with charging stations...");
             result.addAll(getChargingStationsOnRoute(hereRoutingAttributes));
         } else {
-            logInfo("Searching for a route from \"" + hereRoutingAttributes.getOrigin().getName() + "\" to \"" + hereRoutingAttributes.getDestination().getName() + "\" without charging stations...");
             result.addAll(getGuidanceForRoute(hereRoutingAttributes));
         }
     }
