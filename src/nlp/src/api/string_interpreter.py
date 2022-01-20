@@ -6,9 +6,9 @@ from typing import Optional
 
 import spacy
 from pydantic.dataclasses import dataclass
-from .helper_service import convert_number_to_meter
+from helper_service import convert_number_to_meter
 
-from .utils import get_entity_synonyms, get_keyword_from_synonyms, get_alias_synonyms
+from utils import get_entity_synonyms, get_keyword_from_synonyms, get_alias_synonyms
 
 # get os specific file separator
 SEP = os.path.sep
@@ -56,10 +56,11 @@ def get_query(string: str) -> object:
 
     # tokens of NER model
     ner_tokens = ner_model(string)
+    ner_token_count = len(ner_tokens)
 
     # extracted parameters of NER model
     token_keywords = []
-    for index in range(len(ner_tokens)):
+    for index in range(ner_token_count):
         token = ner_tokens[index]
 
         # save query object
@@ -79,15 +80,18 @@ def get_query(string: str) -> object:
             number = int(number)
 
             # extract query parameters
-            param_1, param_2 = get_query_parameters(index, ner_tokens)
+            param_1, param_2, unit = get_query_parameters(index, ner_tokens)
 
-            token_keywords.append(TokenKeywords(token, param_1, param_2, number))
+            token_keywords.append(TokenKeywords(token, param_1, param_2, number, unit))
 
-    return resolve_extracted_query_parameters(token_keywords)
+    # set default value
+    if result.query_object == "":
+        result.query_object = "route"
+
+    return resolve_extracted_query_parameters(result, token_keywords)
 
 
-def resolve_extracted_query_parameters(token_keywords: []) -> object:
-    result = Query()
+def resolve_extracted_query_parameters(result, token_keywords: []) -> object:
 
     # try to apply all extracted parameters to query object
     unresolved_keywords = apply_query_parameters(token_keywords, result)
@@ -129,10 +133,6 @@ def resolve_extracted_query_parameters(token_keywords: []) -> object:
 
     # try to apply unresolved keywords with additional information
     apply_query_parameters(unresolved_keywords, result)
-
-    # set default value
-    if result.query_object == "":
-        result.query_object = "route"
 
     return result
 
@@ -200,14 +200,14 @@ def apply_query_parameters(token_keywords: [], query: object) -> []:
     return unresolved_keywords
 
 
-def get_query_parameters(origin: int, tokens: [spacy.tokens.token.Token]) -> (str, str):
+def get_query_parameters(origin: int, tokens: [spacy.tokens.token.Token]) -> (str, str, str):
     """
     @param origin token which requires the attribute it is referring to
     @param tokens all tokens of the sentence
-    @return query attributes found in sting. Example: min height
+    @return query attributes found in sting. Example: min height km (min or max, parameter, unit)
     """
 
-    dependencies, next_amount, previous_amount = get_token_dependencies(origin, tokens)
+    dependencies, unit = get_token_dependencies(origin, tokens)
     param_1, param_2 = None, None
 
     for dep in dependencies:
@@ -233,13 +233,13 @@ def get_query_parameters(origin: int, tokens: [spacy.tokens.token.Token]) -> (st
             elif lemma == "rechtskurve":
                 param_2 = "curves_right"
 
-    print("Dependencies for", tokens[origin], ":", dependencies, "->", param_1, param_2)
+    print("Dependencies for", tokens[origin], ":", dependencies, "->", param_1, param_2, unit)
 
-    return param_1, param_2
+    return param_1, param_2, unit
 
 
 def get_token_dependencies(origin: int, tokens: [spacy.tokens.token.Token], discovery_right: int = 3, discovery_left: int = 3,
-                           stop_on_amount: bool = True) -> ([spacy.tokens.token.Token], spacy.tokens.token.Token, spacy.tokens.token.Token):
+                           stop_on_amount: bool = True) -> ([spacy.tokens.token.Token], str):
     """
     Extracts dependencies of a token, starting its search to the left, then to the right
     @param origin: token from which the search is started
@@ -247,12 +247,11 @@ def get_token_dependencies(origin: int, tokens: [spacy.tokens.token.Token], disc
     @param discovery_right: max search radius to the right
     @param discovery_left: max search radius to the left
     @param stop_on_amount: stop searching in that direction if another token labeled with amount was found
-    @return: (list of dependencies, next amount token (if any), previous amount token (if any))
+    @return: (list of dependencies, unit found (km, m, %, ...)
     """
 
     result = []
-    next_token = None
-    previous_token = None
+    unit = None
     count = len(tokens)
 
     # look for values to the left of amount object
@@ -266,9 +265,6 @@ def get_token_dependencies(origin: int, tokens: [spacy.tokens.token.Token], disc
 
         # if next token is specifying amount
         if token.ent_type_ == "amount":
-            # save it
-            if previous_token is None:
-                previous_token = token
             # stop search in that direction
             if stop_on_amount:
                 break
@@ -285,18 +281,19 @@ def get_token_dependencies(origin: int, tokens: [spacy.tokens.token.Token], disc
         # get token
         token = tokens[index]
 
+        # save found unit
+        if unit is None and token.lemma_ in ["km", "m", "%"]:
+            unit = token.lemma_
+
         # if next token is specifying amount
         if token.ent_type_ == "amount":
-            # save it
-            if next_token is None:
-                next_token = token
             # stop search in that direction
             if stop_on_amount:
                 break
 
         result.append(token)
 
-    return result, next_token, previous_token
+    return result, unit
 
 
 def check_unit(token: spacy.tokens.token.Token) -> str:
@@ -308,8 +305,7 @@ def check_unit(token: spacy.tokens.token.Token) -> str:
     return synonym
 
 
-def convert_to_meter(
-    amount_token: spacy.tokens.token.Token, next_token: spacy.tokens.token.Token = None) -> int:
+def convert_to_meter(amount_token: spacy.tokens.token.Token, next_token: spacy.tokens.token.Token = None) -> int:
     if next_token is None:
         amount_unit = "km"
     else:
@@ -393,15 +389,24 @@ class TokenKeywords:
     token: spacy.tokens.token.Token
     min_or_max: str
     attribute: str
-    number: int
+    number: int  # number found associated wih parameter (example: 100)
+    unit: str  # unit found associated with number (example: km, %)
 
-    def __init__(self, token, min_or_max, attribute, number):
+    def __init__(self, token, min_or_max, attribute, number, unit):
         self.token = token
         self.min_or_max = min_or_max
         self.attribute = attribute
         self.number = number
+        self.unit = unit
+
+    def get_transformed_number(self):
+        if self.unit is None or self.unit == "":
+            return self.number
+
+        # todo: transform number depending on unit, if necessary
+        return self.number
 
 
 # print(get_query("Finde eine Strecke in Italien mit mindestens 10 meilen länge in einer lage über 1000 mit einem Anteil von 500 kilometer Linkskurven mit einem Anteil von 600m Steigung über 7% auf einer Höhe von maximal 10 km"))
 # print(get_query("Plane mir eine Route nach Paris mit einem Anteil von 500 meter Steigung von maximal 7%"))
-print(get_query("Plane mir eine Route nach Paris mit einer länge von mindestens 100 und maximal 1000 metern"))
+print(get_query("Plane mir eine Route nach Paris mit einer länge von mindestens 100 und maximal 1000 km"))
