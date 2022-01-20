@@ -107,6 +107,12 @@ def get_query(string: str) -> object:
                 elif param_1 == "max":
                     result.route_attributes.height.max = number
             elif param_2 == "length":
+                if index != (len(ner_tokens) - 1):
+                    next_token = ner_tokens[index + 1]
+                    number = convert_to_meter(token, next_token)
+                # last token is an amount but has no unit
+                else:
+                    number = convert_to_meter(token)
                 # select min parameter by default
                 if param_1 in ["min", ""]:
                     result.route_attributes.length.min = number
