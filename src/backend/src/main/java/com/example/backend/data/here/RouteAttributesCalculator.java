@@ -8,6 +8,7 @@ import com.example.backend.helpers.InvalidCalculationRequest;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class RouteAttributesCalculator {
 
@@ -120,6 +121,34 @@ public class RouteAttributesCalculator {
         HereApiRoutingResponse hereApiRoutingResponse = hereApiRestService.getRoute(origin, tempDestination);
         logInfo("WEST: origin=(" + origin.getCoordinatesAsString() + "),length=" + hereApiRoutingResponse.routes.get(0).sections.get(0).summary.length + ", lat=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lat + ", lng=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lng);
         return hereApiRoutingResponse.routes;
+    }
+
+    @SuppressWarnings("UnnecessaryLocalVariable")
+    private RoutingWaypoint returnRandomWaypointInSpecifiedRange(double localRequestDistanceInCoordinates) {
+        double randomAngle = ThreadLocalRandom.current().nextDouble(0.0, 360.0);
+        // Fall 1: Winkel 0-90
+        if(randomAngle > 270.0){
+            randomAngle -= 270.0;
+
+        }else if(randomAngle > 180.0){
+            randomAngle -= 180.0;
+
+        }else if(randomAngle > 90.0){
+            randomAngle -= 90.0;
+
+        }else{
+
+        }
+        // Fall 2: Winkel 91-180
+        // Fall 3: Winkel 181-270
+        // Fall 4: Winkel else
+
+        double hypotenuseLine = localRequestDistanceInCoordinates;
+        double adjacentLine = hypotenuseLine * Math.cos(randomAngle); // lng
+        double oppositeLine = hypotenuseLine * Math.sin(randomAngle); // lat
+        RoutingWaypoint result = new RoutingWaypoint("randomPoint(angle=" + randomAngle + ")", origin.getLatitude() + adjacentLine, origin.getLongitude() + oppositeLine);
+        logInfo("RANDOM WAYPOINT: " + result.getName() + " with (" + result.getCoordinatesAsString() + ")");
+        return result;
     }
 
     private RoutingWaypoint createRoutingWaypoint(Section section) {
