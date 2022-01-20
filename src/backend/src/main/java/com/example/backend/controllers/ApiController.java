@@ -8,6 +8,8 @@ import com.example.backend.data.api.OSMSearchResult;
 import com.example.backend.data.http.NlpQueryResponse;
 import com.example.backend.helpers.*;
 import com.example.backend.helpers.ApiSelectionHelper.ApiType;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,10 +21,9 @@ import java.util.List;
 public class ApiController {
 
     private final OsmApiClient osmApiClient;
-    private final BackendLogger logger = new BackendLogger();
-    private static final String LOG_PREFIX = "API_CONTROLLER";
     private static final String dummyNodeID = "305293190";
     private final HereApiRestService hereApiRestService;
+    private final Logger logger = LogManager.getLogger(this.getClass());
 
     public ApiController(OsmApiClient osmApiClient, HereApiRestService hereApiRestService) {
         this.osmApiClient = osmApiClient;
@@ -31,11 +32,11 @@ public class ApiController {
 
     @Deprecated(since = "Requesting node info with NodeID is not working for now.")
     public NodeInfo requestNodeInfo(String nodeID) {
-        logInfo("Request Info for node:" + nodeID + " from API");
-        logInfo("Sending data to API...");
+        logger.info("Request Info for node:" + nodeID + " from API");
+        logger.info("Sending data to API...");
         //TODO replace the dummyNodeID with real one when implemented
         NodeInfo apiXMLResponse = osmApiClient.requestNode(dummyNodeID);
-        logInfo("SUCCESS!, response from API received:" + apiXMLResponse);
+        logger.info("SUCCESS!, response from API received:" + apiXMLResponse);
         //TODO replace this with result when implemented
         return apiXMLResponse;
     }
@@ -51,13 +52,13 @@ public class ApiController {
         ApiType preferredApi = ApiSelectionHelper.getApiPreference(nlpQueryResponse);
         List<ApiResult> result = new ArrayList<>();
         if (preferredApi == ApiType.OSM_API) {
-            logInfo("Based on the query_object \"" + nlpQueryResponse.getQueryObject() + "\", OSM API will now handle the request.");
+            logger.info("Based on the query_object \"" + nlpQueryResponse.getQueryObject() + "\", OSM API will now handle the request.");
             handleOsmApiRequest(nlpQueryResponse, result);
         } else if (preferredApi == ApiType.HERE_API) {
-            logInfo("Based on the query_object \"" + nlpQueryResponse.getQueryObject() + "\", HERE API will now handle the request.");
+            logger.info("Based on the query_object \"" + nlpQueryResponse.getQueryObject() + "\", HERE API will now handle the request.");
             hereApiRestService.handleRequest(nlpQueryResponse, result);
         } else {
-            logError("The preferred API does not match any of our implemented API's!");
+            logger.error("The preferred API does not match any of our implemented API's!");
             throw new NoPrefferedApiFoundException("No preferred API to use based on this query_object: \"" + nlpQueryResponse.getQueryObject() + "\"");
         }
         adjustTypeValues(result, nlpQueryResponse);
@@ -79,7 +80,7 @@ public class ApiController {
             osmQuery.setAmenity("restaurant");
         }
         osmQuery.setArea(nlpQueryResponse.getLocation());
-        logInfo("Generated Query for OSM: " + osmQuery.toQuery());
+        logger.info("Generated Query for OSM: " + osmQuery.toQuery());
         return osmQuery;
     }
 
@@ -89,13 +90,5 @@ public class ApiController {
                 result.get(0).setType(nlpQueryResponse.getQueryObject());
             }
         }
-    }
-
-    private void logInfo(String logMsg) {
-        logger.info(LOG_PREFIX, logMsg);
-    }
-
-    private void logError(String logMsg) {
-        logger.error(LOG_PREFIX, logMsg);
     }
 }

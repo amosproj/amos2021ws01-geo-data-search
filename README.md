@@ -38,6 +38,9 @@ To run the tests enter the following in the terminal:
 ```
 docker build --target maven_test -f src/backend/Dockerfile src/backend
 ```
+
+To change the log level [see this page](https://github.com/amosproj/amos2021ws01-geo-data-search/wiki/Build-Documentation#change-log-level-for-backend)
+
 ### NLP
 To run the tests enter the following in the terminal:
 ```
