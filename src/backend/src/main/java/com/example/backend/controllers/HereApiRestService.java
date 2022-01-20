@@ -52,10 +52,8 @@ public class HereApiRestService {
         hereRoutingAttributes.extractRoutingAttributes(nlpQueryResponse);
         logger.info("Searching for a route from \"" + hereRoutingAttributes.getOrigin().getName() + "\" to \"" + hereRoutingAttributes.getDestination().getName() + "\"");
         if (hereRoutingAttributes.getIfChargingStationsIncluded()) {
-            logInfo("Searching for a route from \"" + hereRoutingAttributes.getOrigin().getName() + "\" to \"" + hereRoutingAttributes.getDestination().getName() + "\" with charging stations...");
             result.addAll(getChargingStationsOnRoute(hereRoutingAttributes));
         } else {
-            logInfo("Searching for a route from \"" + hereRoutingAttributes.getOrigin().getName() + "\" to \"" + hereRoutingAttributes.getDestination().getName() + "\" without charging stations...");
             result.addAll(getGuidanceForRoute(hereRoutingAttributes));
         }
     }

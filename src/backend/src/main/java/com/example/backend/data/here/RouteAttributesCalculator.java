@@ -3,8 +3,9 @@ package com.example.backend.data.here;
 import com.example.backend.controllers.HereApiRestService;
 import com.example.backend.data.api.HereApiRoutingResponse;
 import com.example.backend.data.nlp.RouteAttributes;
-import com.example.backend.helpers.BackendLogger;
 import com.example.backend.helpers.InvalidCalculationRequest;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -16,10 +17,10 @@ public class RouteAttributesCalculator {
     private static final double ONE_THOUSAND_METERS_IN_COORD = 0.000015060;
     private static final int MAX_RECURSIONS = 6;
     private int recursionStepsInMeters = 500;
-    private final BackendLogger logger = new BackendLogger();
     private final HereApiRestService hereApiRestService;
     private RoutingWaypoint origin;
     private int minimumMeters, maximumMeters;
+    private final Logger logger = LogManager.getLogger(this.getClass());
 
     public RouteAttributesCalculator(HereApiRestService hereApiRestService) {
         this.hereApiRestService = hereApiRestService;
@@ -48,12 +49,12 @@ public class RouteAttributesCalculator {
 
     private RoutingWaypoint calculateMaximumRoute(double localRequestedDistanceInMeters, int recursionCounter) throws InvalidCalculationRequest {
         double localRequestedDistanceInCoordinates = localRequestedDistanceInMeters * ONE_THOUSAND_METERS_IN_COORD;
-        logInfo("We will try to calculate a route with maximum length = " + localRequestedDistanceInMeters + "m (" + localRequestedDistanceInCoordinates + " in coordinates)...");
+        logger.info("We will try to calculate a route with maximum length = " + localRequestedDistanceInMeters + "m (" + localRequestedDistanceInCoordinates + " in coordinates)...");
         List<Route> potentialRoutes = tryInAllDirections(localRequestedDistanceInCoordinates);
         for (Route route : potentialRoutes) {
             for (Section section : route.sections) {
                 if (section.summary.length <= maximumMeters) {
-                    logInfo(section.summary.length + " <= " + maximumMeters);
+                    logger.info(section.summary.length + " <= " + maximumMeters);
                     return createRoutingWaypoint(section);
                 }
             }
@@ -68,12 +69,12 @@ public class RouteAttributesCalculator {
 
     private RoutingWaypoint calculateMinimumRoute(double localRequestedDistanceInMeters, int recursionCounter) throws InvalidCalculationRequest {
         double localRequestedDistanceInCoordinates = localRequestedDistanceInMeters * ONE_THOUSAND_METERS_IN_COORD;
-        logInfo("We will try to calculate a route with minimum length = " + localRequestedDistanceInMeters + "m (" + localRequestedDistanceInCoordinates + " in coordinates)...");
+        logger.info("We will try to calculate a route with minimum length = " + localRequestedDistanceInMeters + "m (" + localRequestedDistanceInCoordinates + " in coordinates)...");
         List<Route> potentialRoutes = tryInAllDirections(localRequestedDistanceInCoordinates);
         for (Route route : potentialRoutes) {
             for (Section section : route.sections) {
                 if (section.summary.length >= minimumMeters) {
-                    logInfo(section.summary.length + " >= " + minimumMeters);
+                    logger.info(section.summary.length + " >= " + minimumMeters);
                     return createRoutingWaypoint(section);
                 }
             }
@@ -98,28 +99,28 @@ public class RouteAttributesCalculator {
     private List<Route> tryNorth(double localRequestedDistanceInCoordinates) {
         RoutingWaypoint tempDestination = new RoutingWaypoint("point_north", origin.getLatitude() + localRequestedDistanceInCoordinates, origin.getLongitude());
         HereApiRoutingResponse hereApiRoutingResponse = hereApiRestService.getRoute(origin, tempDestination);
-        logInfo("NORTH: origin=(" + origin.getCoordinatesAsString() + "), length=" + hereApiRoutingResponse.routes.get(0).sections.get(0).summary.length + ", lat=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lat + ", lng=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lng);
+        logger.info("NORTH: origin=(" + origin.getCoordinatesAsString() + "), length=" + hereApiRoutingResponse.routes.get(0).sections.get(0).summary.length + ", lat=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lat + ", lng=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lng);
         return hereApiRoutingResponse.routes;
     }
 
     private List<Route> tryEast(double localRequestedDistanceInCoordinates) {
         RoutingWaypoint tempDestination = new RoutingWaypoint("point_east", origin.getLatitude(), origin.getLongitude() + localRequestedDistanceInCoordinates);
         HereApiRoutingResponse hereApiRoutingResponse = hereApiRestService.getRoute(origin, tempDestination);
-        logInfo("EAST: origin=(" + origin.getCoordinatesAsString() + "),length=" + hereApiRoutingResponse.routes.get(0).sections.get(0).summary.length + ", lat=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lat + ", lng=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lng);
+        logger.info("EAST: origin=(" + origin.getCoordinatesAsString() + "),length=" + hereApiRoutingResponse.routes.get(0).sections.get(0).summary.length + ", lat=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lat + ", lng=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lng);
         return hereApiRoutingResponse.routes;
     }
 
     private List<Route> trySouth(double localRequestedDistanceInCoordinates) {
         RoutingWaypoint tempDestination = new RoutingWaypoint("point_south", origin.getLatitude() - localRequestedDistanceInCoordinates, origin.getLongitude());
         HereApiRoutingResponse hereApiRoutingResponse = hereApiRestService.getRoute(origin, tempDestination);
-        logInfo("SOUTH: origin=(" + origin.getCoordinatesAsString() + "),length=" + hereApiRoutingResponse.routes.get(0).sections.get(0).summary.length + ", lat=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lat + ", lng=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lng);
+        logger.info("SOUTH: origin=(" + origin.getCoordinatesAsString() + "),length=" + hereApiRoutingResponse.routes.get(0).sections.get(0).summary.length + ", lat=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lat + ", lng=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lng);
         return hereApiRoutingResponse.routes;
     }
 
     private List<Route> tryWest(double localRequestedDistanceInCoordinates) {
         RoutingWaypoint tempDestination = new RoutingWaypoint("point_west", origin.getLatitude(), origin.getLongitude() - localRequestedDistanceInCoordinates);
         HereApiRoutingResponse hereApiRoutingResponse = hereApiRestService.getRoute(origin, tempDestination);
-        logInfo("WEST: origin=(" + origin.getCoordinatesAsString() + "),length=" + hereApiRoutingResponse.routes.get(0).sections.get(0).summary.length + ", lat=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lat + ", lng=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lng);
+        logger.info("WEST: origin=(" + origin.getCoordinatesAsString() + "),length=" + hereApiRoutingResponse.routes.get(0).sections.get(0).summary.length + ", lat=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lat + ", lng=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lng);
         return hereApiRoutingResponse.routes;
     }
 
@@ -127,16 +128,16 @@ public class RouteAttributesCalculator {
     private RoutingWaypoint returnRandomWaypointInSpecifiedRange(double localRequestDistanceInCoordinates) {
         double randomAngle = ThreadLocalRandom.current().nextDouble(0.0, 360.0);
         // Fall 1: Winkel 0-90
-        if(randomAngle > 270.0){
+        if (randomAngle > 270.0) {
             randomAngle -= 270.0;
 
-        }else if(randomAngle > 180.0){
+        } else if (randomAngle > 180.0) {
             randomAngle -= 180.0;
 
-        }else if(randomAngle > 90.0){
+        } else if (randomAngle > 90.0) {
             randomAngle -= 90.0;
 
-        }else{
+        } else {
 
         }
         // Fall 2: Winkel 91-180
@@ -147,7 +148,7 @@ public class RouteAttributesCalculator {
         double adjacentLine = hypotenuseLine * Math.cos(randomAngle); // lng
         double oppositeLine = hypotenuseLine * Math.sin(randomAngle); // lat
         RoutingWaypoint result = new RoutingWaypoint("randomPoint(angle=" + randomAngle + ")", origin.getLatitude() + adjacentLine, origin.getLongitude() + oppositeLine);
-        logInfo("RANDOM WAYPOINT: " + result.getName() + " with (" + result.getCoordinatesAsString() + ")");
+        logger.info("RANDOM WAYPOINT: " + result.getName() + " with (" + result.getCoordinatesAsString() + ")");
         return result;
     }
 
@@ -156,9 +157,5 @@ public class RouteAttributesCalculator {
         double lat = section.arrival.place.location.lat;
         String name = section.arrival.place.type;
         return new RoutingWaypoint(name, lat, lng);
-    }
-
-    private void logInfo(String logMsg) {
-        logger.info(LOG_PREFIX, logMsg);
     }
 }

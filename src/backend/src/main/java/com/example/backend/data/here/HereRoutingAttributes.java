@@ -119,12 +119,12 @@ public class HereRoutingAttributes {
         int maxLength = nlpQueryResponse.getRouteAttributes().getLength().getMax();
         int minLength = nlpQueryResponse.getRouteAttributes().getLength().getMin();
         if (maxLength != 0) {
-            logInfo("NlpQueryResponse includes specified RouteAttributes: route max length = " + maxLength);
+            logger.info("NlpQueryResponse includes specified RouteAttributes: route max length = " + maxLength);
             routeAttributesSpecified = true;
             return true;
         }
         if (minLength != 0) {
-            logInfo("NlpQueryResponse includes specified RouteAttributes: route min length = " + minLength);
+            logger.info("NlpQueryResponse includes specified RouteAttributes: route min length = " + minLength);
             routeAttributesSpecified = true;
             return true;
         }
@@ -137,7 +137,7 @@ public class HereRoutingAttributes {
         RoutingWaypoint startLocation;
         if (routeAttributesSpecified) {
             startLocation = callHereApiToRetrieveCoordinatesForLocation(locations[0]);
-            logInfo("We will take this value as the START of the route: \"" + startLocation.getName() + "\"");
+            logger.info("We will take this value as the START of the route: \"" + startLocation.getName() + "\"");
         } else if (locations.length > 1 && !locations[1].isEmpty()) {
             startLocation = callHereApiToRetrieveCoordinatesForLocation(locations[0]);
             logger.info("We will take this value as the START of the route: \"" + startLocation.getName() + "\"");
