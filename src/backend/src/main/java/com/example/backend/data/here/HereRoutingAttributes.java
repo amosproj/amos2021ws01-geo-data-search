@@ -14,7 +14,7 @@ public class HereRoutingAttributes {
     private static final String LOG_PREFIX = "HERE_ROUTING_ATTRIBUTES";
     private static final String LOCATIONS_SEPARATOR = ",";
     private final static String DELIMITER = "&";
-    private static final RoutingWaypoint DEFAULT_START_LOCATION = new RoutingWaypoint("IAV GmbH", 52.522876680682884,13.321046275244608);
+    private static final RoutingWaypoint DEFAULT_START_LOCATION = new RoutingWaypoint("IAV GmbH", 52.522876680682884, 13.321046275244608);
 
     private static boolean includeChargingStations = false;
     private static boolean avoidTollRoads = false;
@@ -116,13 +116,15 @@ public class HereRoutingAttributes {
     }
 
     private boolean checkIfRouteAttributesMinMaxAreSet(NlpQueryResponse nlpQueryResponse) {
-        if (nlpQueryResponse.getRouteAttributes().getLength().getMax() != 0) {
-            logInfo("NlpQueryResponse includes specified RouteAttributes: route max length");
+        int maxLength = nlpQueryResponse.getRouteAttributes().getLength().getMax();
+        int minLength = nlpQueryResponse.getRouteAttributes().getLength().getMin();
+        if (maxLength != 0) {
+            logInfo("NlpQueryResponse includes specified RouteAttributes: route max length = " + maxLength);
             routeAttributesSpecified = true;
             return true;
         }
-        if (nlpQueryResponse.getRouteAttributes().getLength().getMin() != 0) {
-            logInfo("NlpQueryResponse includes specified RouteAttributes: route min length");
+        if (minLength != 0) {
+            logInfo("NlpQueryResponse includes specified RouteAttributes: route min length = " + minLength);
             routeAttributesSpecified = true;
             return true;
         }
@@ -133,7 +135,10 @@ public class HereRoutingAttributes {
     private void extractOriginLocation(NlpQueryResponse nlpQueryResponse) throws LocationNotFoundException {
         String[] locations = nlpQueryResponse.getLocation().split(LOCATIONS_SEPARATOR);
         RoutingWaypoint startLocation;
-        if (locations.length > 1 && !locations[1].isEmpty()) {
+        if (routeAttributesSpecified) {
+            startLocation = callHereApiToRetrieveCoordinatesForLocation(locations[0]);
+            logInfo("We will take this value as the START of the route: \"" + startLocation.getName() + "\"");
+        } else if (locations.length > 1 && !locations[1].isEmpty()) {
             startLocation = callHereApiToRetrieveCoordinatesForLocation(locations[0]);
             logInfo("We will take this value as the START of the route: \"" + startLocation.getName() + "\"");
         } else {
@@ -146,14 +151,13 @@ public class HereRoutingAttributes {
     private void extractDestinationLocation(NlpQueryResponse nlpQueryResponse) throws LocationNotFoundException, InvalidCalculationRequest {
         String[] locations = nlpQueryResponse.getLocation().split(LOCATIONS_SEPARATOR);
         String nameOfDesiredFinishLocation;
-        if(routeAttributesSpecified){
+        if (routeAttributesSpecified) {
             RouteAttributesCalculator rac = new RouteAttributesCalculator(hereApiRestService);
-            this.finishLocation = rac.getDestinationOnGivenRouteAttributes(DEFAULT_START_LOCATION, nlpQueryResponse.getRouteAttributes());
-        }
-        else if (locations.length > 1 && !locations[1].isEmpty()) {
+            this.finishLocation = rac.getDestinationOnGivenRouteAttributes(startLocation, nlpQueryResponse.getRouteAttributes());
+        } else if (locations.length > 1 && !locations[1].isEmpty()) {
             nameOfDesiredFinishLocation = locations[1];
             this.finishLocation = callHereApiToRetrieveCoordinatesForLocation(nameOfDesiredFinishLocation);
-        } else if(checkIfRouteAttributesMinMaxAreSet(nlpQueryResponse)){
+        } else {
             nameOfDesiredFinishLocation = locations[0];
             this.finishLocation = callHereApiToRetrieveCoordinatesForLocation(nameOfDesiredFinishLocation);
         }
