@@ -19,7 +19,7 @@ public class ResultResponse implements HttpResponse {
         return result;
     }
 
-    public String toString() {
+    public String toStringWithPolyline() {
         String output = "ResultResponse: ";
         if (result == null) {
             output += "NULL";
@@ -32,6 +32,25 @@ public class ResultResponse implements HttpResponse {
                 output += "lat=" + singleResult.getLat() + ", ";
                 output += "lon=" + singleResult.getLon() + ", ";
                 output += "polyline=" + singleResult.getPolyline();
+                output += "}";
+            }
+        }
+        return output;
+    }
+
+    public String toStringWithoutPolyline() {
+        String output = "ResultResponse: ";
+        if (result == null) {
+            output += "NULL";
+        } else {
+            for (ApiResult singleResult : result) {
+                output += "\n\t{";
+                output += "type=" + singleResult.getType() + ", ";
+                output += "name=" + singleResult.getName() + ", ";
+                output += "id=" + singleResult.getId() + ", ";
+                output += "lat=" + singleResult.getLat() + ", ";
+                output += "lon=" + singleResult.getLon() + ", ";
+                output += "polyline=ONLY PRINTED IN DEBUG LOGGING";
                 output += "}";
             }
         }
