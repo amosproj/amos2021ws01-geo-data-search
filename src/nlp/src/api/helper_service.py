@@ -29,11 +29,8 @@ def convert_number_to_meter(unit: str, number: int) -> int:
     if unit == "miles":
         return int(number * 1609.34)
 
-    # convert km to meters
-    if unit == "km":
-        return number * 1000
-
-    return number
+    # default unit is km -> convert to meters
+    return number * 1000
 
 
 def check_similarity_in_list(token_1: str, token_list: array, threshold: int) -> bool:
