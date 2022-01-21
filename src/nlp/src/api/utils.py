@@ -46,7 +46,7 @@ def parse_synonyms(is_entity: bool = True, chatette_file_path: str = None,
     if not chatette_file_path.exists():
         LOGGER.error(f"Couldn't find file {chatette_file_path}")
 
-    with open(chatette_file_path) as file:
+    with open(chatette_file_path, encoding="UTF-8") as file:
         synonyms = {}
         key: Optional[str] = None
         values = []
