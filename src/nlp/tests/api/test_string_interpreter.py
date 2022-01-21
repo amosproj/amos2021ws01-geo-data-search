@@ -101,7 +101,8 @@ def get_query_test_data():
     query = Query()
     query.location = "Spanien"
     query.query_object = "route"
-    query.route_attributes.length.min = 1000
+    query.route_attributes.length.min = 10000
+    query.route_attributes.height.min = 1000
     queries.append(["Finde eine Strecke in Spanien mit einer Länge von 10 kilometern in einer lage über 1000m", query])
 
     query = Query()
