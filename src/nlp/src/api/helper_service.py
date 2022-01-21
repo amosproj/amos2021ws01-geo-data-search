@@ -29,7 +29,7 @@ def convert_number_to_meter(unit: str, number: int) -> int:
     if unit == "miles":
         return int(number * 1609.34)
 
-    # default unit is km -> convert to meters
+    # when a unit is not recognised it is assumed that the user entered "km" -> convert to meters
     return number * 1000
 
 
