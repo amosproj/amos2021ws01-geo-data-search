@@ -9,8 +9,8 @@ from typing import Optional
 import spacy
 from pydantic.dataclasses import dataclass
 
-from .helper_service import convert_number_to_meter, check_similarity, check_similarity_in_list, get_keyword_from_synonyms
-from .utils import get_entity_synonyms, get_alias_synonyms
+from helper_service import convert_number_to_meter, check_similarity, check_similarity_in_list, get_keyword_from_synonyms
+from utils import get_entity_synonyms, get_alias_synonyms
 
 # get os specific file separator
 SEP = os.path.sep
@@ -315,8 +315,10 @@ def get_token_dependencies(origin: int, tokens: [spacy.tokens.token.Token], disc
         token = tokens[index]
 
         # try to extract amount unit
-        if unit is None and check_unit(token, "") != "":
-            unit = token.lemma_
+        if unit is None:
+            found_unit = check_unit(token, "")
+            if found_unit != "":
+                unit = found_unit
 
         # if next token is specifying amount
         if token.ent_type_ == "amount":
@@ -327,7 +329,6 @@ def get_token_dependencies(origin: int, tokens: [spacy.tokens.token.Token], disc
         result.append(token)
 
     return result, unit
-
 
 
 def check_unit(token: spacy.tokens.token.Token, default_keyword="km") -> str:
@@ -463,6 +464,7 @@ class Query:
         self.query_object = ""
         self.route_attributes = RouteAttributes()
 
+
 class TokenKeywords:
     token: spacy.tokens.token.Token
     min_or_max: str
@@ -481,7 +483,10 @@ class TokenKeywords:
 # print(get_query("Finde eine Strecke in Italien mit mindestens 10 meilen länge in einer lage über 1000 mit einem Anteil von 500 kilometer Linkskurven mit einem Anteil von 600m Steigung über 7% auf einer Höhe von maximal 10 km"))
 # print(get_query("Plane mir eine Route nach Paris mit einem Anteil von 500 meter Steigung von maximal 7%"))
 # print(get_query("Plane mir eine Route nach Paris mit einer länge von mindestens 100 und maximal 1000 km"))
-print(get_query("Plane mir eine Route nach Paris mit einer länge von mindestens 100 km"))
+# print(get_query("Plane mir eine Route nach Paris mit einer länge von mindestens 100 km"))
 # print(get_query("Finde eine Strecke in Italien mit mindestens 10 meilen länge in einer lage über 1000  mit einem Anteil von 500 kilometer Linkskurven mit einem Anteil von 600m Steigung über 7% auf einer Höhe von maximal 10"))
 # print(get_query("Plane mir eine Route nach Paris mit einem Anteil von 500 meter Steigung von maximal 7% mit eine Ladestationen") )
+print(get_query("Zeige mir Berge in Hamburg mit einer Höhe von 1 kilometern"))
+
+
 
