@@ -1,0 +1,44 @@
+TeamMeeting Thursday 13.01.2022 12:30-14:00
+-------------------------------------------
+
+	location: Zoom
+
+	protocoled by: chrisjherm
+
+	Structure:
+		Old Sprint Review
+		Old Sprint Release
+		Old Sprint Retroperspective
+		Feedback from Coach
+		Organizational matters
+		New Sprint Planning
+
+- - - - - - - - - - - - - - - - - - - - - -
+
+	Old Sprint Review:
+		One issue was not ready for review and has to be discussed in the group.
+		See Kanban Board for a more detailed overview.
+
+	Old Sprint Release:
+		The latest version was released live by Decappi.
+
+	Old Sprint Retroperspective:
+		Some of our Takeaways concern our goals for the new year 2022.
+		Takeaways:
+			- The interfaces from Backend towards NLP has to be implemented with failure-safety, so that we can run our code even when NLP is not ready yet
+			- Work on tickets earlier (not just a day before or even the same day)
+			- Assign tickets to people
+			- Goal: the NLP model covers all user queries we defined in the team
+			- Successfully complete the project, learn something new
+
+	Feedback from Coach:
+		Make sure to start work early on tickets.
+		No further negative points mentioned.
+
+	Organizational matters:
+		numanfidan was not present. His absence was communicated to the group in advance.
+
+	New Sprint Planning:
+		One ticket was estimated to size = 13, so we decided to split it into at least two smaller tickets.
+		We have already assigned two tickets for Backend to chrisjherm and numanfidan (new process from a Takeaway).
+		See Kanban Board for a more detailed overview.

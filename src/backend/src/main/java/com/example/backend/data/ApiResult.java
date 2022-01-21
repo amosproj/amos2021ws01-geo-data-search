@@ -2,15 +2,15 @@ package com.example.backend.data;
 
 public interface ApiResult {
 
-    public String getType();
+    String getType();
 
-    public void setType(String type);
+    void setType(String type);
 
-    public int getId();
+    int getId();
 
-    public String getLat();
+    String getLat();
 
-    public String getLon();
+    String getLon();
 
-    public String getName();
+    String getName();
 }

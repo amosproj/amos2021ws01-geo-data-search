@@ -4,18 +4,36 @@ import com.example.backend.data.ApiResult;
 import com.example.backend.data.HttpResponse;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.ArrayList;
+import java.util.List;
 
 @ResponseBody
 public class ResultResponse implements HttpResponse {
 
-    ArrayList<ApiResult> result;
+    List<ApiResult> result;
 
-    public ResultResponse(ArrayList<ApiResult> result) {
+    public ResultResponse(List<ApiResult> result) {
         this.result = result;
     }
 
-    public ArrayList<ApiResult> getResult() {
+    public List<ApiResult> getResult() {
         return result;
+    }
+
+    public String toString() {
+        String output = "ResultResponse: ";
+        if (result == null) {
+            output += "NULL";
+        } else {
+            for (ApiResult singleResult : result) {
+                output += "\n\t{";
+                output += "type=" + singleResult.getType() + ", ";
+                output += "name=" + singleResult.getName() + ", ";
+                output += "id=" + singleResult.getId() + ", ";
+                output += "lat=" + singleResult.getLat() + ", ";
+                output += "lon=" + singleResult.getLon();
+                output += "}";
+            }
+        }
+        return output;
     }
 }

@@ -43,7 +43,7 @@ public class Section implements HereApiElement {
                 "\n" + tab + "\tsummary = " + print(summary, tab) +
                 "\n" + tab + "\ttransport = " + print(transport, tab) +
                 "\n" + tab + "\tturnByTurnActions = " + createListAsString(turnByTurnActions, tab + "\t\t") +
-                "\n" + tab + "\tpolyline = \"" + "DO NOT PRINT THIS SUPER LONG STRING" + "\"" +
+                "\n" + tab + "\tpolyline = \"" + polyline + "\"" +
                 "\n" + tab + "\t}";
     }
 

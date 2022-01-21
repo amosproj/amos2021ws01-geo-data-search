@@ -1,5 +1,8 @@
 package com.example.backend.helpers;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 
@@ -11,10 +14,9 @@ public class HereApiKey {
 
     private static final String SEP = File.separator;
     public static final String HERE_API_KEY_FILE_NAME = SEP + "run" + SEP + "secrets" + SEP + "here-api-key";
-    public static final String CLASS_PREFIX = "HERE API KEY";
     public static final String UNKNOWN_API_KEY = "UNKNOWN_API_KEY";
-    private static final BackendLogger logger = new BackendLogger();
     private static String hereApiKey = UNKNOWN_API_KEY;
+    private static final Logger logger = LogManager.getLogger(HereApiKey.class);
 
     /**
      * This method will not check, if the key is correct. It will only check, if the correct file is in the correct
@@ -44,14 +46,14 @@ public class HereApiKey {
                 handleErrorWithFile();
             }
         } catch (NullPointerException | IOException e) {
-            logger.error(CLASS_PREFIX, e.getMessage());
+            logger.error(e.getMessage());
             handleErrorWithFile();
         }
     }
 
     private static void handleErrorWithFile() {
-        logger.error(CLASS_PREFIX, "Could not find \"" + HERE_API_KEY_FILE_NAME + "\"!");
-        logger.error(CLASS_PREFIX, "Make sure that the file is in the correct directory: secrets" + SEP + "here-api-key.txt");
+        logger.error("Could not find \"" + HERE_API_KEY_FILE_NAME + "\"!");
+        logger.error( "Make sure that the file is in the correct directory: secrets" + SEP + "here-api-key.txt");
         hereApiKey = UNKNOWN_API_KEY;
     }
 }

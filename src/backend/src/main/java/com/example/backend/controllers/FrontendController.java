@@ -4,34 +4,26 @@ import com.example.backend.clients.NlpClient;
 import com.example.backend.clients.OsmApiClient;
 import com.example.backend.data.ApiResult;
 import com.example.backend.data.HttpResponse;
-import com.example.backend.data.api.HereApiGeocodeResponse;
 import com.example.backend.data.http.Error;
 import com.example.backend.data.http.*;
-import com.example.backend.helpers.BackendLogger;
+import com.example.backend.helpers.*;
 import com.google.gson.Gson;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URLDecoder;
-
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 @RestController
 @RequestMapping("/backend")
 public class FrontendController {
 
-    public static final String QUERY_OBJECT_ROUTE_WITH_CHARGING = "route_with_charging";
-    public static final String QUERY_OBJECT_ROUTE = "route";
     private final NlpClient nlpClient;
-    private final BackendLogger logger = new BackendLogger();
     private final ApiController apiController;
-    private static final String LOG_PREFIX = "FRONTEND_CONTROLLER";
-
-    // Brandenburger Tor in Berlin
-    public static final String ROUTE_START_COORDINATES = "52.518462144205756,13.373228882261595";
-    // Arc de Triomphe de l’Étoile in Paris
-    public static final String ROUTE_DESTINATION_COORDINATES = "48.873970150314705,2.2949678134907785";
+    private final Logger logger = LogManager.getLogger(this.getClass());
 
     public FrontendController(NlpClient nlpClient, OsmApiClient osmApiClient, HereApiRestService hereApiRestService) {
         this.nlpClient = nlpClient;
@@ -40,90 +32,95 @@ public class FrontendController {
 
     /**
      * Receives the query from Frontend and forwards it to NLP
-     * Receives the response from NLP and forwards it to OSM/HERE API
-     * Receives the response from OSM/HERE API and logs it
+     * Receives the response from NLP and forwards it to OSM or HERE API
+     * Receives the response from OSM or HERE API and logs it
      *
      * @param query the input coming from the Frontend
+     * @return result the answers from the OSM or HERE API for the Frontend
      */
     @PostMapping("/user_query")
     @ResponseBody
     public HttpResponse handleQueryRequest(@RequestBody String query) {
-        logInfo("New query received! Query = \"" + query + "\"");
+        logger.info("+ -- + -- + START + -- + -- + START + -- + -- + START + -- + -- + START + -- + -- + START + -- + -- + START + -- + -- + START + -- + -- + START + -- + -- + START + -- + -- +");
+        logger.info("New query received! Query = \"" + query + "\"");
 
-        query = URLDecoder.decode(query, StandardCharsets.UTF_8);
-        query = query.replace("query=", "");
+        query = prepareQuery(query);
 
-        logInfo("WORK AROUND! Query = \"" + query + "\"");
         NlpQueryResponse nlpQueryResponse;
         try {
-            logInfo("Sending data to NLP...");
-            String nlpResponse = nlpClient.sendToNlp(query);
-            logInfo("...SUCCESS!, response from NLP received:" + nlpResponse);
-            logInfo("NLP RESPONSE:");
-            logInfo(nlpResponse);
-            logInfo("INTERPRETED NLP RESPONSE:");
-            nlpQueryResponse = new Gson().fromJson(nlpResponse, NlpQueryResponse.class);
-            logInfo(nlpQueryResponse.toString());
+            // Sending the query to the NLP and receiving its response here
+            nlpQueryResponse = getNlpQueryResponse(query);
         } catch (Throwable throwable) {
             throwable.printStackTrace();
             return handleError(throwable);
         }
 
-        ArrayList<ApiResult> apiQueryResults = apiController.querySearch(nlpQueryResponse);
-
-        if (nlpQueryResponse.getQueryObject().equals(QUERY_OBJECT_ROUTE_WITH_CHARGING)) {
-            logInfo("Searching for a route to " + nlpQueryResponse.getLocation() + " with charging stations...");
-            // TODO Replace this workaround and introduce a proper starting location (coordinates)
-            String position = apiQueryResults.get(0).getLat() + "," + apiQueryResults.get(0).getLon();
-            apiQueryResults.addAll(apiController.getChargingStationsAlongTheWay(ROUTE_START_COORDINATES, position));
-        } else if (nlpQueryResponse.getQueryObject().equals(QUERY_OBJECT_ROUTE)) {
-            logInfo("Searching for a route to " + nlpQueryResponse.getLocation() + " without charging stations...");
-            // TODO Replace this workaround and introduce a proper starting location (coordinates)
-            String position = apiQueryResults.get(0).getLat() + "," + apiQueryResults.get(0).getLon();
-            apiQueryResults.addAll(apiController.getGuidanceForRoute(ROUTE_START_COORDINATES, position, false));
+        List<ApiResult> apiQueryResults = null;
+        try {
+            // The API decision and calling happens here:
+            apiQueryResults = apiController.querySearch(nlpQueryResponse);
+        } catch (MissingLocationException | UnknownQueryObjectException | NoPrefferedApiFoundException | LocationNotFoundException | InvalidCalculationRequest e) {
+            handleError(e);
         }
 
-        logInfo("SENDING THIS RESPONSE TO FRONTEND:");
-        logInfo(apiQueryResults.toString());
-        ResultResponse response;
-        if (apiQueryResults.isEmpty()) {
-            response = new ResultResponse(null);
-        } else {
-            response = new ResultResponse(apiQueryResults);
-        }
+        ResultResponse response = prepareResponse(apiQueryResults);
+
+        logger.info("Sending this respond to FRONTEND:\n" + response.toString());
+        logger.info("+ -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +");
         return response;
     }
 
+    private String prepareQuery(String query) {
+        query = URLDecoder.decode(query, StandardCharsets.UTF_8);
+        query = query.replace("query=", "");
+        logger.info("WORK AROUND! Query = \"" + query + "\"");
+        return query;
+    }
+
+    private NlpQueryResponse getNlpQueryResponse(String query) {
+        NlpQueryResponse nlpQueryResponse;
+        logger.info("Sending data to NLP...");
+        String nlpResponse = nlpClient.sendToNlp(query);
+        logger.info("...SUCCESS!, response from NLP received:" + nlpResponse);
+        logger.info("NLP RESPONSE:");
+        logger.info(nlpResponse);
+        logger.info("INTERPRETED NLP RESPONSE:");
+        nlpQueryResponse = new Gson().fromJson(nlpResponse, NlpQueryResponse.class);
+        logger.info(nlpQueryResponse.toString());
+        return nlpQueryResponse;
+    }
+
+    // TODO Maybe we should throw an exception in the case of an empty response?
+    private ResultResponse prepareResponse(List<ApiResult> apiQueryResults) {
+        if (apiQueryResults == null || apiQueryResults.isEmpty()) {
+            return new ResultResponse(null);
+        } else {
+            return new ResultResponse(apiQueryResults);
+        }
+    }
+
     private ErrorResponse handleError(Throwable throwable) {
-        logError("...ERROR!" + "\n" + "\t" + throwable.getMessage());
+        logger.error("...ERROR!" + "\n" + "\t" + throwable.toString());
         return new ErrorResponse(Error.createError(throwable.getMessage(), Arrays.toString(throwable.getStackTrace())));
     }
 
     @GetMapping("/version")
     @ResponseBody
     public HttpResponse handleVersionRequest() {
-        logInfo("Version query received!");
+        logger.info("Version query received!");
 
         String nlpVersion;
         try {
             String nlpVersionResponse = nlpClient.fetchNlpVersion();
-            logInfo("NLP VERSION RESPONSE:");
-            logInfo(nlpVersionResponse);
+            logger.info("NLP VERSION RESPONSE:");
+            logger.info(nlpVersionResponse);
             Gson g = new Gson();
             nlpVersion = g.fromJson(nlpVersionResponse, NlpVersionResponse.class).getVersion();
         } catch (Throwable t) {
             nlpVersion = "unknown";
         }
 
-
-        return new VersionResponse(Version.createVersion("0.8.0", nlpVersion));
-    }
-
-    private void logInfo(String logMsg) {
-        logger.info(LOG_PREFIX, logMsg);
-    }
-
-    private void logError(String logMsg) {
-        logger.error(LOG_PREFIX, logMsg);
+        // TODO How to version better?
+        return new VersionResponse(Version.createVersion("0.10.1", nlpVersion));
     }
 }

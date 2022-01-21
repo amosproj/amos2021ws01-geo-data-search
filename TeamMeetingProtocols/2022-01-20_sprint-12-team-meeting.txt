@@ -1,0 +1,42 @@
+TeamMeeting Thursday 20.01.2022 12:30-14:00
+-------------------------------------------
+
+	location: Zoom
+
+	protocoled by: chrisjherm
+
+	Structure:
+		Old Sprint Review
+		Old Sprint Release
+		Old Sprint Retroperspective
+		Feedback from Coach
+		Organizational matters
+		New Sprint Planning
+
+- - - - - - - - - - - - - - - - - - - - - -
+
+	Old Sprint Review:
+		Issue #178 "Implement route length algorithm" had a bug but we made a bugticket instead of rejection.
+		See Kanban Board for a more detailed overview.
+
+	Old Sprint Release:
+		The latest version was released live by PO oliviadargel.
+
+	Old Sprint Retroperspective:
+		Takeaways:
+			- We should consider a deadline, also we should improve our PR-Review-Process
+			- Start earlier with tickets
+			- Start earlier with communication
+		We agreed to set our sprint deadline to Wednesday 8pm. At least a PR without merge conflicts should have been created until this point.
+
+	Feedback from Coach:
+		Make sure to start work early on tickets.
+		Make sure to enhance communications.
+		He praised the discussion at the retrospective.
+
+	Organizational matters:
+		Decappi was not present. His absence was communicated to the group in advance.
+
+	New Sprint Planning:
+		We forgot to assign tickets.
+		See Kanban Board for a more detailed overview.

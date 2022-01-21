@@ -19,3 +19,4 @@ WORKDIR /app
 FROM runner AS deployment
 COPY entrypoint.sh /app
 COPY src /app/src
+USER 1000

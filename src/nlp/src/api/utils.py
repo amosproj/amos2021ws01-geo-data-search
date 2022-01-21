@@ -1,5 +1,14 @@
-import itertools
 import logging
+import sys
+
+logging.basicConfig(format='%(asctime)s %(levelname)s %(name)s : %(message)s',
+                    datefmt='%d.%m.%Y %H:%M:%S',
+                    encoding='utf-8',
+                    stream=sys.stdout,
+                    level=logging.INFO)
+LOGGER = logging.getLogger("[STRING INTERPRETER][UTILS]")
+
+import itertools
 import os
 import pathlib
 import re
@@ -30,12 +39,12 @@ def parse_synonyms(is_entity: bool = True, chatette_file_path: str = None,
     # read synonyms from chatette file
     if chatette_file_path is None:
         default_path = f"{CURRENT_DIR}{SEP}..{SEP}models{SEP}data{SEP}chatette-slots{SEP}{title}.chatette"
-        logging.info(f"[NLP COMPONENT] No Chatette file was specified, trying {default_path}")
+        LOGGER.info(f"No Chatette file was specified, trying {default_path}")
         chatette_file_path = default_path
 
     chatette_file_path = pathlib.Path(chatette_file_path)
     if not chatette_file_path.exists():
-        logging.error(f"[NLP COMPONENT] Couldn't find file {chatette_file_path}")
+        LOGGER.error(f"Couldn't find file {chatette_file_path}")
 
     with open(chatette_file_path) as file:
         synonyms = {}
@@ -104,7 +113,7 @@ def parse_synonyms(is_entity: bool = True, chatette_file_path: str = None,
                     for sub_part in sub_parts:
                         if sub_part.strip().isalpha():
                             values.append(sub_part.lower().strip())
-                            logging.debug(f"[NLP COMPONENT] Added {sub_part} as synonym for {key}")
+                            LOGGER.debug(f"Added {sub_part} as synonym for {key}")
     synonyms[key] = values
     return synonyms
 
