@@ -26,6 +26,7 @@ public class ResultResponse implements HttpResponse {
         } else {
             for (ApiResult singleResult : result) {
                 output += "\n\t{";
+                output += "api=" + singleResult.getApi() + ", ";
                 output += "type=" + singleResult.getType() + ", ";
                 output += "name=" + singleResult.getName() + ", ";
                 output += "id=" + singleResult.getId() + ", ";
@@ -45,6 +46,7 @@ public class ResultResponse implements HttpResponse {
         } else {
             for (ApiResult singleResult : result) {
                 output += "\n\t{";
+                output += "api=" + singleResult.getApi() + ", ";
                 output += "type=" + singleResult.getType() + ", ";
                 output += "name=" + singleResult.getName() + ", ";
                 output += "id=" + singleResult.getId() + ", ";

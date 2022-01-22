@@ -124,6 +124,7 @@ public class NodeInfo implements ApiResult {
     public String toString() {
         return "NodeInfo{" +
                 "id='" + id + '\'' +
+                ", api='" + api + '\'' +
                 ", visible='" + visible + '\'' +
                 ", version='" + version + '\'' +
                 ", changeSet='" + changeSet + '\'' +
