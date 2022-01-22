@@ -50,7 +50,7 @@ public class ResultResponse implements HttpResponse {
                 output += "id=" + singleResult.getId() + ", ";
                 output += "lat=" + singleResult.getLat() + ", ";
                 output += "lon=" + singleResult.getLon() + ", ";
-                output += "polyline=ONLY PRINTED IN DEBUG LOGGING";
+                output += "polyline=NO_PRINT";
                 output += "}";
             }
         }
