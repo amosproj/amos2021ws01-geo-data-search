@@ -100,6 +100,11 @@ public class NodeInfo implements ApiResult {
         return name;
     }
 
+    @Override
+    public String getPolyline() {
+        return "";
+    }
+
     public NodeTag getTags() {
         return tags;
     }

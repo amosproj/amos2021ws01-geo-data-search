@@ -64,8 +64,10 @@ public class FrontendController {
         }
 
         ResultResponse response = prepareResponse(apiQueryResults);
-
-        logger.info("Sending this respond to FRONTEND:\n" + response.toString());
+        if (!logger.isDebugEnabled()) {
+            logger.info("Sending this respond to FRONTEND:\n" + response.toStringWithoutPolyline());
+        }
+        logger.debug("Sending this respond to FRONTEND:\n" + response.toStringWithPolyline());
         logger.info("+ -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +");
         return response;
     }

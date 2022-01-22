@@ -31,6 +31,8 @@ public class HereApiRestService {
 
     private static final String HERE_API_KEY = HereApiKey.getKey();
     private static final String URL_QUERY_API_KEY = "apiKey=" + HERE_API_KEY;
+    public static final String TYPE_FINISH = "Finish";
+    public static final String TYPE_START = "Start";
 
     private final RestTemplate restTemplate;
     private final Logger logger = LogManager.getLogger(this.getClass());
@@ -78,11 +80,11 @@ public class HereApiRestService {
                 logger.info(hereApiRoutingResponse.toString(""));
             }
             List<Place> chargingStations = new ArrayList<>();
-            for (Route route : hereApiRoutingResponse.routes) {
-                chargingStations.addAll(route.getAlLChargingStations());
-            }
+            Route route = hereApiRoutingResponse.routes.get(0);
+            chargingStations.addAll(route.getAlLChargingStations());
+            String polyline = route.sections.get(0).polyline;
             int i = 1;
-            listOfPointsAlongTheRoute.add(new SingleLocationResult("Start", 0, origin.getName(), origin.getCoordinatesAsString()));
+            listOfPointsAlongTheRoute.add(new SingleLocationResult("Start", 0, origin.getName(), origin.getCoordinatesAsString(), polyline));
             int total = chargingStations.size();
             for (Place chargingStation : chargingStations) {
                 String type = chargingStation.type;
@@ -92,7 +94,7 @@ public class HereApiRestService {
                 listOfPointsAlongTheRoute.add(new SingleLocationResult(type, i, name, lat, lng));
                 i++;
             }
-            listOfPointsAlongTheRoute.add(new SingleLocationResult("Finish", i, destination.getName(), destination.getCoordinatesAsString()));
+            listOfPointsAlongTheRoute.add(new SingleLocationResult(TYPE_FINISH, i, destination.getName(), destination.getCoordinatesAsString()));
         } catch (Throwable throwable) {
             logger.error(throwable.toString());
             logger.error(throwable.getMessage());
@@ -115,13 +117,13 @@ public class HereApiRestService {
             }
             for (Route route : hereApiRoutingResponse.routes) {
                 for (Section section : route.sections) {
-                    String type = "Start";
+                    String type = TYPE_START;
                     int id = new Random().nextInt();
                     String lat = "" + section.departure.place.location.lat;
                     String lng = "" + section.departure.place.location.lng;
                     String name = origin.getName();
-                    generalRoutePoints.add(new SingleLocationResult(type, id, name, lat, lng));
-                    type = "Finish";
+                    generalRoutePoints.add(new SingleLocationResult(type, id, name, lat, lng, section.polyline));
+                    type = TYPE_FINISH;
                     id = new Random().nextInt();
                     lat = "" + section.arrival.place.location.lat;
                     lng = "" + section.arrival.place.location.lng;
@@ -183,6 +185,16 @@ public class HereApiRestService {
         private final String lat;
         private final String lon;
         private final String name;
+        private String polyline = "";
+
+        public SingleLocationResult(String type, int id, String name, String lat, String lon, String polyline) {
+            this.type = type;
+            this.id = id;
+            this.lat = lat;
+            this.lon = lon;
+            this.name = name;
+            this.polyline = polyline;
+        }
 
         public SingleLocationResult(String type, int id, String name, String lat, String lon) {
             this.type = type;
@@ -229,6 +241,11 @@ public class HereApiRestService {
         @Override
         public String getName() {
             return name;
+        }
+
+        @Override
+        public String getPolyline() {
+            return polyline;
         }
     }
 }
