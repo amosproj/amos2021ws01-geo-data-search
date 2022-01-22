@@ -33,6 +33,7 @@ public class HereApiRestService {
     private static final String URL_QUERY_API_KEY = "apiKey=" + HERE_API_KEY;
     public static final String TYPE_FINISH = "Finish";
     public static final String TYPE_START = "Start";
+    public static final String HERE_API = "HERE API";
 
     private final RestTemplate restTemplate;
     private final Logger logger = LogManager.getLogger(this.getClass());
@@ -60,7 +61,6 @@ public class HereApiRestService {
         }
     }
 
-    @SuppressWarnings("ConstantConditions")
     private List<ApiResult> getChargingStationsOnRoute(HereRoutingAttributes hereRoutingAttributes) {
         RoutingWaypoint origin = hereRoutingAttributes.getOrigin();
         RoutingWaypoint destination = hereRoutingAttributes.getDestination();
@@ -73,22 +73,21 @@ public class HereApiRestService {
             logger.debug(hereApiRoutingResponseString);
             HereApiRoutingResponse hereApiRoutingResponse = new Gson().fromJson(hereApiRoutingResponseString, HereApiRoutingResponse.class);
             logger.debug(hereApiRoutingResponse.toString(""));
-            List<Place> chargingStations = new ArrayList<>();
             Route route = hereApiRoutingResponse.routes.get(0);
-            chargingStations.addAll(route.getAlLChargingStations());
+            List<Place> chargingStations = new ArrayList<>(route.getAlLChargingStations());
             String polyline = route.sections.get(0).polyline;
             int i = 1;
-            listOfPointsAlongTheRoute.add(new SingleLocationResult("Start", 0, origin.getName(), origin.getCoordinatesAsString(), polyline));
+            listOfPointsAlongTheRoute.add(new SingleLocationResult(HERE_API, TYPE_START, 0, origin.getName(), origin.getCoordinatesAsString(), polyline));
             int total = chargingStations.size();
             for (Place chargingStation : chargingStations) {
                 String type = chargingStation.type;
                 String name = "Charging Station " + i + "/" + total;
                 String lat = "" + chargingStation.location.lat;
                 String lng = "" + chargingStation.location.lng;
-                listOfPointsAlongTheRoute.add(new SingleLocationResult(type, i, name, lat, lng));
+                listOfPointsAlongTheRoute.add(new SingleLocationResult(HERE_API,type, i, name, lat, lng));
                 i++;
             }
-            listOfPointsAlongTheRoute.add(new SingleLocationResult(TYPE_FINISH, i, destination.getName(), destination.getCoordinatesAsString()));
+            listOfPointsAlongTheRoute.add(new SingleLocationResult(HERE_API, TYPE_FINISH, i, destination.getName(), destination.getCoordinatesAsString()));
         } catch (Throwable throwable) {
             logger.error(throwable.toString());
             logger.error(throwable.getMessage());
@@ -96,7 +95,6 @@ public class HereApiRestService {
         return listOfPointsAlongTheRoute;
     }
 
-    @SuppressWarnings("ConstantConditions")
     private List<ApiResult> getGuidanceForRoute(HereRoutingAttributes hereRoutingAttributes) {
         RoutingWaypoint origin = hereRoutingAttributes.getOrigin();
         RoutingWaypoint destination = hereRoutingAttributes.getDestination();
@@ -113,13 +111,13 @@ public class HereApiRestService {
                     String lat = "" + section.departure.place.location.lat;
                     String lng = "" + section.departure.place.location.lng;
                     String name = origin.getName();
-                    generalRoutePoints.add(new SingleLocationResult(type, id, name, lat, lng, section.polyline));
+                    generalRoutePoints.add(new SingleLocationResult(HERE_API, type, id, name, lat, lng, section.polyline));
                     type = TYPE_FINISH;
                     id = new Random().nextInt();
                     lat = "" + section.arrival.place.location.lat;
                     lng = "" + section.arrival.place.location.lng;
                     name = destination.getName();
-                    generalRoutePoints.add(new SingleLocationResult(type, id, name, lat, lng));
+                    generalRoutePoints.add(new SingleLocationResult(HERE_API, type, id, name, lat, lng));
                 }
             }
         } catch (Throwable throwable) {
@@ -129,7 +127,6 @@ public class HereApiRestService {
         return generalRoutePoints;
     }
 
-    @SuppressWarnings("ConstantConditions")
     private String getRoutingResponse(String origin, String destination, HereRoutingAttributes hereRoutingAttributes) {
         String url_query_attributes = hereRoutingAttributes.getUrlArgumentsForRouting();
         String url = HERE_ROUTING_URL + SEPARATOR + URL_QUERY_API_KEY + DELIMITER +  //
@@ -143,7 +140,6 @@ public class HereApiRestService {
         return response;
     }
 
-    @SuppressWarnings("ConstantConditions")
     private HereGuidanceResponse getGuidanceResponse(String origin, String destination, HereRoutingAttributes hereRoutingAttributes) {
         hereRoutingAttributes.setReturnTypeToPolylineAndTurnByTurnActions();
         String url_query_attributes = hereRoutingAttributes.getUrlArgumentsForGuidance();
@@ -165,34 +161,38 @@ public class HereApiRestService {
 
     private static class SingleLocationResult implements ApiResult {
 
-        private String type;
         private final int id;
         private final String lat;
         private final String lon;
         private final String name;
+        private final String api;
+        private String type;
         private String polyline = "";
 
-        public SingleLocationResult(String type, int id, String name, String lat, String lon, String polyline) {
+        public SingleLocationResult(String api, String type, int id, String name, String lat, String lon, String polyline) {
             this.type = type;
             this.id = id;
             this.lat = lat;
             this.lon = lon;
             this.name = name;
             this.polyline = polyline;
+            this.api = api;
         }
 
-        public SingleLocationResult(String type, int id, String name, String lat, String lon) {
+        public SingleLocationResult(String api, String type, int id, String name, String lat, String lon) {
             this.type = type;
             this.id = id;
             this.lat = lat;
             this.lon = lon;
             this.name = name;
+            this.api = api;
         }
 
-        public SingleLocationResult(String type, int id, String name, String coordinates) {
+        public SingleLocationResult(String api, String type, int id, String name, String coordinates) {
             this.type = type;
             this.id = id;
             this.name = name;
+            this.api = api;
             String[] coordinatesArray = coordinates.split(",");
             this.lat = coordinatesArray[0];
             this.lon = coordinatesArray[1];
@@ -231,6 +231,10 @@ public class HereApiRestService {
         @Override
         public String getPolyline() {
             return polyline;
+        }
+
+        public String getApi() {
+            return api;
         }
     }
 }

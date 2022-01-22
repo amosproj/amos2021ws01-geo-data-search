@@ -19,8 +19,10 @@ public class NodeInfo implements ApiResult {
     String lat;
     String lon;
     NodeTag tags;
+    String api;
 
-    public NodeInfo(String id, String visible, String version, String changeSet, String timeStamp, String user, String uid, String lat, String lon) {
+    public NodeInfo(String api, String id, String visible, String version, String changeSet, String timeStamp, String user, String uid, String lat, String lon) {
+        this.api = api;
         this.id = id;
         this.visible = visible;
         this.version = version;
@@ -103,6 +105,11 @@ public class NodeInfo implements ApiResult {
     @Override
     public String getPolyline() {
         return "";
+    }
+
+    @Override
+    public String getApi() {
+        return api;
     }
 
     public NodeTag getTags() {
