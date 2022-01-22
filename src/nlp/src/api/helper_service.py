@@ -20,11 +20,16 @@ def convert_number_to_meter(unit: str, number: int) -> int:
     :param unit Unit of number
     :param number Integer to be converted
     """
+
+    # meters is default unit
     if unit == "m":
         return number
+
+    # convert miles to meters
     if unit == "miles":
         return int(number * 1609.34)
-    # assumed default unit is km
+
+    # when a unit is not recognised it is assumed that the user entered "km" -> convert to meters
     return number * 1000
 
 

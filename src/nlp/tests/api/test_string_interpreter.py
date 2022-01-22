@@ -101,7 +101,8 @@ def get_query_test_data():
     query = Query()
     query.location = "Spanien"
     query.query_object = "route"
-    query.route_attributes.length.min = 1000
+    query.route_attributes.length.min = 10000
+    query.route_attributes.height.min = 1000
     queries.append(["Finde eine Strecke in Spanien mit einer Länge von 10 kilometern in einer lage über 1000m", query])
 
     query = Query()
@@ -210,5 +211,12 @@ def test_no_input():
 def test_route_length():
     result = get_query("Plane mir eine Route nach Paris mit einer länge von mindestens 1 und maximal 1100 metern")
 
-    assert result.route_attributes.length.min == 1000
+    assert result.route_attributes.length.min == 1
     assert result.route_attributes.length.max == 1100
+
+
+def test_route_length_split_parameter():
+    result = get_query("Plane mir eine Route nach Paris mit einer länge von mindestens 2 und maximal 20 km")
+
+    assert result.route_attributes.length.min == 2000
+    assert result.route_attributes.length.max == 20000
