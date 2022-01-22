@@ -86,7 +86,8 @@ public class HereApiRestService {
                 String name = "Charging Station " + i + "/" + total;
                 String lat = "" + chargingStation.location.lat;
                 String lng = "" + chargingStation.location.lng;
-                listOfPointsAlongTheRoute.add(new SingleLocationResult(type, i, name, lat, lng));
+                String polylineString = chargingStation.getPolyline();
+                listOfPointsAlongTheRoute.add(new SingleLocationResult(type, i, name, lat, lng, polylineString));
                 i++;
             }
             listOfPointsAlongTheRoute.add(new SingleLocationResult(TYPE_FINISH, i, destination.getName(), destination.getCoordinatesAsString()));
