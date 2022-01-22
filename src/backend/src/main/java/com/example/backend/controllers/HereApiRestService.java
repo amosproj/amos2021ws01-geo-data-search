@@ -67,6 +67,7 @@ public class HereApiRestService {
         List<ApiResult> listOfPointsAlongTheRoute = new ArrayList<>();
         try {
             hereRoutingAttributes.setReturnTypeToSummary();
+            hereRoutingAttributes.setReturnTypeToPolylineAndTurnByTurnActions();
             String hereApiRoutingResponseString =
                     getRoutingResponse(origin.getCoordinatesAsString(), destination.getCoordinatesAsString(), hereRoutingAttributes);
             logger.debug("HERE / ROUTING / CHARGING STATIONS:");
@@ -78,7 +79,7 @@ public class HereApiRestService {
             chargingStations.addAll(route.getAlLChargingStations());
             String polyline = route.sections.get(0).polyline;
             int i = 1;
-            listOfPointsAlongTheRoute.add(new SingleLocationResult("Start", 0, origin.getName(), origin.getCoordinatesAsString(), polyline));
+            listOfPointsAlongTheRoute.add(new SingleLocationResult("Start", 0, origin.getName(), origin.getLatitude(), origin.getLongitude(), polyline));
             int total = chargingStations.size();
             for (Place chargingStation : chargingStations) {
                 String type = chargingStation.type;
@@ -177,6 +178,15 @@ public class HereApiRestService {
             this.id = id;
             this.lat = lat;
             this.lon = lon;
+            this.name = name;
+            this.polyline = polyline;
+        }
+
+        public SingleLocationResult(String type, int id, String name, double lat, double lon, String polyline) {
+            this.type = type;
+            this.id = id;
+            this.lat = "" + lat;
+            this.lon = "" + lon;
             this.name = name;
             this.polyline = polyline;
         }
