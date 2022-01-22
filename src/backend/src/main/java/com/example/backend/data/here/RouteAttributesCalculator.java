@@ -99,28 +99,36 @@ public class RouteAttributesCalculator {
     private List<Route> tryNorth(double localRequestedDistanceInCoordinates) {
         RoutingWaypoint tempDestination = new RoutingWaypoint("point_north", origin.getLatitude() + localRequestedDistanceInCoordinates, origin.getLongitude());
         HereApiRoutingResponse hereApiRoutingResponse = hereApiRestService.getRoute(origin, tempDestination);
-        logger.info("NORTH: origin=(" + origin.getCoordinatesAsString() + "), length=" + hereApiRoutingResponse.routes.get(0).sections.get(0).summary.length + ", lat=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lat + ", lng=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lng);
+        if (!hereApiRoutingResponse.routes.isEmpty()) {
+            logger.info("NORTH: origin=(" + origin.getCoordinatesAsString() + "), length=" + hereApiRoutingResponse.routes.get(0).sections.get(0).summary.length + ", lat=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lat + ", lng=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lng);
+        }
         return hereApiRoutingResponse.routes;
     }
 
     private List<Route> tryEast(double localRequestedDistanceInCoordinates) {
         RoutingWaypoint tempDestination = new RoutingWaypoint("point_east", origin.getLatitude(), origin.getLongitude() + localRequestedDistanceInCoordinates);
         HereApiRoutingResponse hereApiRoutingResponse = hereApiRestService.getRoute(origin, tempDestination);
-        logger.info("EAST: origin=(" + origin.getCoordinatesAsString() + "),length=" + hereApiRoutingResponse.routes.get(0).sections.get(0).summary.length + ", lat=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lat + ", lng=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lng);
+        if (!hereApiRoutingResponse.routes.isEmpty()) {
+            logger.info("EAST: origin=(" + origin.getCoordinatesAsString() + "),length=" + hereApiRoutingResponse.routes.get(0).sections.get(0).summary.length + ", lat=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lat + ", lng=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lng);
+        }
         return hereApiRoutingResponse.routes;
     }
 
     private List<Route> trySouth(double localRequestedDistanceInCoordinates) {
         RoutingWaypoint tempDestination = new RoutingWaypoint("point_south", origin.getLatitude() - localRequestedDistanceInCoordinates, origin.getLongitude());
         HereApiRoutingResponse hereApiRoutingResponse = hereApiRestService.getRoute(origin, tempDestination);
-        logger.info("SOUTH: origin=(" + origin.getCoordinatesAsString() + "),length=" + hereApiRoutingResponse.routes.get(0).sections.get(0).summary.length + ", lat=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lat + ", lng=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lng);
+        if (!hereApiRoutingResponse.routes.isEmpty()) {
+            logger.info("SOUTH: origin=(" + origin.getCoordinatesAsString() + "),length=" + hereApiRoutingResponse.routes.get(0).sections.get(0).summary.length + ", lat=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lat + ", lng=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lng);
+        }
         return hereApiRoutingResponse.routes;
     }
 
     private List<Route> tryWest(double localRequestedDistanceInCoordinates) {
         RoutingWaypoint tempDestination = new RoutingWaypoint("point_west", origin.getLatitude(), origin.getLongitude() - localRequestedDistanceInCoordinates);
         HereApiRoutingResponse hereApiRoutingResponse = hereApiRestService.getRoute(origin, tempDestination);
-        logger.info("WEST: origin=(" + origin.getCoordinatesAsString() + "),length=" + hereApiRoutingResponse.routes.get(0).sections.get(0).summary.length + ", lat=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lat + ", lng=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lng);
+        if (!hereApiRoutingResponse.routes.isEmpty()) {
+            logger.info("WEST: origin=(" + origin.getCoordinatesAsString() + "),length=" + hereApiRoutingResponse.routes.get(0).sections.get(0).summary.length + ", lat=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lat + ", lng=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lng);
+        }
         return hereApiRoutingResponse.routes;
     }
 
