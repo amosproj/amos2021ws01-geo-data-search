@@ -13,14 +13,18 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class RouteAttributesCalculator {
 
-    private static final String LOG_PREFIX = "ROUTE_ATTRIBUTE_CALCULATOR";
-    private static final double ONE_THOUSAND_METERS_IN_COORD = 0.000015060;
+    // Determines how many times we adjust the given distance before aborting the search:
     private static final int MAX_RECURSIONS = 6;
+
+    // Determines how many random points we are looking for per given distance:
+    private static final int MAX_RANDOM_POINTS_PER_DISTANCE = 3;
+
+    private static final double ONE_THOUSAND_METERS_IN_COORD = 0.000015060;
     private int recursionStepsInMeters = 500;
     private final HereApiRestService hereApiRestService;
     private RoutingWaypoint origin;
     private int minimumMeters, maximumMeters;
-    private final Logger logger = LogManager.getLogger(this.getClass());
+    private final Logger logger = LogManager.getLogger("ROUTE_ATTRIBUTES_CALCULATOR");
 
     public RouteAttributesCalculator(HereApiRestService hereApiRestService) {
         this.hereApiRestService = hereApiRestService;
@@ -50,16 +54,17 @@ public class RouteAttributesCalculator {
     private RoutingWaypoint calculateMaximumRoute(double localRequestedDistanceInMeters, int recursionCounter) throws InvalidCalculationRequest {
         double localRequestedDistanceInCoordinates = localRequestedDistanceInMeters * ONE_THOUSAND_METERS_IN_COORD;
         logger.info("We will try to calculate a route with maximum length = " + localRequestedDistanceInMeters + "m (" + localRequestedDistanceInCoordinates + " in coordinates)...");
-        List<Route> potentialRoutes = tryInAllDirections(localRequestedDistanceInCoordinates);
+        List<Route> potentialRoutes = tryFindingMultipleRandomWaypoints(localRequestedDistanceInCoordinates);
         for (Route route : potentialRoutes) {
             for (Section section : route.sections) {
                 if (section.summary.length <= maximumMeters) {
-                    logger.info(section.summary.length + " <= " + maximumMeters);
+                    logger.info("SUCCESS! We have found a route that meets our conditions: " + section.summary.length + " <= " + maximumMeters);
                     return createRoutingWaypoint(section);
                 }
             }
         }
         if (recursionCounter < MAX_RECURSIONS) {
+            logger.info("FAIL! We have NOT found a route that meets our conditions! We will adjust the specified distance now and try again!");
             recursionCounter++;
             return calculateMaximumRoute(localRequestedDistanceInMeters - recursionStepsInMeters, recursionCounter);
         } else {
@@ -70,93 +75,74 @@ public class RouteAttributesCalculator {
     private RoutingWaypoint calculateMinimumRoute(double localRequestedDistanceInMeters, int recursionCounter) throws InvalidCalculationRequest {
         double localRequestedDistanceInCoordinates = localRequestedDistanceInMeters * ONE_THOUSAND_METERS_IN_COORD;
         logger.info("We will try to calculate a route with minimum length = " + localRequestedDistanceInMeters + "m (" + localRequestedDistanceInCoordinates + " in coordinates)...");
-        List<Route> potentialRoutes = tryInAllDirections(localRequestedDistanceInCoordinates);
+        List<Route> potentialRoutes = tryFindingMultipleRandomWaypoints(localRequestedDistanceInCoordinates);
         for (Route route : potentialRoutes) {
             for (Section section : route.sections) {
                 if (section.summary.length >= minimumMeters) {
-                    logger.info(section.summary.length + " >= " + minimumMeters);
+                    logger.info("SUCCESS! We have found a route that meets our conditions: " + section.summary.length + "m >= " + minimumMeters + "m");
                     return createRoutingWaypoint(section);
                 }
             }
         }
         if (recursionCounter < MAX_RECURSIONS) {
+            logger.info("FAIL! We have NOT found a route that meets our conditions! We will adjust the specified distance now and try again!");
             recursionCounter++;
             return calculateMinimumRoute(localRequestedDistanceInMeters + recursionStepsInMeters, recursionCounter);
         } else {
-            throw new InvalidCalculationRequest("Could not find a route with this minimum length: " + localRequestedDistanceInMeters);
+            throw new InvalidCalculationRequest("Could not find a route with this minimum length: " + localRequestedDistanceInMeters + "m");
         }
     }
 
-    private List<Route> tryInAllDirections(double localRequestedDistanceInKm) {
+    private List<Route> tryFindingMultipleRandomWaypoints(double localRequestDistanceInCoordinates) {
         List<Route> potentialRoutes = new LinkedList<>();
-        potentialRoutes.addAll(tryNorth(localRequestedDistanceInKm));
-        potentialRoutes.addAll(tryEast(localRequestedDistanceInKm));
-        potentialRoutes.addAll(trySouth(localRequestedDistanceInKm));
-        potentialRoutes.addAll(tryWest(localRequestedDistanceInKm));
+        for (int count = 0; count < MAX_RANDOM_POINTS_PER_DISTANCE; count++) {
+            potentialRoutes.addAll(tryFindingSingleRandomWaypoint(localRequestDistanceInCoordinates));
+        }
         return potentialRoutes;
     }
 
-    private List<Route> tryNorth(double localRequestedDistanceInCoordinates) {
-        RoutingWaypoint tempDestination = new RoutingWaypoint("point_north", origin.getLatitude() + localRequestedDistanceInCoordinates, origin.getLongitude());
+    private List<Route> tryFindingSingleRandomWaypoint(double localRequestDistanceInCoordinates) {
+        RoutingWaypoint tempDestination = returnRandomWaypointInSpecifiedRange(localRequestDistanceInCoordinates);
         HereApiRoutingResponse hereApiRoutingResponse = hereApiRestService.getRoute(origin, tempDestination);
         if (!hereApiRoutingResponse.routes.isEmpty()) {
-            logger.info("NORTH: origin=(" + origin.getCoordinatesAsString() + "), length=" + hereApiRoutingResponse.routes.get(0).sections.get(0).summary.length + ", lat=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lat + ", lng=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lng);
-        }
-        return hereApiRoutingResponse.routes;
-    }
-
-    private List<Route> tryEast(double localRequestedDistanceInCoordinates) {
-        RoutingWaypoint tempDestination = new RoutingWaypoint("point_east", origin.getLatitude(), origin.getLongitude() + localRequestedDistanceInCoordinates);
-        HereApiRoutingResponse hereApiRoutingResponse = hereApiRestService.getRoute(origin, tempDestination);
-        if (!hereApiRoutingResponse.routes.isEmpty()) {
-            logger.info("EAST: origin=(" + origin.getCoordinatesAsString() + "),length=" + hereApiRoutingResponse.routes.get(0).sections.get(0).summary.length + ", lat=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lat + ", lng=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lng);
-        }
-        return hereApiRoutingResponse.routes;
-    }
-
-    private List<Route> trySouth(double localRequestedDistanceInCoordinates) {
-        RoutingWaypoint tempDestination = new RoutingWaypoint("point_south", origin.getLatitude() - localRequestedDistanceInCoordinates, origin.getLongitude());
-        HereApiRoutingResponse hereApiRoutingResponse = hereApiRestService.getRoute(origin, tempDestination);
-        if (!hereApiRoutingResponse.routes.isEmpty()) {
-            logger.info("SOUTH: origin=(" + origin.getCoordinatesAsString() + "),length=" + hereApiRoutingResponse.routes.get(0).sections.get(0).summary.length + ", lat=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lat + ", lng=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lng);
-        }
-        return hereApiRoutingResponse.routes;
-    }
-
-    private List<Route> tryWest(double localRequestedDistanceInCoordinates) {
-        RoutingWaypoint tempDestination = new RoutingWaypoint("point_west", origin.getLatitude(), origin.getLongitude() - localRequestedDistanceInCoordinates);
-        HereApiRoutingResponse hereApiRoutingResponse = hereApiRestService.getRoute(origin, tempDestination);
-        if (!hereApiRoutingResponse.routes.isEmpty()) {
-            logger.info("WEST: origin=(" + origin.getCoordinatesAsString() + "),length=" + hereApiRoutingResponse.routes.get(0).sections.get(0).summary.length + ", lat=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lat + ", lng=" + hereApiRoutingResponse.routes.get(0).sections.get(0).arrival.place.location.lng);
+            logger.info("\t\t\tWe found a potential route to (" + tempDestination.getCoordinatesAsString() + ")! Route length = " + hereApiRoutingResponse.routes.get(0).sections.get(0).summary.length + "m");
         }
         return hereApiRoutingResponse.routes;
     }
 
     @SuppressWarnings("UnnecessaryLocalVariable")
     private RoutingWaypoint returnRandomWaypointInSpecifiedRange(double localRequestDistanceInCoordinates) {
-        double randomAngle = ThreadLocalRandom.current().nextDouble(0.0, 360.0);
-        // Fall 1: Winkel 0-90
-        if (randomAngle > 270.0) {
-            randomAngle -= 270.0;
-
-        } else if (randomAngle > 180.0) {
-            randomAngle -= 180.0;
-
-        } else if (randomAngle > 90.0) {
-            randomAngle -= 90.0;
-
-        } else {
-
-        }
-        // Fall 2: Winkel 91-180
-        // Fall 3: Winkel 181-270
-        // Fall 4: Winkel else
-
+        int randomAngle = ThreadLocalRandom.current().nextInt(0, 359);
         double hypotenuseLine = localRequestDistanceInCoordinates;
-        double adjacentLine = hypotenuseLine * Math.cos(randomAngle); // lng
-        double oppositeLine = hypotenuseLine * Math.sin(randomAngle); // lat
-        RoutingWaypoint result = new RoutingWaypoint("randomPoint(angle=" + randomAngle + ")", origin.getLatitude() + adjacentLine, origin.getLongitude() + oppositeLine);
-        logger.info("RANDOM WAYPOINT: " + result.getName() + " with (" + result.getCoordinatesAsString() + ")");
+        double adjacentLine, oppositeLine;
+        double newLatitude, newLongitude;
+        logger.info("\tWe will now calculate a random point from (" + origin.getCoordinatesAsString() + ") with an angle = " + randomAngle + " degrees and distance = " + localRequestDistanceInCoordinates + " (in coordinates)");
+        if (randomAngle > 270) {
+            randomAngle -= 270;
+            oppositeLine = hypotenuseLine * Math.sin(randomAngle);
+            adjacentLine = hypotenuseLine * Math.cos(randomAngle);
+            newLatitude = origin.getLatitude() + oppositeLine;
+            newLongitude = origin.getLongitude() - adjacentLine;
+        } else if (randomAngle > 180) {
+            randomAngle -= 180;
+            oppositeLine = hypotenuseLine * Math.sin(randomAngle);
+            adjacentLine = hypotenuseLine * Math.cos(randomAngle);
+            newLatitude = origin.getLatitude() - adjacentLine;
+            newLongitude = origin.getLongitude() - oppositeLine;
+        } else if (randomAngle > 90) {
+            randomAngle -= 90;
+            oppositeLine = hypotenuseLine * Math.sin(randomAngle);
+            adjacentLine = hypotenuseLine * Math.cos(randomAngle);
+            newLatitude = origin.getLatitude() - oppositeLine;
+            newLongitude = origin.getLongitude() + adjacentLine;
+        } else {
+            oppositeLine = hypotenuseLine * Math.sin(randomAngle);
+            adjacentLine = hypotenuseLine * Math.cos(randomAngle);
+            newLatitude = origin.getLatitude() + adjacentLine;
+            newLongitude = origin.getLongitude() + oppositeLine;
+        }
+        RoutingWaypoint result = new RoutingWaypoint("randomPoint(angle=" + randomAngle + "degrees)", newLatitude, newLongitude);
+        logger.info("\t\tCalculated random point: normalized angle = " + randomAngle + " degrees, coordinates = (" + newLatitude + "," + newLongitude + ")");
         return result;
     }
 
