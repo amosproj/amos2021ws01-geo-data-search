@@ -110,6 +110,11 @@ def get_query_test_data():
     query.query_object = "elevation"
     query.route_attributes.height.min = 1609
     queries.append([" Zeige mir Berge mit einer Höhe von 1 meile in Hamburg", query])
+
+    query = Query()
+    query.location = "Bremerhaven, Lübeck"
+    query.query_object = "route"
+    queries.append(["Wie komme ich von Bremerhaven nach Lübeck?", query])
     return queries
 
 

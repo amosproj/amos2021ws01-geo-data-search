@@ -55,7 +55,7 @@ def get_query(string: str) -> object:
 
     for token in default_tokens:
         # save found location
-        if token.ent_type_ == "LOC":
+        if token.ent_type_ == "LOC" and not token.is_punct:
             if result.location != "":
                 result.location += ", "
             result.location += token.lemma_
