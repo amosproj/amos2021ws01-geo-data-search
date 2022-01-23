@@ -35,7 +35,7 @@ public class HereApiRestService {
     public static final String TYPE_START = "Start";
 
     private final RestTemplate restTemplate;
-    private final Logger logger = LogManager.getLogger(this.getClass());
+    private final Logger logger = LogManager.getLogger("HERE_API_REST_SERVICE");
 
     public HereApiRestService(RestTemplateBuilder restTemplateBuilder) {
         this.restTemplate = restTemplateBuilder.build();
@@ -45,7 +45,7 @@ public class HereApiRestService {
         String url = HERE_GEOCODE_URL + SEPARATOR + URL_QUERY_API_KEY + DELIMITER + URL_QUERY_FIELD + query;
         logger.info("URL for HERE GEOCODE = " + url);
         String response = this.restTemplate.getForObject(url, String.class);
-        logger.info("HereApiRestService.getPostsPlainJSON() = " + response);
+        logger.debug("HereApiRestService.getPostsPlainJSON() = " + response);
         return response;
     }
 
@@ -60,7 +60,6 @@ public class HereApiRestService {
         }
     }
 
-    @SuppressWarnings("ConstantConditions")
     private List<ApiResult> getChargingStationsOnRoute(HereRoutingAttributes hereRoutingAttributes) {
         RoutingWaypoint origin = hereRoutingAttributes.getOrigin();
         RoutingWaypoint destination = hereRoutingAttributes.getDestination();
@@ -73,9 +72,8 @@ public class HereApiRestService {
             logger.debug(hereApiRoutingResponseString);
             HereApiRoutingResponse hereApiRoutingResponse = new Gson().fromJson(hereApiRoutingResponseString, HereApiRoutingResponse.class);
             logger.debug(hereApiRoutingResponse.toString(""));
-            List<Place> chargingStations = new ArrayList<>();
             Route route = hereApiRoutingResponse.routes.get(0);
-            chargingStations.addAll(route.getAlLChargingStations());
+            List<Place> chargingStations = new ArrayList<>(route.getAlLChargingStations());
             String polyline = route.sections.get(0).polyline;
             int i = 1;
             listOfPointsAlongTheRoute.add(new SingleLocationResult("Start", 0, origin.getName(), origin.getLatitude(), origin.getLongitude(), polyline));
@@ -97,7 +95,6 @@ public class HereApiRestService {
         return listOfPointsAlongTheRoute;
     }
 
-    @SuppressWarnings("ConstantConditions")
     private List<ApiResult> getGuidanceForRoute(HereRoutingAttributes hereRoutingAttributes) {
         RoutingWaypoint origin = hereRoutingAttributes.getOrigin();
         RoutingWaypoint destination = hereRoutingAttributes.getDestination();
@@ -130,7 +127,6 @@ public class HereApiRestService {
         return generalRoutePoints;
     }
 
-    @SuppressWarnings("ConstantConditions")
     private String getRoutingResponse(String origin, String destination, HereRoutingAttributes hereRoutingAttributes) {
         String url_query_attributes = hereRoutingAttributes.getUrlArgumentsForRouting();
         String url = HERE_ROUTING_URL + SEPARATOR + URL_QUERY_API_KEY + DELIMITER +  //
@@ -144,7 +140,6 @@ public class HereApiRestService {
         return response;
     }
 
-    @SuppressWarnings("ConstantConditions")
     private HereGuidanceResponse getGuidanceResponse(String origin, String destination, HereRoutingAttributes hereRoutingAttributes) {
         hereRoutingAttributes.setReturnTypeToPolylineAndTurnByTurnActions();
         String url_query_attributes = hereRoutingAttributes.getUrlArgumentsForGuidance();
