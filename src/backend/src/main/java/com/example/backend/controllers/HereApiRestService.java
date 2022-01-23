@@ -66,7 +66,6 @@ public class HereApiRestService {
         RoutingWaypoint destination = hereRoutingAttributes.getDestination();
         List<ApiResult> listOfPointsAlongTheRoute = new ArrayList<>();
         try {
-            hereRoutingAttributes.setReturnTypeToSummary();
             hereRoutingAttributes.setReturnTypeToPolylineAndTurnByTurnActions();
             String hereApiRoutingResponseString =
                     getRoutingResponse(origin.getCoordinatesAsString(), destination.getCoordinatesAsString(), hereRoutingAttributes);

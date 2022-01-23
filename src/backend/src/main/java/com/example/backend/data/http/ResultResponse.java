@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
+@SuppressWarnings("StringConcatenationInLoop")
 @ResponseBody
 public class ResultResponse implements HttpResponse {
 
@@ -44,13 +45,18 @@ public class ResultResponse implements HttpResponse {
             output += "NULL";
         } else {
             for (ApiResult singleResult : result) {
+                String polyline = singleResult.getPolyline();
+                if (!singleResult.getPolyline().isEmpty()) {
+                    polyline = polyline.substring(0, (10 % polyline.length()));
+                    polyline += "... REST PRINTED IN DEBUG LOGGING MODE";
+                }
                 output += "\n\t{";
                 output += "type=" + singleResult.getType() + ", ";
                 output += "name=" + singleResult.getName() + ", ";
                 output += "id=" + singleResult.getId() + ", ";
                 output += "lat=" + singleResult.getLat() + ", ";
                 output += "lon=" + singleResult.getLon() + ", ";
-                output += "polyline=ONLY PRINTED IN DEBUG LOGGING";
+                output += "polyline=" + polyline;
                 output += "}";
             }
         }
