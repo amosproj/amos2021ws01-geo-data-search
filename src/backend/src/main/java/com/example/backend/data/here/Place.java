@@ -10,7 +10,6 @@ public class Place implements HereApiElement {
     public Position location;
     @SerializedName("originalLocation")
     public Position originalLocation;
-    private String polyline;
 
     public Place(String type, Position location, Position originalLocation) {
         this.type = type;
@@ -23,7 +22,6 @@ public class Place implements HereApiElement {
                 "\n" + tab + "\ttype = \"" + type + "\"" +
                 "\n" + tab + "\tlocation = " + print(location, tab) +
                 "\n" + tab + "\toriginalLocation = " + print(originalLocation, tab) +
-                "\n" + tab + "\tpolyline = \"" + polyline + "\"" +
                 "\n" + tab + "\t}";
     }
 
@@ -33,13 +31,5 @@ public class Place implements HereApiElement {
         } else {
             return "null";
         }
-    }
-
-    public void setPolyline(String polyline) {
-        this.polyline = polyline;
-    }
-
-    public String getPolyline() {
-        return polyline;
     }
 }
