@@ -20,7 +20,7 @@ public class HereRoutingAttributes {
     private static boolean avoidTollRoads = false;
 
     private final HereApiRestService hereApiRestService;
-    private final Logger logger = LogManager.getLogger(this.getClass());
+    private final Logger logger = LogManager.getLogger("HERE_ROUTING_ATTRIBUTES");
 
     private String returnType = "summary";
     private RoutingWaypoint startLocation;
@@ -76,10 +76,6 @@ public class HereRoutingAttributes {
         }
         url_query_attributes += "return=" + returnType + DELIMITER;
         return url_query_attributes;
-    }
-
-    public void setReturnTypeToSummary() {
-        returnType = "summary";
     }
 
     public void setReturnTypeToPolylineAndTurnByTurnActions() {
@@ -154,6 +150,7 @@ public class HereRoutingAttributes {
         if (routeAttributesSpecified) {
             RouteAttributesCalculator rac = new RouteAttributesCalculator(hereApiRestService);
             this.finishLocation = rac.getDestinationOnGivenRouteAttributes(startLocation, nlpQueryResponse.getRouteAttributes());
+            this.finishLocation.setName("Random destination");
         } else if (locations.length > 1 && !locations[1].isEmpty()) {
             nameOfDesiredFinishLocation = locations[1];
             this.finishLocation = callHereApiToRetrieveCoordinatesForLocation(nameOfDesiredFinishLocation);
@@ -185,7 +182,7 @@ public class HereRoutingAttributes {
     }
 
     private RoutingWaypoint callHereApiToRetrieveCoordinatesForLocation(String nameOfDesiredLocation) throws LocationNotFoundException {
-        String hereApiResponseAsString = hereApiRestService.getPostsPlainJSON(nameOfDesiredLocation);
+        String hereApiResponseAsString = hereApiRestService.getPostsPlainJSON(nameOfDesiredLocation.trim());
         HereApiGeocodeResponse hereResults = new Gson().fromJson(hereApiResponseAsString, HereApiGeocodeResponse.class);
         if (hereResults.items.isEmpty()) {
             throw new LocationNotFoundException("HERE API GEOCODE could not find this location: \"" + nameOfDesiredLocation + "\"!");

@@ -16,7 +16,7 @@ public class HereApiKey {
     public static final String HERE_API_KEY_FILE_NAME = SEP + "run" + SEP + "secrets" + SEP + "here-api-key";
     public static final String UNKNOWN_API_KEY = "UNKNOWN_API_KEY";
     private static String hereApiKey = UNKNOWN_API_KEY;
-    private static final Logger logger = LogManager.getLogger(HereApiKey.class);
+    private static final Logger logger = LogManager.getLogger("HERE_API_KEY");
 
     /**
      * This method will not check, if the key is correct. It will only check, if the correct file is in the correct

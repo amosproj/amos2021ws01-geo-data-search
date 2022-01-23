@@ -1,9 +1,8 @@
 package com.example.backend.data.here;
 
-// TODO Analyze if we really need this extra structure. Maybe replace with SingleLocationResult?
 public class RoutingWaypoint {
 
-    private final String name;
+    private String name;
     private double lat;
     private double lng;
 
@@ -36,5 +35,9 @@ public class RoutingWaypoint {
 
     public double getLongitude() {
         return lng;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

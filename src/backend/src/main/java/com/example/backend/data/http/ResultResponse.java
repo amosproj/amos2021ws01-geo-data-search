@@ -10,6 +10,7 @@ import java.util.List;
 @ResponseBody
 public class ResultResponse implements HttpResponse {
 
+    private static final String SUPER_TAB = "\t\t\t\t\t\t\t\t\t\t\t";
     List<ApiResult> result;
 
     public ResultResponse(List<ApiResult> result) {
@@ -21,12 +22,12 @@ public class ResultResponse implements HttpResponse {
     }
 
     public String toStringWithPolyline() {
-        String output = "ResultResponse: ";
+        String output = SUPER_TAB + "ResultResponse: ";
         if (result == null) {
             output += "NULL";
         } else {
             for (ApiResult singleResult : result) {
-                output += "\n\t{";
+                output += "\n" + SUPER_TAB + "{";
                 output += "type=" + singleResult.getType() + ", ";
                 output += "name=" + singleResult.getName() + ", ";
                 output += "id=" + singleResult.getId() + ", ";
@@ -40,7 +41,7 @@ public class ResultResponse implements HttpResponse {
     }
 
     public String toStringWithoutPolyline() {
-        String output = "ResultResponse: ";
+        String output = SUPER_TAB + "ResultResponse: ";
         if (result == null) {
             output += "NULL";
         } else {
@@ -50,7 +51,7 @@ public class ResultResponse implements HttpResponse {
                     polyline = polyline.substring(0, (10 % polyline.length()));
                     polyline += "... REST PRINTED IN DEBUG LOGGING MODE";
                 }
-                output += "\n\t{";
+                output += "\n" + SUPER_TAB + "\t{";
                 output += "type=" + singleResult.getType() + ", ";
                 output += "name=" + singleResult.getName() + ", ";
                 output += "id=" + singleResult.getId() + ", ";
