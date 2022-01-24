@@ -75,6 +75,7 @@ public class ApiController {
         OSMQuery osmQuery = new OSMQuery();
         if (nlpQueryResponse.getQueryObject().equals(NlpQueryResponse.QUERY_OBJECT_ELEVATION)) {
             osmQuery.setNatural("peak");
+            osmQuery.setHeight(nlpQueryResponse.getRouteAttributes().getHeight());
         } else if (nlpQueryResponse.getQueryObject().equals(NlpQueryResponse.QUERY_OBJECT_PLACE)) {
             osmQuery.setAmenity("restaurant");
         }
