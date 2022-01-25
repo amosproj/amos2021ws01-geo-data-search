@@ -20,3 +20,5 @@ FROM runner AS deployment
 COPY entrypoint.sh /app
 COPY src /app/src
 USER 1000
+RUN mkdir -p /tmp/logs
+RUN chmod 0777 /tmp/logs

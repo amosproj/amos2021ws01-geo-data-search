@@ -20,8 +20,10 @@ jobs:
         run: touch secrets/here-api-key.txt
       - name: build backend
         run: docker compose up -d --build backend
+      - name: wait 5 seconds
+        run: sleep 5
       - name: check the container is still running
-        run: sleep 5 && docker compose exec backend echo healthy
+        run: docker compose exec -T backend echo healthy
   tests:
     runs-on: ubuntu-latest
     env:
