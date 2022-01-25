@@ -31,7 +31,10 @@ const getMarkerPosition = ({ lat, lon }: any) => {
 const MapInner = () => {
   const [searchResults] = useAtom(searchResultsAtom);
   // Filter out results without valid lat / lon
-  const results = searchResults ? searchResults.filter((i) => i.lat && i.lon) : searchResults;
+  const results = useMemo(
+    () => (searchResults ? searchResults.filter((i) => i.lat && i.lon) : searchResults),
+    [searchResults]
+  );
 
   const [currentSearchResult, setCurrentSearchResult] = useAtom(currentSearchResultAtom);
   const map = useMap();
