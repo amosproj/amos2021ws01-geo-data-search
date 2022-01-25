@@ -21,6 +21,7 @@ export type SearchResult = {
     name: string;
   };
   polyline: string;
+  api: string;
 };
 
 export type SearchQueryResponse = {
