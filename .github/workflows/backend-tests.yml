@@ -29,7 +29,7 @@ jobs:
       - name: check the current directory
         run: ls -la
       - name: check the container is still running
-        run: docker-compose exec backend "which echo"
+        run: docker compose -T exec backend "which echo"
   tests:
     runs-on: ubuntu-latest
     env:
