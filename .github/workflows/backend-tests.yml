@@ -16,18 +16,12 @@ jobs:
       DOCKER_BUILDKIT: 1
     steps:
       - uses: actions/checkout@v2
-      - name: check the docker version
-        run: docker version
       - name: prepare dummy key file
         run: touch secrets/here-api-key.txt
       - name: build backend
         run: docker compose up -d --build backend
-      - name: list running containers
-        run: docker ps
       - name: wait 5 seconds
         run: sleep 5
-      - name: check the current directory
-        run: ls -la
       - name: check the container is still running
         run: docker compose exec -T backend echo healthy
   tests:
