@@ -21,7 +21,7 @@ jobs:
       - name: build backend
         run: docker compose up -d --build backend
       - name: check the container is still running
-        run: sleep 5 && docker compose exec backend echo healthy
+        run: sleep 5 && docker compose exec backend echo "healthy"
   tests:
     runs-on: ubuntu-latest
     env:
