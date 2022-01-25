@@ -52,16 +52,8 @@ def get_query(string: str) -> object:
     default_tokens = nlp_default(string)
 
     result = Query()
-
-    for token in default_tokens:
-        # save found location
-        if token.ent_type_ == "LOC":
-            if result.location != "":
-                result.location += ", "
-            result.location += token.lemma_
-
     ner_tokens = ner_model(string)
-
+    
     # checks if charging stations are queried
     if check_feature(ner_tokens, "charging_station"):
         result.route_attributes.charging_stations = True
@@ -77,7 +69,36 @@ def get_query(string: str) -> object:
 
         # save query object
         if token.ent_type_ == "queryObject":
-            result.query_object = get_keyword_from_synonyms(token.lemma_, "route", query_object_synonyms)
+            query_object = get_keyword_from_synonyms(token.lemma_, "route", query_object_synonyms)
+            result.query_object = query_object
+            if query_object == "route":
+                query_tokens = []
+                locations={}
+                # adds query tokens to query_tokens and replaces tokens labeled as location with default string "location" 
+                for index in range(len(default_tokens)):
+                    token = default_tokens[index]
+                    if token.ent_type_ == "LOC":
+                        query_tokens.append("location")
+                        #saves index of location token 
+                        locations[index] = token.lemma_
+                    else:
+                        query_tokens.append(token.text)
+                # composes the array of tokens to a string
+                query = ' '.join(map(str, query_tokens))
+                location_tokens = ner_model(query)
+                # saves the token to the corresponding attribute in query object 
+                for index in range(len(location_tokens)):
+                    token = location_tokens[index]
+                    if token.ent_type_ == "regionStart":
+                        result.route_attributes.location_start = default_tokens[index].lemma_
+                    elif token.ent_type_ == "regionEnd":
+                        result.route_attributes.location_end = default_tokens[index].lemma_
+                    elif token.ent_type_ == "region":
+                        result.route_attributes.location_start = default_tokens[index].lemma_
+            else:
+                for token in default_tokens:
+                        if token.ent_type_ == "LOC":
+                            result.location = token.lemma_
 
         # extract information about amount parameter
         if token.ent_type_ == "amount":
@@ -316,6 +337,8 @@ class Curves(CurveAttributes):
 
 @dataclass
 class RouteAttributes:
+    location_start: Optional[str]
+    location_end: Optional[str]
     height: Optional[BaseAttributes]
     length: Optional[BaseAttributes]
     gradiant: Optional[GradiantAttributes]
@@ -330,6 +353,8 @@ class RouteAttributes:
         self.curves = Curves()
         self.charging_stations = False
         self.toll_road_avoidance = False
+        self.location_start = ""
+        self.location_end = ""
 
 
 @dataclass

@@ -2,7 +2,7 @@
 //Liste Berge mit einer Höhe von mehr|weniger als 500 m
 //Finde eine Stadt die höher liegt als 220m
 //Zeige Wälder in Berlin
-//TODO: 500m lange Straße mit 30 Linkskurven in ~[region]
+//TODO: 500m lange Straße mit 30 Linkskurven in ~[region#single]
 //Zeige Orte über 500m in Brandenburg
 //Finde eine Straße mit einem Anstieg von 9%
 //Wie komme ich von Paris nach Berlin
@@ -12,31 +12,35 @@
 
 // Training sentences
 %[erhebungen](50)
-   // ~[Finde] [mir?] ~[queryObjectscheme] [mit einer?] ~[attribute] [von?] ~[value] [in?] ~[region]
-   ~[Finde?] @[queryObject#elevation] mit einer Höhe von ~[value] [in ~[region]?]
-   ~[Finde?] ~[value] hohe @[queryObject#elevation] [in ~[region]?]
+   // ~[Finde] [mir?] ~[queryObjectscheme] [mit einer?] ~[attribute] [von?] ~[value] [in?] @[region#single]
+   ~[Finde?] @[queryObject#elevation] mit einer Höhe von ~[value] [in @[region#single]?]
+   ~[Finde?] ~[value] hohe @[queryObject#elevation] [in @[region#single]?]
 
 %[orte](150)
-   ~[Finde?] @[queryObject#place][ der höher liegt als @[amount] ~[unit]?] [in ~[region]?]
+   ~[Finde?] @[queryObject#place][ der höher liegt als @[amount] ~[unit]?] [in @[region#single]?]
 
-%[routen](100)
-    ~[Finde?][ eine?] @[queryObject#route][ mit einem Anstieg von [@[amount#plural-number]\%|@[amount#plural-numeral] Prozent]?/70][ in ~[region]?][ [mit|~[negation]] ~[charging_station]?]
-    ~[Finde?][ eine?] @[queryObject#route][ in einer Höhe[ von?] @[amount] ~[unit]?/70][ in ~[region]?] [und?] [~[negation]|mit] ~[toll_road]
-    ~[Finde?][ eine?] @[queryObject#route][ mit einer Länge von @[amount] ~[unit]?/70][ in ~[region]?] [[mit|~[negation]] ~[charging_station]?][ [mit|~[negation]] ~[toll_road]?]
-    ~[Finde?][ eine?] @[queryObject#route] von ~[region] bis ~[region][ mit einer Länge von @[amount] ~[unit]?/70] [und?] [~[negation]|mit] ~[toll_road]
-    ~[Finde?][ eine?] @[queryObject#route] von ~[region] bis ~[region][ mit einem Anstieg von [@[amount#plural-number]\%|@[amount#plural-numeral] Prozent]?/70] [[mit|~[negation]] ~[charging_station]?]
-    [~[Finde?][ eine?] [~[toll_free]?] @[queryObject#route]|Wie komme ich ~[toll_free?]] von ~[region] bis ~[region] [[mit|~[negation]] ~[charging_station]?]
-    ~[Finde?][ eine?] @[queryObject#route] von ~[region] bis ~[region][ [mit|~[negation]] ~[charging_station]?][ und?][ ~[negation]| mit] ~[toll_road]
+%[routen](200)
+    ~[Finde?][ eine?] @[queryObject#route][ mit einem Anstieg von [@[amount#plural-number]\%|@[amount#plural-numeral] Prozent]?/70][ in @[region#single]?][ [mit|~[negation]] ~[charging_station]?]
+    ~[Finde?][ eine?] @[queryObject#route][ in einer Höhe[ von?] @[amount] ~[unit]?/70][ in @[region#single]?] [und?] [~[negation]|mit] ~[toll_road]
+    ~[Finde?][ eine?] @[queryObject#route][ mit einer Länge von @[amount] ~[unit]?/70][ in @[region#single]?] [[mit|~[negation]] ~[charging_station]?][ [mit|~[negation]] ~[toll_road]?]
+    ~[Finde?][ eine?] @[queryObject#route] von @[regionStart] bis @[regionEnd][ mit einer Länge von @[amount] ~[unit]?/70] [und?] [~[negation]|mit] ~[toll_road]
+    ~[Finde?][ eine?] @[queryObject#route] von @[regionStart] bis @[regionEnd][ mit einem Anstieg von [@[amount#plural-number]\%|@[amount#plural-numeral] Prozent]?/70] [[mit|~[negation]] ~[charging_station]?]
+    [~[Finde?][ eine?] [~[toll_free]?] @[queryObject#route]|Wie komme ich ~[toll_free?]] von @[regionStart] nach @[regionEnd] [[mit|~[negation]] ~[charging_station]?]
+    ~[Finde?][ eine?] @[queryObject#route] von @[regionStart] bis @[regionEnd][ [mit|~[negation]] ~[charging_station]?][ und?][ ~[negation]| mit] ~[toll_road]
+    ~[Finde?][ eine?] @[queryObject#route] von @[regionStart] nach @[regionEnd]
+    ~[Finde?][ eine?] @[queryObject#route] mit @[regionStart] als ~[start_location] und @[regionEnd] als ~[end_location]
+    ~[Finde?][ eine?] @[queryObject#route] [mit @[regionEnd] als ~[end_location]|nach @[regionEnd]|mit dem ~[end_location] @[regionEnd]] [und @[regionStart] als ~[end_location]|von @[regionStart]|[und|mit] [dem?] ~[start_location] @[regionStart]]
+    ~[Finde?][ eine?] @[queryObject#route] [mit @[regionStart] als ~[start_location]|von @[regionStart]|mit [dem?] ~[start_location] @[regionStart]] [und @[regionEnd] als ~[end_location]|nach @[regionEnd]|und als ~[end_location] @[regionEnd]]
 
 %[buzzwords](50)
     @[queryObject#route] Länge @[amount#plural-number] Steigung @[amount#plural-number] \%
     @[queryObject#route] Steigung @[amount#plural-number] \% Länge @[amount#plural-number]
-    ~[Finde?][ eine?] @[queryObject#route] [nahe|ab|bei|in der Nähe von] ~[region]
+    ~[Finde?][ eine?] @[queryObject#route] [nahe|ab|bei|in der Nähe von] @[region#single]
 
 
 // Test sentences
 %[routen-test](training:0, testing:20)
-    [~[Finde] mir?][ in ~[region]?][ eine?] @[amount] ~[unit][ lange?] @[queryObject#route]
+    [~[Finde] mir?][ in @[region#single]?][ eine?] @[amount] ~[unit][ lange?] @[queryObject#route]
 
 
 // imports

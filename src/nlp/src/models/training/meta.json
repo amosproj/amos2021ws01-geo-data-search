@@ -808,7 +808,10 @@
       "ORG",
       "PER",
       "amount",
-      "queryObject"
+      "queryObject",
+      "region",
+      "regionEnd",
+      "regionStart"
     ]
   },
   "pipeline":[

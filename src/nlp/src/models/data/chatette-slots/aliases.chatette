@@ -41,34 +41,14 @@
 //    [@[amount#singular] @[queryObject#singular]|@[amount#plural] @[queryObject#plural]]
 
 
-~[&region]
-    bergen
-    norwegen
-    perth
-    australien
-    reykjavik
-    island
-    helsinki
-    finnland
-    wellington
-    neuseeland
-    zürich
-    schweiz
-    brisbane
-    australien
-    melbourne
-    australien
-    stockholm
-    schweden
-    auckland
-    neuseeland
-    berlin
-    deutschland
-    usa
-    newyorkcity
-    NY
-    washington
-    hier
+@[&region#single]
+   location
+
+@[&regionStart]
+   location
+
+@[&regionEnd]
+   location
 
 ~[&charging_station]
     charging 
@@ -98,3 +78,19 @@
     meide
     vermeide
     umgehe
+
+~[&start_location]
+    startort 
+    startpunkt
+    start
+    startposition
+
+
+
+~[&end_location]
+    zielort 
+    zielpunkt
+    ziel
+    zielposition
+
+
