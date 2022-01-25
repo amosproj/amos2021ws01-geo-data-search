@@ -34,3 +34,16 @@ body {
 .leaflet-container .leaflet-tooltip::before { 
   display: none;
 }
+
+.results--route { 
+  position: relative;
+}
+
+.results--route::before { 
+  content: "";
+  position: absolute;
+  top: 35px;
+  left: 13px;
+  bottom: 35px;
+  border-left: 2px solid red;
+}

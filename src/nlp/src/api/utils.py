@@ -46,7 +46,7 @@ def parse_synonyms(is_entity: bool = True, chatette_file_path: str = None,
     if not chatette_file_path.exists():
         LOGGER.error(f"Couldn't find file {chatette_file_path}")
 
-    with open(chatette_file_path) as file:
+    with open(chatette_file_path, encoding="UTF-8") as file:
         synonyms = {}
         key: Optional[str] = None
         values = []
@@ -158,3 +158,43 @@ def get_alias_synonyms(chatette_file_path: str = None,
     except TypeError:
         return aliases
     return aliases
+
+
+def get_keyword_from_synonyms(string: str, default_keyword: str, synonyms: dict, log_results=False):
+    """
+    checks if a word matches to a synonym from a given dictionary
+    @param string: token to be allocated to a synonym class
+    @param default_keyword: the keyword used in case if no keyword was found
+    @param synonyms: dictionary with keywords and their synonyms/aliases
+    @param log_results: true if results are supposed to be logged
+    @return key synonym if the word is in the synonym list, otherwise default_keyword for the synonym class
+    """
+    # get keyword
+    for keyword in synonyms.keys():
+        if string.lower() in synonyms[keyword]:
+            if log_results:
+                logging.warning(f"[NLP COMPONENT][STRING INTERPRETER] Found matching keyword {keyword} for {string}")
+            return keyword
+
+    if log_results:
+        logging.warning(
+            f"[NLP COMPONENT][STRING INTERPRETER] Couldn't find a matching keyword for {string}, "
+            f"using default keyword {default_keyword}"
+        )
+    return default_keyword
+
+
+def get_keyword(string: str, default_keyword: str, synonym_class: str, is_entity: bool) -> str:
+    """
+    checks if a word matches to a synonym from a specific class
+    :param  string token to be allocated to a synonym class
+    :param  default_keyword the keyword used in case if no keyword was found
+    :param  synonym_class the class in which the synonyms are searched for
+    :param  is_entity defines whether synonym_class is a named entity
+    :return key synonym if the word is in the synonym list, otherwise default_keyword for the synonym class
+    """
+    if is_entity:
+        synonyms = get_entity_synonyms(entity=synonym_class)
+    else:
+        synonyms = get_alias_synonyms(title=synonym_class)
+    return get_keyword_from_synonyms(string, default_keyword, synonyms[synonym_class])

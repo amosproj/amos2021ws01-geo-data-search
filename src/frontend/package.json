@@ -12,6 +12,7 @@
   "dependencies": {
     "@headlessui/react": "^1.4.2",
     "@heroicons/react": "^1.0.5",
+    "@liberty-rider/flexpolyline": "^0.1.0",
     "framer-motion": "^5.5.1",
     "jotai": "^1.4.3",
     "leaflet": "^1.7.1",

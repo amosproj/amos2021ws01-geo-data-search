@@ -31,9 +31,11 @@ public class HereApiRestService {
 
     private static final String HERE_API_KEY = HereApiKey.getKey();
     private static final String URL_QUERY_API_KEY = "apiKey=" + HERE_API_KEY;
+    public static final String TYPE_FINISH = "Finish";
+    public static final String TYPE_START = "Start";
 
     private final RestTemplate restTemplate;
-    private final Logger logger = LogManager.getLogger(this.getClass());
+    private final Logger logger = LogManager.getLogger("HERE_API_REST_SERVICE");
 
     public HereApiRestService(RestTemplateBuilder restTemplateBuilder) {
         this.restTemplate = restTemplateBuilder.build();
@@ -43,7 +45,7 @@ public class HereApiRestService {
         String url = HERE_GEOCODE_URL + SEPARATOR + URL_QUERY_API_KEY + DELIMITER + URL_QUERY_FIELD + query;
         logger.info("URL for HERE GEOCODE = " + url);
         String response = this.restTemplate.getForObject(url, String.class);
-        logger.info("HereApiRestService.getPostsPlainJSON() = " + response);
+        logger.debug("HereApiRestService.getPostsPlainJSON() = " + response);
         return response;
     }
 
@@ -58,41 +60,34 @@ public class HereApiRestService {
         }
     }
 
-    @SuppressWarnings("ConstantConditions")
     private List<ApiResult> getChargingStationsOnRoute(HereRoutingAttributes hereRoutingAttributes) {
         RoutingWaypoint origin = hereRoutingAttributes.getOrigin();
         RoutingWaypoint destination = hereRoutingAttributes.getDestination();
         List<ApiResult> listOfPointsAlongTheRoute = new ArrayList<>();
         try {
-            hereRoutingAttributes.setReturnTypeToSummary();
+            hereRoutingAttributes.setReturnTypeToPolylineAndTurnByTurnActions();
             String hereApiRoutingResponseString =
                     getRoutingResponse(origin.getCoordinatesAsString(), destination.getCoordinatesAsString(), hereRoutingAttributes);
-            // TODO log only when debugging
-            if (false) {
-                logger.info("HERE / ROUTING / CHARGING STATIONS:");
-                logger.info(hereApiRoutingResponseString);
-            }
+            logger.debug("HERE / ROUTING / CHARGING STATIONS:");
+            logger.debug(hereApiRoutingResponseString);
             HereApiRoutingResponse hereApiRoutingResponse = new Gson().fromJson(hereApiRoutingResponseString, HereApiRoutingResponse.class);
-            // TODO log only when debugging
-            if (false) {
-                logger.info(hereApiRoutingResponse.toString(""));
-            }
-            List<Place> chargingStations = new ArrayList<>();
-            for (Route route : hereApiRoutingResponse.routes) {
-                chargingStations.addAll(route.getAlLChargingStations());
-            }
+            logger.debug(hereApiRoutingResponse.toString(""));
+            Route route = hereApiRoutingResponse.routes.get(0);
+            List<Place> chargingStations = new ArrayList<>(route.getAlLChargingStations());
+            String polyline = route.sections.get(0).polyline;
             int i = 1;
-            listOfPointsAlongTheRoute.add(new SingleLocationResult("Start", 0, origin.getName(), origin.getCoordinatesAsString()));
+            listOfPointsAlongTheRoute.add(new SingleLocationResult("Start", 0, origin.getName(), origin.getLatitude(), origin.getLongitude(), polyline));
             int total = chargingStations.size();
             for (Place chargingStation : chargingStations) {
                 String type = chargingStation.type;
                 String name = "Charging Station " + i + "/" + total;
                 String lat = "" + chargingStation.location.lat;
                 String lng = "" + chargingStation.location.lng;
-                listOfPointsAlongTheRoute.add(new SingleLocationResult(type, i, name, lat, lng));
+                String polylineString = chargingStation.getPolyline();
+                listOfPointsAlongTheRoute.add(new SingleLocationResult(type, i, name, lat, lng, polylineString));
                 i++;
             }
-            listOfPointsAlongTheRoute.add(new SingleLocationResult("Finish", i, destination.getName(), destination.getCoordinatesAsString()));
+            listOfPointsAlongTheRoute.add(new SingleLocationResult(TYPE_FINISH, i, destination.getName(), destination.getCoordinatesAsString()));
         } catch (Throwable throwable) {
             logger.error(throwable.toString());
             logger.error(throwable.getMessage());
@@ -100,7 +95,6 @@ public class HereApiRestService {
         return listOfPointsAlongTheRoute;
     }
 
-    @SuppressWarnings("ConstantConditions")
     private List<ApiResult> getGuidanceForRoute(HereRoutingAttributes hereRoutingAttributes) {
         RoutingWaypoint origin = hereRoutingAttributes.getOrigin();
         RoutingWaypoint destination = hereRoutingAttributes.getDestination();
@@ -108,20 +102,17 @@ public class HereApiRestService {
         try {
             HereGuidanceResponse hereApiRoutingResponse =
                     getGuidanceResponse(origin.getCoordinatesAsString(), destination.getCoordinatesAsString(), hereRoutingAttributes);
-            logger.info("HERE / GUIDANCE:");
-            // TODO log only when debugging
-            if (false) {
-                logger.info(hereApiRoutingResponse.toString(""));
-            }
+            logger.debug("HERE / GUIDANCE:");
+            logger.debug(hereApiRoutingResponse.toString(""));
             for (Route route : hereApiRoutingResponse.routes) {
                 for (Section section : route.sections) {
-                    String type = "Start";
+                    String type = TYPE_START;
                     int id = new Random().nextInt();
                     String lat = "" + section.departure.place.location.lat;
                     String lng = "" + section.departure.place.location.lng;
                     String name = origin.getName();
-                    generalRoutePoints.add(new SingleLocationResult(type, id, name, lat, lng));
-                    type = "Finish";
+                    generalRoutePoints.add(new SingleLocationResult(type, id, name, lat, lng, section.polyline));
+                    type = TYPE_FINISH;
                     id = new Random().nextInt();
                     lat = "" + section.arrival.place.location.lat;
                     lng = "" + section.arrival.place.location.lng;
@@ -136,7 +127,6 @@ public class HereApiRestService {
         return generalRoutePoints;
     }
 
-    @SuppressWarnings("ConstantConditions")
     private String getRoutingResponse(String origin, String destination, HereRoutingAttributes hereRoutingAttributes) {
         String url_query_attributes = hereRoutingAttributes.getUrlArgumentsForRouting();
         String url = HERE_ROUTING_URL + SEPARATOR + URL_QUERY_API_KEY + DELIMITER +  //
@@ -144,16 +134,12 @@ public class HereApiRestService {
                 URL_QUERY_ORIGIN + origin + DELIMITER + //
                 url_query_attributes + //
                 URL_QUERY_DESTINATION + destination;
-        logger.info("URL for HERE ROUTING = " + url);
+        logger.debug("URL for HERE ROUTING = " + url);
         String response = this.restTemplate.getForObject(url, String.class);
-        // TODO log only when debugging
-        if (false) {
-            logger.info("HereApiRestService.getRoutingResponse() = " + response);
-        }
+        logger.debug("HereApiRestService.getRoutingResponse() = " + response);
         return response;
     }
 
-    @SuppressWarnings("ConstantConditions")
     private HereGuidanceResponse getGuidanceResponse(String origin, String destination, HereRoutingAttributes hereRoutingAttributes) {
         hereRoutingAttributes.setReturnTypeToPolylineAndTurnByTurnActions();
         String url_query_attributes = hereRoutingAttributes.getUrlArgumentsForGuidance();
@@ -162,12 +148,9 @@ public class HereApiRestService {
                 URL_QUERY_ORIGIN + origin + DELIMITER + //
                 url_query_attributes + //
                 URL_QUERY_DESTINATION + destination;
-        logger.info("URL for HERE GUIDANCE = " + url);
+        logger.debug("URL for HERE GUIDANCE = " + url);
         String response = this.restTemplate.getForObject(url, String.class);
-        // TODO log only when debugging
-        if (false) {
-            logger.info("HereApiRestService.getGuidanceResponse() = " + response);
-        }
+        logger.debug("HereApiRestService.getGuidanceResponse() = " + response);
         return new Gson().fromJson(response, HereGuidanceResponse.class);
     }
 
@@ -183,6 +166,25 @@ public class HereApiRestService {
         private final String lat;
         private final String lon;
         private final String name;
+        private String polyline = "";
+
+        public SingleLocationResult(String type, int id, String name, String lat, String lon, String polyline) {
+            this.type = type;
+            this.id = id;
+            this.lat = lat;
+            this.lon = lon;
+            this.name = name;
+            this.polyline = polyline;
+        }
+
+        public SingleLocationResult(String type, int id, String name, double lat, double lon, String polyline) {
+            this.type = type;
+            this.id = id;
+            this.lat = "" + lat;
+            this.lon = "" + lon;
+            this.name = name;
+            this.polyline = polyline;
+        }
 
         public SingleLocationResult(String type, int id, String name, String lat, String lon) {
             this.type = type;
@@ -229,6 +231,11 @@ public class HereApiRestService {
         @Override
         public String getName() {
             return name;
+        }
+
+        @Override
+        public String getPolyline() {
+            return polyline;
         }
     }
 }

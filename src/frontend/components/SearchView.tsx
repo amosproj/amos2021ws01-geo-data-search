@@ -54,6 +54,10 @@ const SearchView = () => {
         if (error) {
           setErrorData(error);
         } else if (result) {
+          if (!result[0].lon && result[0].lat) { 
+            result[0].lon = result[0].lat.split(',')[1]
+            result[0].lat = result[0].lat.split(',')[0]
+          }
           setResults(result);
         } else {
           setErrorData({

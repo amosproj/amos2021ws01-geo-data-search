@@ -49,11 +49,14 @@ def process_string(string: str) -> object:
 
 def get_query(string: str) -> object:
     LOGGER.info("Received Request \"%s\"", string)
-    default_tokens = nlp_default(string)
 
+    default_tokens = nlp_default(string)
     result = Query()
+
+    # tokens of NER model
     ner_tokens = ner_model(string)
-    
+    ner_token_count = len(ner_tokens)
+
     # checks if charging stations are queried
     if check_feature(ner_tokens, "charging_station"):
         result.route_attributes.charging_stations = True
@@ -64,7 +67,9 @@ def get_query(string: str) -> object:
     else:
         result.route_attributes.toll_road_avoidance = True
 
-    for index in range(len(ner_tokens)):
+    # extracted parameters of NER model
+    token_keywords = []
+    for index in range(ner_token_count):
         token = ner_tokens[index]
 
         # save query object
@@ -113,133 +118,248 @@ def get_query(string: str) -> object:
             number = int(number)
 
             # extract query parameters
-            param_1, param_2 = get_query_parameters(token)
-            # check if parameters were found
-            if param_2 == "height":
-                if index != (len(ner_tokens) - 1):
-                    next_token = ner_tokens[index + 1]
-                    number = convert_to_meter(token, next_token)
-                # last token is an amount but has no unit
-                else:
-                    number = convert_to_meter(token)
-                # select min parameter by default
-                if param_1 in ["min", ""]:
-                    result.route_attributes.height.min = number
-                elif param_1 == "max":
-                    result.route_attributes.height.max = number
-            elif param_2 == "length":
-                if index != (len(ner_tokens) - 1):
-                    next_token = ner_tokens[index + 1]
-                    number = convert_to_meter(token, next_token)
-                # last token is an amount but has no unit
-                else:
-                    number = convert_to_meter(token)
-                # select min parameter by default
-                if param_1 in ["min", ""]:
-                    result.route_attributes.length.min = number
-                elif param_1 == "max":
-                    result.route_attributes.length.max = number
-            elif param_2 == "gradiant":
-                # select min parameter by default
-                if param_1 in ["min", ""]:
-                    result.route_attributes.gradiant.min = number
-                elif param_1 == "max":
-                    result.route_attributes.gradiant.max = number
+
+            param_1, param_2, unit = get_query_parameters(index, ner_tokens)
+
+            token_keywords.append(TokenKeywords(token, param_1, param_2, number, unit))
 
     # set default value
     if result.query_object == "":
         result.query_object = "route"
+
+    return resolve_extracted_query_parameters(result, token_keywords)
+
+
+def resolve_extracted_query_parameters(result, token_keywords: []) -> object:
+
+    # try to apply all extracted parameters to query object
+    unresolved_keywords = apply_query_parameters(token_keywords, result)
+
+    # no need for further postprocessing if all query parameters could be applied to query object
+    if len(unresolved_keywords) == 0:
+        return result
+
+    # resolve parameters which could not be extracted earlier
+    count = len(token_keywords)
+    for i in range(count):
+        keyword = token_keywords[i]
+
+        # skip keyword analysis if it was resolved
+        if keyword not in unresolved_keywords:
+            continue
+
+        # the algorithm only knows how to extract additional attributes from adjacent results.
+        # If the attribute is known no further information can be extracted
+
+        if keyword.attribute is not None and keyword.unit is not None:
+            continue
+
+        # if a previous element exists
+        if i != 0:
+            prev_keyword = token_keywords[i - 1]
+            # check if they are related to each other
+            if prev_keyword.min_or_max != keyword.min_or_max and prev_keyword.min_or_max is not None:
+                # if they are, add missing information
+                add_keyword_information(prev_keyword, keyword)
+                continue
+
+        # if a next element exists
+        if i + 1 < count:
+            next_keyword = token_keywords[i + 1]
+            # check if they are related to each other
+            if next_keyword.min_or_max != keyword.min_or_max and next_keyword.min_or_max is not None:
+                # if they are, add missing information
+                add_keyword_information(next_keyword, keyword)
+
+    # try to apply unresolved keywords with additional information
+    apply_query_parameters(unresolved_keywords, result, False)
+
     LOGGER.info("Send %s", result)
+
     return result
 
 
-def get_query_parameters(origin: spacy.tokens.token.Token) -> (str, str):
+def add_keyword_information(source, target):
     """
-    :param origin token which requires the attribute it is referring to
-    :return query attributes found in sting. Example: min height
+    Add information from source TokenKeywords to target TokenKeywords
+    @param source:
+    @param target:
+    """
+    if target.attribute is None:
+        target.attribute = source.attribute
+    if target.unit is None:
+        target.unit = source.unit
+
+
+def apply_query_parameters(token_keywords: [], query: object, require_units=True) -> []:
+    """
+    Given an array of tokenKeywords, this functions tries to apply all of them to a query object
+    @param token_keywords: list of tokenKeywords
+    @param query: query object
+    @param require_units: True if height and length parameters need a specified unit in order to be applied to query object
+    @return: array of tokenKeywords containing not enough information to be applied
+    """
+    unresolved_keywords = []
+
+    # assign parameters which were found
+    for keywords in token_keywords:
+        param_1 = keywords.min_or_max
+        param_2 = keywords.attribute
+        number = keywords.number
+
+        if param_2 == "height" and (keywords.unit is not None or not require_units):
+            # select min parameter by default
+            if param_1 in ["min", None]:
+                query.route_attributes.height.min = convert_number_to_meter(keywords.unit, number)
+                continue
+            if param_1 == "max":
+                query.route_attributes.height.max = convert_number_to_meter(keywords.unit, number)
+                continue
+        if param_2 == "length" and (keywords.unit is not None or not require_units):
+            # select min parameter by default
+            if param_1 in ["min", None]:
+                query.route_attributes.length.min = convert_number_to_meter(keywords.unit, number)
+                continue
+            if param_1 == "max":
+                query.route_attributes.length.max = convert_number_to_meter(keywords.unit, number)
+                continue
+        if param_2 == "gradiant":
+            # select min parameter by default
+            if param_1 in ["min", None]:
+                query.route_attributes.gradiant.min = number
+                continue
+            if param_1 == "max":
+                query.route_attributes.gradiant.max = number
+                continue
+        if param_2 == "curves_left":
+            if param_1 in ["min", None]:
+                query.route_attributes.curves.left.min = number
+                continue
+            if param_1 == "max":
+                query.route_attributes.curves.left.max = number
+                continue
+        if param_2 == "curves_right":
+            if param_1 in ["min", None]:
+                query.route_attributes.curves.right.min = number
+                continue
+            if param_1 == "max":
+                query.route_attributes.curves.right.max = number
+                continue
+
+        # parameters could not be assigned
+        unresolved_keywords.append(keywords)
+
+    if len(unresolved_keywords) != 0:
+        print("Failed to resolve", len(unresolved_keywords), "extracted query parameters")
+
+    return unresolved_keywords
+
+
+def get_query_parameters(origin: int, tokens: [spacy.tokens.token.Token]) -> (str, str, str):
+    """
+    @param origin token which requires the attribute it is referring to
+    @param tokens all tokens of the sentence
+    @return query attributes found in sting. Example: min height km (min or max, parameter, unit)
     """
 
-    dependencies = get_dependencies(origin)
-    param_1, param_2 = "", ""
+    dependencies, unit = get_token_dependencies(origin, tokens)
+    param_1, param_2 = None, None
 
     for dep in dependencies:
         lemma = str(dep.lemma_).lower()
 
         # extract parameter 1
-        if param_1 == "":
-            if lemma in ["mindestens", "min"]:
+        if param_1 is None:
+            if lemma in ["mindestens", "min", "über"]:
                 param_1 = "min"
             elif lemma in ["maximal", "max", "höchstens"]:
                 param_1 = "max"
-            elif lemma == "über":
-                param_1 = "min"
 
         # extract parameter 2
-        if param_2 == "":
-            if lemma in ["hoch", "höhe"]:
+        if param_2 is None:
+            if lemma in ["hoch", "höhe", "lage"]:
                 param_2 = "height"
             elif lemma in ["lang", "länge"]:
                 param_2 = "length"
             elif lemma == "steigung":
                 param_2 = "gradiant"
-    return param_1, param_2
+            elif lemma == "linkskurve":
+                param_2 = "curves_left"
+            elif lemma == "rechtskurve":
+                param_2 = "curves_right"
+
+    print("Dependencies for", tokens[origin], ":", dependencies, "->", param_1, param_2, unit)
+
+    return param_1, param_2, unit
 
 
-def get_dependencies(origin: spacy.tokens.token.Token) -> [spacy.tokens.token.Token]:
+def get_token_dependencies(origin: int, tokens: [spacy.tokens.token.Token], discovery_right: int = 3, discovery_left: int = 3,
+                           stop_on_amount: bool = True) -> ([spacy.tokens.token.Token], str):
     """
-    :param origin token which requires its closest dependencies
-    :return tokens ordered by proximity to origin
+    Extracts dependencies of a token, starting its search to the left, then to the right
+    @param origin: token from which the search is started
+    @param tokens: list of tokens containing origin
+    @param discovery_right: max search radius to the right
+    @param discovery_left: max search radius to the left
+    @param stop_on_amount: stop searching in that direction if another token labeled with amount was found
+    @return: (list of dependencies, unit found (km, m, %, ...)
     """
 
-    # initialise list of results
-    results = []
+    result = []
+    unit = None
+    count = len(tokens)
 
-    # initialise list of tokens to explore
-    discovery_queue = [origin]
+    # look for values to the left of amount object
+    for i in range(1, discovery_left + 1):
+        # make sure the min array size is not exceeded
+        index = origin - i
+        if index < 0:
+            break
 
-    # search through entire dependency tree, ordering elements by vicinity to origin
-    while len(discovery_queue) > 0:
-        # get next token to process
-        current_token = discovery_queue.pop(0)
+        token = tokens[index]
 
-        # add current token to results
-        results.append(current_token)
+        # if next token is specifying amount
+        if token.ent_type_ == "amount":
+            # stop search in that direction
+            if stop_on_amount:
+                break
 
-        # add children to discovery queue, if it wasnt discovered already
-        for child in current_token.children:
-            if child not in discovery_queue and child not in results:
-                discovery_queue.append(child)
+        result.append(token)
 
-        # add head to discovery queue, if it wasn't discovered already
-        current_head = current_token.head
-        if current_head not in discovery_queue and current_head not in results:
-            discovery_queue.append(current_head)
+    # look for values to the right of amount object
+    for i in range(1, discovery_right + 1):
+        # make sure the max array size is not exceeded
+        index = origin + i
+        if index >= count:
+            break
 
-    return results
+        # get token
+        token = tokens[index]
+
+        # try to extract amount unit
+        if unit is None:
+            found_unit = check_unit(token, "")
+            if found_unit != "":
+                unit = found_unit
+
+        # if next token is specifying amount
+        if token.ent_type_ == "amount":
+            # stop search in that direction
+            if stop_on_amount:
+                break
+
+        result.append(token)
+
+    return result, unit
 
 
-def check_unit(token: spacy.tokens.token.Token) -> str:
+def check_unit(token: spacy.tokens.token.Token, default_keyword="km") -> str:
     """
-    :param token the token which is checked for a unit
-    :return unit, if token has a unit, otherwise an empty string
+    @param token: the token which is checked for a unit
+    @param default_keyword: reuturned if no matching keyword was found
+    @return unit, if token has a unit, otherwise the default keyword
     """
-    synonym = get_keyword_from_synonyms(token.lemma_, "km", unit_synonyms)
-    return synonym
-
-
-def convert_to_meter(
-        amount_token: spacy.tokens.token.Token,
-        next_token: spacy.tokens.token.Token = None
-) -> int:
-    if next_token is None:
-        amount_unit = "km"
-    else:
-        amount_unit = check_unit(next_token)
-    if amount_unit != "":
-        number = int(amount_token.text)
-        converted_number = convert_number_to_meter(amount_unit, number)
-        return converted_number
-    return 0
+    return get_keyword_from_synonyms(token.lemma_, default_keyword, unit_synonyms)
 
 
 def check_feature(tokens: spacy.tokens.doc.Doc, feature="charging_station"):
@@ -371,9 +491,28 @@ class Query:
         self.route_attributes = RouteAttributes()
 
 
+class TokenKeywords:
+    token: spacy.tokens.token.Token
+    min_or_max: str
+    attribute: str
+    number: int  # number found associated wih parameter (example: 100)
+    unit: str  # unit found associated with number (example: km, %)
+
+    def __init__(self, token, min_or_max, attribute, number, unit):
+        self.token = token
+        self.min_or_max = min_or_max
+        self.attribute = attribute
+        self.number = number
+        self.unit = unit
+
+
+# print(get_query("Finde eine Strecke in Italien mit mindestens 10 meilen länge in einer lage über 1000 mit einem Anteil von 500 kilometer Linkskurven mit einem Anteil von 600m Steigung über 7% auf einer Höhe von maximal 10 km"))
+# print(get_query("Plane mir eine Route nach Paris mit einem Anteil von 500 meter Steigung von maximal 7%"))
+# print(get_query("Plane mir eine Route nach Paris mit einer länge von mindestens 100 und maximal 1000 km"))
+# print(get_query("Plane mir eine Route nach Paris mit einer länge von mindestens 100 km"))
 # print(get_query("Finde eine Strecke in Italien mit mindestens 10 meilen länge in einer lage über 1000  mit einem Anteil von 500 kilometer Linkskurven mit einem Anteil von 600m Steigung über 7% auf einer Höhe von maximal 10"))
-print(
-    get_query(
-        "Plane mir eine Route nach Paris mit einem Anteil von 500 meter Steigung von maximal 7% mit eine Ladestationen"
-    )
-)
+# print(get_query("Plane mir eine Route nach Paris mit einem Anteil von 500 meter Steigung von maximal 7% mit eine Ladestationen") )
+print(get_query("Zeige mir Berge in Hamburg mit einer Höhe von 1 kilometern"))
+
+
+

@@ -7,8 +7,8 @@ export type SearchError = {
 export type SearchResult = {
   type: string;
   id: number;
-  lat: string;
-  lon: string;
+  lat: string | null;
+  lon: string | null;
   name: string;
   tags?: {
     'addr:city': string;
@@ -20,6 +20,8 @@ export type SearchResult = {
     amenity: string;
     name: string;
   };
+  polyline: string;
+  api: string;
 };
 
 export type SearchQueryResponse = {

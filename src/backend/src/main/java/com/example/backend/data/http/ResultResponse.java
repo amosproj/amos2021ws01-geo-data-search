@@ -6,9 +6,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
+@SuppressWarnings("StringConcatenationInLoop")
 @ResponseBody
 public class ResultResponse implements HttpResponse {
 
+    private static final String SUPER_TAB = "\t\t\t\t\t\t\t\t\t\t\t";
     List<ApiResult> result;
 
     public ResultResponse(List<ApiResult> result) {
@@ -19,18 +21,43 @@ public class ResultResponse implements HttpResponse {
         return result;
     }
 
-    public String toString() {
-        String output = "ResultResponse: ";
+    public String toStringWithPolyline() {
+        String output = SUPER_TAB + "ResultResponse: ";
         if (result == null) {
             output += "NULL";
         } else {
             for (ApiResult singleResult : result) {
-                output += "\n\t{";
+                output += "\n" + SUPER_TAB + "{";
                 output += "type=" + singleResult.getType() + ", ";
                 output += "name=" + singleResult.getName() + ", ";
                 output += "id=" + singleResult.getId() + ", ";
                 output += "lat=" + singleResult.getLat() + ", ";
-                output += "lon=" + singleResult.getLon();
+                output += "lon=" + singleResult.getLon() + ", ";
+                output += "polyline=" + singleResult.getPolyline();
+                output += "}";
+            }
+        }
+        return output;
+    }
+
+    public String toStringWithoutPolyline() {
+        String output = SUPER_TAB + "ResultResponse: ";
+        if (result == null) {
+            output += "NULL";
+        } else {
+            for (ApiResult singleResult : result) {
+                String polyline = singleResult.getPolyline();
+                if (!singleResult.getPolyline().isEmpty()) {
+                    polyline = polyline.substring(0, (10 % polyline.length()));
+                    polyline += "... REST PRINTED IN DEBUG LOGGING MODE";
+                }
+                output += "\n" + SUPER_TAB + "\t{";
+                output += "type=" + singleResult.getType() + ", ";
+                output += "name=" + singleResult.getName() + ", ";
+                output += "id=" + singleResult.getId() + ", ";
+                output += "lat=" + singleResult.getLat() + ", ";
+                output += "lon=" + singleResult.getLon() + ", ";
+                output += "polyline=" + polyline;
                 output += "}";
             }
         }

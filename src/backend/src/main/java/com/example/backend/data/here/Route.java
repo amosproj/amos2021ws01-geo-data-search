@@ -42,6 +42,7 @@ public class Route implements HereApiElement {
         for (Section section : sections) {
             if (section != null && section.departure != null && section.departure.place != null) {
                 if (section.departure.place.type.equals("chargingStation")) {
+                    section.departure.place.setPolyline(section.polyline);
                     allChargingStations.add(section.departure.place);
                 }
             }
