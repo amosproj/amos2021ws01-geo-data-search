@@ -50,7 +50,7 @@ def process_string(string: str) -> object:
 def get_query(string: str) -> object:
     LOGGER.info("Received Request \"%s\"", string)
 
-    default_tokens = nlp_default(string)
+    default_tokens = nlp_default(string.replace("?", "").replace("!", ""))
     result = Query()
 
     # tokens of NER model
