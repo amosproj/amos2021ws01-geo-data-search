@@ -21,9 +21,10 @@ import java.util.List;
 public class ApiController {
 
     private final OsmApiClient osmApiClient;
+    // TODO replace the dummyNodeID with real one when implemented
     private static final String dummyNodeID = "305293190";
     private final HereApiRestService hereApiRestService;
-    private final Logger logger = LogManager.getLogger(this.getClass());
+    private final Logger logger = LogManager.getLogger("API_CONTROLLER");
 
     public ApiController(OsmApiClient osmApiClient, HereApiRestService hereApiRestService) {
         this.osmApiClient = osmApiClient;
@@ -34,10 +35,8 @@ public class ApiController {
     public NodeInfo requestNodeInfo(String nodeID) {
         logger.info("Request Info for node:" + nodeID + " from API");
         logger.info("Sending data to API...");
-        //TODO replace the dummyNodeID with real one when implemented
         NodeInfo apiXMLResponse = osmApiClient.requestNode(dummyNodeID);
         logger.info("SUCCESS!, response from API received:" + apiXMLResponse);
-        //TODO replace this with result when implemented
         return apiXMLResponse;
     }
 
@@ -48,7 +47,7 @@ public class ApiController {
      * @return the results from the called API's
      * @throws MissingLocationException if Routing is selected and the location is empty, this Exception will be thrown
      */
-    public List<ApiResult> querySearch(NlpQueryResponse nlpQueryResponse) throws MissingLocationException, UnknownQueryObjectException, NoPrefferedApiFoundException, LocationNotFoundException, InvalidCalculationRequest {
+    public List<ApiResult> querySearch(NlpQueryResponse nlpQueryResponse) throws MissingLocationException, UnknownQueryObjectException, NoPreferredApiFoundException, LocationNotFoundException, InvalidCalculationRequest {
         ApiType preferredApi = ApiSelectionHelper.getApiPreference(nlpQueryResponse);
         List<ApiResult> result = new ArrayList<>();
         if (preferredApi == ApiType.OSM_API) {
@@ -59,7 +58,7 @@ public class ApiController {
             hereApiRestService.handleRequest(nlpQueryResponse, result);
         } else {
             logger.error("The preferred API does not match any of our implemented API's!");
-            throw new NoPrefferedApiFoundException("No preferred API to use based on this query_object: \"" + nlpQueryResponse.getQueryObject() + "\"");
+            throw new NoPreferredApiFoundException("No preferred API to use based on this query_object: \"" + nlpQueryResponse.getQueryObject() + "\"");
         }
         adjustTypeValues(result, nlpQueryResponse);
         return result;
@@ -76,6 +75,7 @@ public class ApiController {
         OSMQuery osmQuery = new OSMQuery();
         if (nlpQueryResponse.getQueryObject().equals(NlpQueryResponse.QUERY_OBJECT_ELEVATION)) {
             osmQuery.setNatural("peak");
+            osmQuery.setHeight(nlpQueryResponse.getRouteAttributes().getHeight());
         } else if (nlpQueryResponse.getQueryObject().equals(NlpQueryResponse.QUERY_OBJECT_PLACE)) {
             osmQuery.setAmenity("restaurant");
         }
@@ -86,8 +86,10 @@ public class ApiController {
 
     private void adjustTypeValues(List<ApiResult> result, NlpQueryResponse nlpQueryResponse) {
         for (int i = 0; i < result.size(); i++) {
-            if (result.get(0).getType().equalsIgnoreCase("Unknown")) {
-                result.get(0).setType(nlpQueryResponse.getQueryObject());
+            if (result.get(i).getType().equalsIgnoreCase("Unknown")
+                    || result.get(i).getType().equalsIgnoreCase("node"))
+            {
+                result.get(i).setType(nlpQueryResponse.getQueryObject());
             }
         }
     }

@@ -24,7 +24,7 @@ public class FrontendController {
     public static final String BACKEND_VERSION = "0.10.1";
     private final NlpClient nlpClient;
     private final ApiController apiController;
-    private final Logger logger = LogManager.getLogger(this.getClass());
+    private final Logger logger = LogManager.getLogger("FRONTEND_CONTROLLER");
 
     public FrontendController(NlpClient nlpClient, OsmApiClient osmApiClient, HereApiRestService hereApiRestService) {
         this.nlpClient = nlpClient;
@@ -60,7 +60,7 @@ public class FrontendController {
         try {
             // The API decision and calling happens here:
             apiQueryResults = apiController.querySearch(nlpQueryResponse);
-        } catch (MissingLocationException | UnknownQueryObjectException | NoPrefferedApiFoundException | LocationNotFoundException | InvalidCalculationRequest e) {
+        } catch (MissingLocationException | UnknownQueryObjectException | NoPreferredApiFoundException | LocationNotFoundException | InvalidCalculationRequest e) {
             handleError(e);
         }
 
@@ -84,7 +84,7 @@ public class FrontendController {
         NlpQueryResponse nlpQueryResponse;
         logger.info("Sending data to NLP...");
         String nlpResponse = nlpClient.sendToNlp(query);
-        logger.info("...SUCCESS!, response from NLP received:" + nlpResponse);
+        logger.info("...SUCCESS!");
         logger.info("NLP RESPONSE:");
         logger.info(nlpResponse);
         logger.info("INTERPRETED NLP RESPONSE:");
@@ -123,7 +123,6 @@ public class FrontendController {
             nlpVersion = "unknown";
         }
 
-        // TODO How to version better?
         return new VersionResponse(Version.createVersion(BACKEND_VERSION, nlpVersion));
     }
 }

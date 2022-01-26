@@ -36,7 +36,7 @@ public class HereApiRestService {
     public static final String HERE_API = "HERE API";
 
     private final RestTemplate restTemplate;
-    private final Logger logger = LogManager.getLogger(this.getClass());
+    private final Logger logger = LogManager.getLogger("HERE_API_REST_SERVICE");
 
     public HereApiRestService(RestTemplateBuilder restTemplateBuilder) {
         this.restTemplate = restTemplateBuilder.build();
@@ -46,7 +46,7 @@ public class HereApiRestService {
         String url = HERE_GEOCODE_URL + SEPARATOR + URL_QUERY_API_KEY + DELIMITER + URL_QUERY_FIELD + query;
         logger.info("URL for HERE GEOCODE = " + url);
         String response = this.restTemplate.getForObject(url, String.class);
-        logger.info("HereApiRestService.getPostsPlainJSON() = " + response);
+        logger.debug("HereApiRestService.getPostsPlainJSON() = " + response);
         return response;
     }
 
@@ -66,7 +66,7 @@ public class HereApiRestService {
         RoutingWaypoint destination = hereRoutingAttributes.getDestination();
         List<ApiResult> listOfPointsAlongTheRoute = new ArrayList<>();
         try {
-            hereRoutingAttributes.setReturnTypeToSummary();
+            hereRoutingAttributes.setReturnTypeToPolylineAndTurnByTurnActions();
             String hereApiRoutingResponseString =
                     getRoutingResponse(origin.getCoordinatesAsString(), destination.getCoordinatesAsString(), hereRoutingAttributes);
             logger.debug("HERE / ROUTING / CHARGING STATIONS:");
@@ -77,14 +77,15 @@ public class HereApiRestService {
             List<Place> chargingStations = new ArrayList<>(route.getAlLChargingStations());
             String polyline = route.sections.get(0).polyline;
             int i = 1;
-            listOfPointsAlongTheRoute.add(new SingleLocationResult(HERE_API, TYPE_START, 0, origin.getName(), origin.getCoordinatesAsString(), polyline));
+            listOfPointsAlongTheRoute.add(new SingleLocationResult(HERE_API, TYPE_START, 0, origin.getName(), origin.getLatitude(), origin.getLongitude(), polyline));
             int total = chargingStations.size();
             for (Place chargingStation : chargingStations) {
                 String type = chargingStation.type;
                 String name = "Charging Station " + i + "/" + total;
                 String lat = "" + chargingStation.location.lat;
                 String lng = "" + chargingStation.location.lng;
-                listOfPointsAlongTheRoute.add(new SingleLocationResult(HERE_API,type, i, name, lat, lng));
+                String polylineString = chargingStation.getPolyline();
+                listOfPointsAlongTheRoute.add(new SingleLocationResult(HERE_API,type, i, name, lat, lng, polylineString));
                 i++;
             }
             listOfPointsAlongTheRoute.add(new SingleLocationResult(HERE_API, TYPE_FINISH, i, destination.getName(), destination.getCoordinatesAsString()));
@@ -161,12 +162,12 @@ public class HereApiRestService {
 
     private static class SingleLocationResult implements ApiResult {
 
+        private String type;
         private final int id;
         private final String lat;
         private final String lon;
         private final String name;
         private final String api;
-        private String type;
         private String polyline = "";
 
         public SingleLocationResult(String api, String type, int id, String name, String lat, String lon, String polyline) {
@@ -177,6 +178,16 @@ public class HereApiRestService {
             this.name = name;
             this.polyline = polyline;
             this.api = api;
+        }
+
+        public SingleLocationResult(String api, String type, int id, String name, double lat, double lon, String polyline) {
+            this.api = api;
+            this.type = type;
+            this.id = id;
+            this.lat = "" + lat;
+            this.lon = "" + lon;
+            this.name = name;
+            this.polyline = polyline;
         }
 
         public SingleLocationResult(String api, String type, int id, String name, String lat, String lon) {
