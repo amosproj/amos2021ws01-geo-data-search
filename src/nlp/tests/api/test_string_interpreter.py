@@ -131,7 +131,7 @@ def get_query_test_data():
     query.route_attributes.location_start = "Bremerhaven"
     query.route_attributes.location_end = "Lübeck"
     query.query_object = "route"
-    queries.append(["Wie komme ich von Bremerhaven nach Lübeck?", query])
+    queries.append(["Wie komme ich von Bremerhaven nach Lübeck ?", query])
     return queries
 
 

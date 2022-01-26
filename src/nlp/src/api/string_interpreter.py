@@ -71,39 +71,10 @@ def get_query(string: str) -> object:
     token_keywords = []
     for index in range(ner_token_count):
         token = ner_tokens[index]
-
         # save query object
         if token.ent_type_ == "queryObject":
             query_object = get_keyword_from_synonyms(token.lemma_, "route", query_object_synonyms)
             result.query_object = query_object
-            if query_object == "route":
-                query_tokens = []
-                locations={}
-                # adds query tokens to query_tokens and replaces tokens labeled as location with default string "location" 
-                for index in range(len(default_tokens)):
-                    token = default_tokens[index]
-                    if token.ent_type_ == "LOC":
-                        query_tokens.append("location")
-                        #saves index of location token 
-                        locations[index] = token.lemma_
-                    else:
-                        query_tokens.append(token.text)
-                # composes the array of tokens to a string
-                query = ' '.join(map(str, query_tokens))
-                location_tokens = ner_model(query)
-                # saves the token to the corresponding attribute in query object 
-                for index in range(len(location_tokens)):
-                    token = location_tokens[index]
-                    if token.ent_type_ == "regionStart":
-                        result.route_attributes.location_start = default_tokens[index].lemma_
-                    elif token.ent_type_ == "regionEnd":
-                        result.route_attributes.location_end = default_tokens[index].lemma_
-                    elif token.ent_type_ == "region":
-                        result.route_attributes.location_start = default_tokens[index].lemma_
-            else:
-                for token in default_tokens:
-                        if token.ent_type_ == "LOC":
-                            result.location = token.lemma_
 
         # extract information about amount parameter
         if token.ent_type_ == "amount":
@@ -126,6 +97,38 @@ def get_query(string: str) -> object:
     # set default value
     if result.query_object == "":
         result.query_object = "route"
+    
+    if result.query_object == "route":
+            query_tokens = []
+            locations={}
+            # adds query tokens to query_tokens and replaces tokens labeled as location with default string "location" 
+            for index in range(len(default_tokens)):
+                token = default_tokens[index]
+                if token.ent_type_ == "LOC":
+                    query_tokens.append("location")
+                    
+                    #saves index of location token 
+                    locations[index] = token.lemma_
+                else:
+                    query_tokens.append(token.text)
+            
+            # composes the array of tokens to a string
+            query = ' '.join(map(str, query_tokens))
+            location_tokens = ner_model(query)
+            
+            # saves the token to the corresponding attribute in query object 
+            for index in range(len(location_tokens)):
+                token = location_tokens[index]
+                if token.ent_type_ == "regionStart":
+                    result.route_attributes.location_start = default_tokens[index].lemma_
+                elif token.ent_type_ == "regionEnd":
+                    result.route_attributes.location_end = default_tokens[index].lemma_
+                elif token.ent_type_ == "region":
+                    result.route_attributes.location_start = default_tokens[index].lemma_
+    else:
+        for token in default_tokens:
+                if token.ent_type_ == "LOC":
+                    result.location = token.lemma_
 
     return resolve_extracted_query_parameters(result, token_keywords)
 
