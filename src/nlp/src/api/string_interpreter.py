@@ -100,40 +100,7 @@ def get_query(string: str) -> object:
     if result.query_object == "":
         result.query_object = "route"
 
-    # make some analysis that would have been made earlier if queryObject route had been found
-    if result.query_object == "route":
-        query_tokens = []
-        locations = {}
-        # adds query tokens to query_tokens and replaces tokens labeled as location with default string "location"
-        for index in range(len(default_tokens)):
-            token = default_tokens[index]
-            if token.ent_type_ == "LOC":
-                query_tokens.append("location")
-
-                # saves index of location token
-                locations[index] = token.lemma_
-            else:
-                query_tokens.append(token.text)
-
-        # composes the array of tokens to a string
-        query = ' '.join(map(str, query_tokens))
-        location_tokens = ner_model(query)
-
-        # saves the token to the corresponding attribute in query object
-        for index in range(len(location_tokens)):
-            token = location_tokens[index]
-            if token.ent_type_ == "regionStart":
-                result.route_attributes.location_start = default_tokens[index].lemma_
-            elif token.ent_type_ == "regionEnd":
-                result.route_attributes.location_end = default_tokens[index].lemma_
-            elif token.ent_type_ == "region":
-                result.route_attributes.location_start = default_tokens[index].lemma_
-    else:
-        for token in default_tokens:
-            if token.ent_type_ == "LOC":
-                result.location = token.lemma_
-
-    # make some analysis that would have been made earlier if queryObject route had been found
+    # determines the type of location(e.g, start location) for routes found by the default model
     if result.query_object == "route":
         query_tokens = []
         locations = {}
