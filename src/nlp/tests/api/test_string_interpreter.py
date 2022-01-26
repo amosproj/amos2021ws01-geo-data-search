@@ -128,7 +128,8 @@ def get_query_test_data():
     queries.append([" Zeige mir Berge mit einer Höhe von 1 meile in Hamburg", query])
 
     query = Query()
-    query.location = "Bremerhaven, Lübeck"
+    query.route_attributes.location_start = "Bremerhaven"
+    query.route_attributes.location_end = "Lübeck"
     query.query_object = "route"
     queries.append(["Wie komme ich von Bremerhaven nach Lübeck?", query])
     return queries
@@ -173,8 +174,8 @@ def test_toll_roads(query):
 def test_route_locations(query):
     result = get_query(query[0])
     assert result.location == ""
-    assert result.route_attributes.location_start  == query[1][0]
-    assert result.route_attributes.location_end  == query[1][1]
+    assert result.route_attributes.location_start == query[1][0]
+    assert result.route_attributes.location_end == query[1][1]
 
 
 def test_default_keyword():
