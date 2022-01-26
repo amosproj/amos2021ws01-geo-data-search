@@ -92,4 +92,9 @@ public class Item implements HereApiElement, ApiResult {
     public String getPolyline() {
         return "";
     }
+
+    @Override
+    public String getApi() {
+        return "";
+    }
 }
