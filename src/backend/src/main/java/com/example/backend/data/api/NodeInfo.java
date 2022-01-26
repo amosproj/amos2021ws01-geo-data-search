@@ -9,6 +9,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class NodeInfo implements ApiResult {
     private final String unknown = "Unknown";
+    private final String OSM_API = "OSM API";
     String id;
     String visible;
     String version;
@@ -22,7 +23,11 @@ public class NodeInfo implements ApiResult {
     String api;
 
     public NodeInfo(String api, String id, String visible, String version, String changeSet, String timeStamp, String user, String uid, String lat, String lon) {
-        this.api = api;
+        if (api == null) {
+            this.api = OSM_API;
+        } else {
+            this.api = api;
+        }
         this.id = id;
         this.visible = visible;
         this.version = version;
