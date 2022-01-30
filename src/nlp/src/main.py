@@ -47,7 +47,7 @@ else:
     pathlib.Path(path).mkdir(parents=True, exist_ok=True)
 
 # prepare API log path
-log_path = pathlib.Path(f'{CURRENT_DIR}{SEP}api{SEP}logs{SEP}')
+log_path = pathlib.Path(f'{SEP}tmp{SEP}logs{SEP}')
 if not log_path.exists():
     LOGGER.info("No log path found on path %s", log_path)
     pathlib.Path(log_path).mkdir(parents=True, exist_ok=True)

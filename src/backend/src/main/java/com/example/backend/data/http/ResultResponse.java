@@ -28,6 +28,7 @@ public class ResultResponse implements HttpResponse {
         } else {
             for (ApiResult singleResult : result) {
                 output += "\n" + SUPER_TAB + "{";
+                output += "api=" + singleResult.getApi() + ", ";
                 output += "type=" + singleResult.getType() + ", ";
                 output += "name=" + singleResult.getName() + ", ";
                 output += "id=" + singleResult.getId() + ", ";
@@ -52,6 +53,7 @@ public class ResultResponse implements HttpResponse {
                     polyline += "... REST PRINTED IN DEBUG LOGGING MODE";
                 }
                 output += "\n" + SUPER_TAB + "\t{";
+                output += "api=" + singleResult.getApi() + ", ";
                 output += "type=" + singleResult.getType() + ", ";
                 output += "name=" + singleResult.getName() + ", ";
                 output += "id=" + singleResult.getId() + ", ";

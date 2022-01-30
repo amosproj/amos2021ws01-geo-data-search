@@ -75,6 +75,7 @@ public class ApiController {
         OSMQuery osmQuery = new OSMQuery();
         if (nlpQueryResponse.getQueryObject().equals(NlpQueryResponse.QUERY_OBJECT_ELEVATION)) {
             osmQuery.setNatural("peak");
+            osmQuery.setHeight(nlpQueryResponse.getRouteAttributes().getHeight());
         } else if (nlpQueryResponse.getQueryObject().equals(NlpQueryResponse.QUERY_OBJECT_PLACE)) {
             osmQuery.setAmenity("restaurant");
         }
@@ -85,8 +86,10 @@ public class ApiController {
 
     private void adjustTypeValues(List<ApiResult> result, NlpQueryResponse nlpQueryResponse) {
         for (int i = 0; i < result.size(); i++) {
-            if (result.get(0).getType().equalsIgnoreCase("Unknown")) {
-                result.get(0).setType(nlpQueryResponse.getQueryObject());
+            if (result.get(i).getType().equalsIgnoreCase("Unknown")
+                    || result.get(i).getType().equalsIgnoreCase("node"))
+            {
+                result.get(i).setType(nlpQueryResponse.getQueryObject());
             }
         }
     }

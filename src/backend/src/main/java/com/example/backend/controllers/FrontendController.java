@@ -21,7 +21,7 @@ import java.util.List;
 @RequestMapping("/backend")
 public class FrontendController {
 
-    public static final String BACKEND_VERSION = "0.10.1";
+    public static final String BACKEND_VERSION = "0.11.0";
     private final NlpClient nlpClient;
     private final ApiController apiController;
     private final Logger logger = LogManager.getLogger("FRONTEND_CONTROLLER");

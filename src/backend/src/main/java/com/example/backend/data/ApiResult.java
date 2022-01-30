@@ -15,4 +15,6 @@ public interface ApiResult {
     String getName();
 
     String getPolyline();
+
+    String getApi();
 }

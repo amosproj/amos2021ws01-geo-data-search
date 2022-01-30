@@ -19,4 +19,4 @@ jobs:
       - name: build nlp
         run: docker compose up -d --build nlp
       - name: running nlp tests
-        run: docker compose exec nlp pytest
+        run: docker compose exec -T nlp pytest

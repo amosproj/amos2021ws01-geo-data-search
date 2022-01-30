@@ -27,7 +27,7 @@ app = FastAPI(title=APP_TITLE)
 
 
 def write_log_to_file(text):
-    log_dir = pathlib.Path(f'{CURRENT_DIR}{SEP}logs{SEP}')
+    log_dir = pathlib.Path(f'{SEP}tmp{SEP}logs{SEP}')
     file_path = f"{log_dir}{SEP}log_{datetime.now().date()}"
     with open(file_path, "a") as logfile:
         logfile.write(f"{datetime.now()} {text}\n")
@@ -45,7 +45,7 @@ async def root():
 )
 async def get_version():
     logging.info("Requested current version number")
-    return {"version": "0.10.1"}
+    return {"version": "0.11.0"}
 
 
 @app.get(
