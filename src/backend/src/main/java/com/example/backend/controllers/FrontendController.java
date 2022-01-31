@@ -4,8 +4,11 @@ import com.example.backend.clients.NlpClient;
 import com.example.backend.clients.OsmApiClient;
 import com.example.backend.data.ApiResult;
 import com.example.backend.data.HttpResponse;
+import com.example.backend.data.api.NodeInfo;
 import com.example.backend.data.http.Error;
 import com.example.backend.data.http.*;
+import com.example.backend.data.kml.KML;
+import com.example.backend.data.kml.KMLPlaceMark;
 import com.example.backend.helpers.*;
 import com.google.gson.Gson;
 import org.apache.logging.log4j.LogManager;
@@ -68,6 +71,15 @@ public class FrontendController {
         if (!logger.isDebugEnabled()) {
             logger.info("Sending this respond to FRONTEND:\n" + response.toStringWithoutPolyline());
         }
+
+        KML kml = null;
+        if (!response.getResult().isEmpty() && response.getResult().get(0) instanceof NodeInfo) {
+            //OSM node info results
+            kml = new KMLPlaceMark.Builder().from(response.getResult());
+        } else if (!response.getResult().isEmpty()) {
+            //Here Api Routing result
+        }
+        logger.debug("Here is the generated KML file: \n " + kml);
         logger.debug("Sending this respond to FRONTEND:\n" + response.toStringWithPolyline());
         logger.info("+ -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +");
         return response;
