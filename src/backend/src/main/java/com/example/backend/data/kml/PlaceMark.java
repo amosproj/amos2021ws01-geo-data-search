@@ -46,6 +46,6 @@ public class PlaceMark {
     }
 
     public String getCoordinates() {
-        return String.format("%s,%s,0", getLat(), getLon());
+        return String.format("%s, %s, 0", getLon(), getLat());
     }
 }
