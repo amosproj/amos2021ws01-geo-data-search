@@ -9,6 +9,7 @@ import com.example.backend.data.http.Error;
 import com.example.backend.data.http.*;
 import com.example.backend.data.kml.KML;
 import com.example.backend.data.kml.KMLPlaceMark;
+import com.example.backend.data.kml.KMLRoute;
 import com.example.backend.helpers.*;
 import com.google.gson.Gson;
 import org.apache.logging.log4j.LogManager;
@@ -78,6 +79,7 @@ public class FrontendController {
             kml = new KMLPlaceMark.Builder().from(response.getResult());
         } else if (!response.getResult().isEmpty()) {
             //Here Api Routing result
+            kml = new KMLRoute.Builder().from(response.getResult());
         }
         logger.debug("Here is the generated KML file: \n " + kml);
         logger.debug("Sending this respond to FRONTEND:\n" + response.toStringWithPolyline());
