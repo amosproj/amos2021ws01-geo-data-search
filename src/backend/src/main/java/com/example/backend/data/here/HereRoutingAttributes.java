@@ -25,7 +25,6 @@ public class HereRoutingAttributes {
     private String returnType = "summary";
     private RoutingWaypoint startLocation;
     private RoutingWaypoint finishLocation;
-    private boolean routeAttributesSpecified;
 
     /**
      * @param hereApiRestService we need this service to get the coordinates for the origin and destination of the requested route
@@ -101,10 +100,6 @@ public class HereRoutingAttributes {
      * @throws MissingLocationException when the NlpQueryResponse contains no location, this exception will be thrown
      */
     public void extractRoutingAttributes(NlpQueryResponse nlpQueryResponse) throws MissingLocationException, LocationNotFoundException, InvalidCalculationRequest {
-        if (!checkIfRouteAttributesMinMaxAreSet(nlpQueryResponse) && nlpQueryResponse.getLocation().equals("")) {
-            logger.error("No value found for location! Abort!");
-            throw new MissingLocationException("The value for \"location\" cannot be empty when trying to calculate a route!");
-        }
         extractOriginLocation(nlpQueryResponse);
         extractDestinationLocation(nlpQueryResponse);
         extractTollRoads(nlpQueryResponse);
@@ -116,47 +111,38 @@ public class HereRoutingAttributes {
         int minLength = nlpQueryResponse.getRouteAttributes().getLength().getMin();
         if (maxLength != 0) {
             logger.info("NlpQueryResponse includes specified RouteAttributes: route max length = " + maxLength);
-            routeAttributesSpecified = true;
             return true;
         }
         if (minLength != 0) {
             logger.info("NlpQueryResponse includes specified RouteAttributes: route min length = " + minLength);
-            routeAttributesSpecified = true;
             return true;
         }
-        routeAttributesSpecified = false;
         return false;
     }
 
     private void extractOriginLocation(NlpQueryResponse nlpQueryResponse) throws LocationNotFoundException {
-        String[] locations = nlpQueryResponse.getLocation().split(LOCATIONS_SEPARATOR);
+        String extractedOriginLocation = nlpQueryResponse.getRouteAttributes().getRouteOrigin();
         RoutingWaypoint startLocation;
-        if (routeAttributesSpecified) {
-            startLocation = callHereApiToRetrieveCoordinatesForLocation(locations[0]);
+        if(extractedOriginLocation != null && !extractedOriginLocation.isEmpty()){
+            startLocation = callHereApiToRetrieveCoordinatesForLocation(extractedOriginLocation);
             logger.info("We will take this value as the START of the route: \"" + startLocation.getName() + "\"");
-        } else if (locations.length > 1 && !locations[1].isEmpty()) {
-            startLocation = callHereApiToRetrieveCoordinatesForLocation(locations[0]);
-            logger.info("We will take this value as the START of the route: \"" + startLocation.getName() + "\"");
-        } else {
+        }else{
             startLocation = DEFAULT_START_LOCATION;
             logger.info("No location found to START our route! We will take this one as default: \"" + startLocation.getName() + "\"");
         }
         this.startLocation = startLocation;
     }
 
-    private void extractDestinationLocation(NlpQueryResponse nlpQueryResponse) throws LocationNotFoundException, InvalidCalculationRequest {
-        String[] locations = nlpQueryResponse.getLocation().split(LOCATIONS_SEPARATOR);
-        String nameOfDesiredFinishLocation;
-        if (routeAttributesSpecified) {
+    private void extractDestinationLocation(NlpQueryResponse nlpQueryResponse) throws LocationNotFoundException, InvalidCalculationRequest, MissingLocationException {
+        String extractedDestinationLocation = nlpQueryResponse.getRouteAttributes().getRouteDestination();
+        if (checkIfRouteAttributesMinMaxAreSet(nlpQueryResponse)) {
             RouteAttributesCalculator rac = new RouteAttributesCalculator(hereApiRestService);
             this.finishLocation = rac.getDestinationOnGivenRouteAttributes(startLocation, nlpQueryResponse.getRouteAttributes());
             this.finishLocation.setName("Random destination");
-        } else if (locations.length > 1 && !locations[1].isEmpty()) {
-            nameOfDesiredFinishLocation = locations[1];
-            this.finishLocation = callHereApiToRetrieveCoordinatesForLocation(nameOfDesiredFinishLocation);
+        } else if (extractedDestinationLocation != null && !extractedDestinationLocation.isEmpty()) {
+            this.finishLocation = callHereApiToRetrieveCoordinatesForLocation(extractedDestinationLocation);
         } else {
-            nameOfDesiredFinishLocation = locations[0];
-            this.finishLocation = callHereApiToRetrieveCoordinatesForLocation(nameOfDesiredFinishLocation);
+            throw new MissingLocationException("Destination location missing! No route calculation possible!");
         }
         logger.info("We will take this value as the END of the route: \"" + finishLocation.getName() + "\"");
     }

@@ -18,14 +18,20 @@ public class RouteAttributes {
     private final Boolean chargingStations;
     @SerializedName("toll_road_avoidance")
     private final Boolean toll_road_avoidance;
+    @SerializedName("location_start")
+    private final String routeOrigin;
+    @SerializedName("location_end")
+    private final String routeDestination;
 
-    public RouteAttributes(Height height, Length length, Gradient gradient, Curves curves, Boolean charging_stations, Boolean toll_road_avoidance) {
+    public RouteAttributes(Height height, Length length, Gradient gradient, Curves curves, Boolean charging_stations, Boolean toll_road_avoidance, String routeOrigin, String routeDestination) {
         this.height = height;
         this.length = length;
         this.gradient = gradient;
         this.curves = curves;
         this.chargingStations = charging_stations;
         this.toll_road_avoidance = toll_road_avoidance;
+        this.routeOrigin = routeOrigin;
+        this.routeDestination = routeDestination;
     }
 
     public Height getHeight() {
@@ -52,6 +58,14 @@ public class RouteAttributes {
         return toll_road_avoidance;
     }
 
+    public String getRouteOrigin() {
+        return routeOrigin;
+    }
+
+    public String getRouteDestination() {
+        return routeDestination;
+    }
+
     @Override
     public String toString() {
         return "RouteAttributes{" +
@@ -61,14 +75,8 @@ public class RouteAttributes {
                 "\n\t\tcurves = " + curves +
                 "\n\t\tcharging_stations = " + chargingStations +
                 "\n\t\ttoll_road_avoidance = " + toll_road_avoidance +
+                "\n\t\trouteOrigin = " + routeOrigin +
+                "\n\t\trouteDestination = " + routeDestination +
                 "\n\t\t}";
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        RouteAttributes that = (RouteAttributes) o;
-        return Objects.equals(height, that.height) && Objects.equals(length, that.length) && Objects.equals(gradient, that.gradient) && Objects.equals(curves, that.curves) && Objects.equals(chargingStations, that.chargingStations) && Objects.equals(toll_road_avoidance, that.toll_road_avoidance);
     }
 }
