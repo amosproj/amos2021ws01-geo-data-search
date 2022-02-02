@@ -2,7 +2,6 @@ package com.example.backend.data.kml;
 
 import com.example.backend.controllers.HereApiRestService;
 import com.example.backend.data.ApiResult;
-import com.google.maps.model.EncodedPolyline;
 import org.jdom2.Element;
 
 import java.util.List;
@@ -97,7 +96,6 @@ public class KMLRoute extends KML {
         private void findRoute(List<ApiResult> apiResultList) {
             String polyLine = apiResultList.get(0).getPolyline();
             //Need to add @ at the end of the polyline, it is missing in the here api
-            EncodedPolyline a = new EncodedPolyline(polyLine + "@");
             List<PolylineEncoderDecoder.LatLngZ> decodedPath = PolylineEncoderDecoder.decode(polyLine);
 
             StringBuilder sBuilder = new StringBuilder();
