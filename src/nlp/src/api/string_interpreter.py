@@ -1,4 +1,5 @@
 import logging
+
 LOGGER = logging.getLogger("[STRING INTERPRETER]")
 
 import os
@@ -9,7 +10,8 @@ from typing import Optional
 import spacy
 from pydantic.dataclasses import dataclass
 
-from .helper_service import convert_number_to_meter, check_similarity, check_similarity_in_list, get_keyword_from_synonyms
+from .helper_service import convert_number_to_meter, check_similarity, check_similarity_in_list, \
+    get_keyword_from_synonyms
 from .utils import get_entity_synonyms, get_alias_synonyms
 
 # get os specific file separator
@@ -50,15 +52,8 @@ def process_string(string: str) -> object:
 def get_query(string: str) -> object:
     LOGGER.info("Received Request \"%s\"", string)
 
-    default_tokens = nlp_default(string)
+    default_tokens = nlp_default(string.replace("?", "").replace("!", "").strip() + " ")
     result = Query()
-
-    for token in default_tokens:
-        # save found location
-        if token.ent_type_ == "LOC" and not token.is_punct:
-            if result.location != "":
-                result.location += ", "
-            result.location += token.lemma_
 
     # tokens of NER model
     ner_tokens = ner_model(string)
@@ -78,10 +73,10 @@ def get_query(string: str) -> object:
     token_keywords = []
     for index in range(ner_token_count):
         token = ner_tokens[index]
-
         # save query object
         if token.ent_type_ == "queryObject":
-            result.query_object = get_keyword_from_synonyms(token.lemma_, "route", query_object_synonyms)
+            query_object = get_keyword_from_synonyms(token.lemma_, "route", query_object_synonyms)
+            result.query_object = query_object
 
         # extract information about amount parameter
         if token.ent_type_ == "amount":
@@ -105,11 +100,43 @@ def get_query(string: str) -> object:
     if result.query_object == "":
         result.query_object = "route"
 
+    # determines the type of location(e.g, start location) for routes found by the default model
+    if result.query_object == "route":
+        query_tokens = []
+        locations = {}
+        # adds query tokens to query_tokens and replaces tokens labeled as location with default string "location"
+        for index in range(len(default_tokens)):
+            token = default_tokens[index]
+            if token.ent_type_ == "LOC":
+                query_tokens.append("location")
+
+                # saves index of location token
+                locations[index] = token.lemma_
+            else:
+                query_tokens.append(token.text)
+
+        # composes the array of tokens to a string
+        query = ' '.join(map(str, query_tokens))
+        location_tokens = ner_model(query)
+
+        # saves the token to the corresponding attribute in query object
+        for index in range(len(location_tokens)):
+            token = location_tokens[index]
+            if token.ent_type_ == "regionStart":
+                result.route_attributes.location_start = default_tokens[index].lemma_
+            elif token.ent_type_ == "regionEnd":
+                result.route_attributes.location_end = default_tokens[index].lemma_
+            elif token.ent_type_ == "region":
+                result.route_attributes.location_start = default_tokens[index].lemma_
+    else:
+        for token in default_tokens:
+            if token.ent_type_ == "LOC":
+                result.location = token.lemma_
+
     return resolve_extracted_query_parameters(result, token_keywords)
 
 
 def resolve_extracted_query_parameters(result, token_keywords: []) -> object:
-
     # try to apply all extracted parameters to query object
     unresolved_keywords = apply_query_parameters(token_keywords, result)
 
@@ -271,7 +298,8 @@ def get_query_parameters(origin: int, tokens: [spacy.tokens.token.Token]) -> (st
     return param_1, param_2, unit
 
 
-def get_token_dependencies(origin: int, tokens: [spacy.tokens.token.Token], discovery_right: int = 3, discovery_left: int = 3,
+def get_token_dependencies(origin: int, tokens: [spacy.tokens.token.Token], discovery_right: int = 3,
+                           discovery_left: int = 3,
                            stop_on_amount: bool = True) -> ([spacy.tokens.token.Token], str):
     """
     Extracts dependencies of a token, starting its search to the left, then to the right
@@ -367,7 +395,7 @@ def check_feature(tokens: spacy.tokens.doc.Doc, feature="charging_station"):
                     return False
 
         # check in-token-negation
-        if feature == "toll_road" and check_similarity_in_list( normalized_token, toll_free_synonyms, threshold=0.85):
+        if feature == "toll_road" and check_similarity_in_list(normalized_token, toll_free_synonyms, threshold=0.85):
             return False
 
     if feature == "toll_road":
@@ -435,6 +463,8 @@ class Curves(CurveAttributes):
 
 @dataclass
 class RouteAttributes:
+    location_start: Optional[str]
+    location_end: Optional[str]
     height: Optional[BaseAttributes]
     length: Optional[BaseAttributes]
     gradiant: Optional[GradiantAttributes]
@@ -449,6 +479,8 @@ class RouteAttributes:
         self.curves = Curves()
         self.charging_stations = False
         self.toll_road_avoidance = False
+        self.location_start = ""
+        self.location_end = ""
 
 
 @dataclass
@@ -487,6 +519,3 @@ class TokenKeywords:
 # print(get_query("Finde eine Strecke in Italien mit mindestens 10 meilen länge in einer lage über 1000  mit einem Anteil von 500 kilometer Linkskurven mit einem Anteil von 600m Steigung über 7% auf einer Höhe von maximal 10"))
 # print(get_query("Plane mir eine Route nach Paris mit einem Anteil von 500 meter Steigung von maximal 7% mit eine Ladestationen") )
 print(get_query("Zeige mir Berge in Hamburg mit einer Höhe von 1 kilometern"))
-
-
-

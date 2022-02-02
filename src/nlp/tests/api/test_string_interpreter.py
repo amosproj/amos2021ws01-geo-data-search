@@ -78,16 +78,32 @@ def get_toll_roads_test_data():
     return queries
 
 
+def get_route_locations_test_data():
+    queries = [
+        ["Plane mir eine Route von Berlin nach Paris mit einer Steigung von maximal 7% ohne mautstellen", ["Berlin","Paris"]],
+        ["Gibt es kostenfreie Routen von München nach Köln", ["München", "Köln"]],
+        ["Plane mir eine Route nach Paris mit Berlin als Startort", ["Berlin", "Paris"]],
+        ["Plane mir eine Route mit Berlin als Start und Paris als Ziel mit einer Steigung von mindestens 22% mit etankstellen und maut", ["Berlin","Paris"]],
+        ["Plane mir eine Route von Paris und Berlin als Zielpunkt", ["Paris","Berlin"]],
+        ["Plane mir eine Route nach Berlin mit Paris als Startpunkt mit gebühr", ["Paris","Berlin"]],
+        ["Plane mir eine Route nach Berlin und mit Paris als Start", ["Paris","Berlin"]],
+        ["Plane mir eine Route mit dem Zielort Berlin und dem Startort Paris", ["Paris","Berlin"]]
+    ]
+    return queries
+
+
 def get_query_test_data():
     queries = []
     query = Query()
-    query.location = "Paris"
+    query.route_attributes.location_end = "Paris"
     query.query_object = "route"
     query.route_attributes.gradiant.max = 7
     queries.append(["Plane mir eine Route nach Paris mit einer Steigung von maximal 7%", query])
 
     query = Query()
-    query.location = "Essen, Köln"
+    query.location = ""
+    query.route_attributes.location_start = "Essen"
+    query.route_attributes.location_end = "Köln"
     query.query_object = "route"
     query.route_attributes.gradiant.max = 7
     queries.append(["Zeige mir einen Weg von Essen nach Köln mit einer Steigung von maximal 7", query])
@@ -99,7 +115,7 @@ def get_query_test_data():
     queries.append(["Gibt es Hügel in Berlin mit einer Höhe von mindestens 1000 metern", query])
 
     query = Query()
-    query.location = "Spanien"
+    query.route_attributes.location_start = "Spanien"
     query.query_object = "route"
     query.route_attributes.length.min = 10000
     query.route_attributes.height.min = 1000
@@ -112,7 +128,8 @@ def get_query_test_data():
     queries.append([" Zeige mir Berge mit einer Höhe von 1 meile in Hamburg", query])
 
     query = Query()
-    query.location = "Bremerhaven, Lübeck"
+    query.route_attributes.location_start = "Bremerhaven"
+    query.route_attributes.location_end = "Lübeck"
     query.query_object = "route"
     queries.append(["Wie komme ich von Bremerhaven nach Lübeck?", query])
     return queries
@@ -153,6 +170,13 @@ def test_toll_roads(query):
     result = get_query(query[0])
     assert result.route_attributes.toll_road_avoidance == query[1]
 
+@pytest.mark.parametrize("query", get_route_locations_test_data())
+def test_route_locations(query):
+    result = get_query(query[0])
+    assert result.location == ""
+    assert result.route_attributes.location_start == query[1][0]
+    assert result.route_attributes.location_end == query[1][1]
+
 
 def test_default_keyword():
     result = get_query("Wo sind Almen in Brandenburg")
@@ -178,7 +202,7 @@ def test_long_string_interpretation():
         "Finde eine Strecke in Italien mit mindestens 10km länge in einer lage über 1000m mit einem Anteil von 500m Linkskurven mit einem Anteil von 600m Steigung über 7% auf einer Höhe von maximal 10000 Metern"
     )
 
-    assert result.location == "Italien"
+    assert result.route_attributes.location_start == "Italien"
     assert result.query_object == "route"
     assert result.route_attributes.height.max == 10000
 
