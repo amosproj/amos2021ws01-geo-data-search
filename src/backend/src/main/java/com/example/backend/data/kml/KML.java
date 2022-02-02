@@ -78,6 +78,13 @@ public abstract class KML {
 
         public abstract KML build();
 
+        /**
+         * gets the result list and creates the KMLPlaceMark or
+         * KMLRoute object depending on the results
+         *
+         * @param apiResultList result list
+         * @return KML object
+         */
         public KML from(List<ApiResult> apiResultList) {
             if (apiResultList == null || apiResultList.isEmpty()) return null;
             if (apiResultList.get(0) instanceof NodeInfo) {

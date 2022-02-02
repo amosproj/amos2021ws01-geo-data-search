@@ -64,6 +64,12 @@ public class KMLRoute extends KML {
             return new KMLRoute(this);
         }
 
+        /**
+         * adds Start, Target PlaceMarkers and add the route to the KML
+         *
+         * @param apiResultList result list
+         * @return generated KML object
+         */
         @Override
         protected KML forRoute(List<ApiResult> apiResultList) {
             findStartTargetPoints(apiResultList);
@@ -82,9 +88,13 @@ public class KMLRoute extends KML {
             return null;
         }
 
+        /**
+         * finds and initializes the starting and target PlaceMark
+         *
+         * @param apiResultList result list
+         */
         private void findStartTargetPoints(List<ApiResult> apiResultList) {
             for (ApiResult apiResult : apiResultList) {
-                System.out.println("apiResult: "+apiResult);
                 if (apiResult.getType().equalsIgnoreCase(HereApiRestService.TYPE_START)) {
                     startingPoint = new PlaceMark(HereApiRestService.TYPE_START, null, apiResult.getLat(), apiResult.getLon());
                 } else if (apiResult.getType().equalsIgnoreCase(HereApiRestService.TYPE_FINISH)) {
@@ -93,6 +103,11 @@ public class KMLRoute extends KML {
             }
         }
 
+        /**
+         * gets the polyline object, decodes and creates the coordinate string from it
+         *
+         * @param apiResultList result list
+         */
         private void findRoute(List<ApiResult> apiResultList) {
             String polyLine = apiResultList.get(0).getPolyline();
             //Need to add @ at the end of the polyline, it is missing in the here api
