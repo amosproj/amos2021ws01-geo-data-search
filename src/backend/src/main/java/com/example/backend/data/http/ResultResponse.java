@@ -12,6 +12,7 @@ public class ResultResponse implements HttpResponse {
 
     private static final String SUPER_TAB = "\t\t\t\t\t\t\t\t\t\t\t";
     List<ApiResult> result;
+    String fileName = "example.kml";
 
     public ResultResponse(List<ApiResult> result) {
         this.result = result;
@@ -21,11 +22,17 @@ public class ResultResponse implements HttpResponse {
         return result;
     }
 
+    public String getFileName() {
+        return fileName;
+    }
+
     public String toStringWithPolyline() {
         String output = SUPER_TAB + "ResultResponse: ";
         if (result == null) {
             output += "NULL";
         } else {
+            output += "\n" + SUPER_TAB;
+            output += "fileName=" + fileName;
             for (ApiResult singleResult : result) {
                 output += "\n" + SUPER_TAB + "{";
                 output += "api=" + singleResult.getApi() + ", ";
@@ -46,6 +53,8 @@ public class ResultResponse implements HttpResponse {
         if (result == null) {
             output += "NULL";
         } else {
+            output += "\n" + SUPER_TAB;
+            output += "fileName=" + fileName;
             for (ApiResult singleResult : result) {
                 String polyline = singleResult.getPolyline();
                 if (!singleResult.getPolyline().isEmpty()) {
