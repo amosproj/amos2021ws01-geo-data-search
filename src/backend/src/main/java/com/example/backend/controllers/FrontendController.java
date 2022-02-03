@@ -14,10 +14,17 @@ import com.example.backend.helpers.*;
 import com.google.gson.Gson;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.*;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 
@@ -83,6 +90,30 @@ public class FrontendController {
         }
         logger.debug("Here is the generated KML file: \n " + kml);
         logger.debug("Sending this respond to FRONTEND:\n" + response.toStringWithPolyline());
+        File file = searchAndGetFile("example.kml");
+        logger.info(file.toString());
+        if (false) {
+            StringBuilder content = new StringBuilder();
+            InputStreamReader streamReader;
+            BufferedReader reader;
+            FileInputStream inputStream = null;
+            try {
+                if (file.exists() && !file.isDirectory()) {
+                    inputStream = new FileInputStream(file);
+                    streamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
+                    reader = new BufferedReader(streamReader);
+                    String currentLine = "";
+                    while ((currentLine = reader.readLine()) != null) {
+                        content.append(currentLine + "\n");
+                    }
+                } else {
+                    // nix
+                }
+            } catch (NullPointerException | IOException e) {
+                logger.error(e.getMessage());
+            }
+            logger.info("CONTENT=" + content.toString());
+        }
         logger.info("+ -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +");
         return response;
     }
@@ -138,5 +169,32 @@ public class FrontendController {
         }
 
         return new VersionResponse(Version.createVersion(BACKEND_VERSION, nlpVersion));
+    }
+
+    private File searchAndGetFile(String filename) {
+        String SEP = File.separator;
+        // TODO Replace hardcoded filename with parameter
+        return new File(SEP + "app" + SEP + "BOOT-INF" + SEP + "classes" + SEP + "example.kml");
+    }
+
+    // http://localhost:8080/kml?fileName=example.kml
+    // Using ResponseEntity<ByteArrayResource>
+    @GetMapping("/kml")
+    public ResponseEntity<ByteArrayResource> downloadKmlFile(
+            @RequestParam(defaultValue = "example.kml") String fileName) throws IOException {
+        logger.info("KML file request received!");
+        logger.info("fileName: " + fileName);
+        Path path = searchAndGetFile(fileName).toPath();
+        byte[] data = Files.readAllBytes(path);
+        ByteArrayResource resource = new ByteArrayResource(data);
+
+        return ResponseEntity.ok()
+                // Content-Disposition
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + path.getFileName().toString())
+                // Content-Type
+                .contentType(MediaType.parseMediaType("application/vnd.google-earth.kml+xml")) //
+                // Content-Length
+                .contentLength(data.length) //
+                .body(resource);
     }
 }

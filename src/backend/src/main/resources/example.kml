@@ -1,0 +1,1114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+<Folder id="results">
+	<name>A103</name>
+	<Style id="dir_step">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.gstatic.com/mapfiles/kml/paddle/pause.png</href>
+			</Icon>
+		</IconStyle>
+		<BalloonStyle>
+			<text><![CDATA[<div>$[description]</div><div>$[geDirections]</div>]]></text>
+			<textColor>ff000000</textColor>
+			<displayMode>default</displayMode>
+		</BalloonStyle>
+	</Style>
+	<Placemark id="1.1">
+		<address>Innsbrucker Platz 4</address>
+		<styleUrl>#dir_startpoint</styleUrl>
+		<Point>
+			<coordinates>13.3440841,52.4790551,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="1.2">
+		<address>Am Elsenbruch 1</address>
+		<styleUrl>#dir_endpoint</styleUrl>
+		<Point>
+			<coordinates>13.33091,52.44239,0</coordinates>
+		</Point>
+	</Placemark>
+	<Folder id="1.3">
+		<name>A103</name>
+		<Style id="dir_route">
+			<LineStyle>
+				<color>7fa00000</color>
+				<colorMode>normal</colorMode>
+				<width>6</width>
+			</LineStyle>
+		</Style>
+		<Placemark id="1.3.2.2.2">
+			<name>Auf Hauptstraße/Innsbrucker Platz nach Südwesten Richtung Wexstraße starten</name>
+			<description>Auf Hauptstraße/Innsbrucker Platz nach Südwesten Richtung Wexstraße starten</description>
+			<LookAt>
+				<longitude>13.3442949</longitude>
+				<latitude>52.4788777</latitude>
+				<altitude>0</altitude>
+				<heading>-139.3147</heading>
+				<tilt>45</tilt>
+				<range>360</range>
+			</LookAt>
+			<styleUrl>#dir_step</styleUrl>
+			<Region>
+				<LatLonAltBox>
+					<north>52.5788777</north>
+					<south>52.3788777</south>
+					<east>13.4442949</east>
+					<west>13.2442949</west>
+					<minAltitude>0</minAltitude>
+					<maxAltitude>0</maxAltitude>
+					<altitudeMode>absolute</altitudeMode>
+				</LatLonAltBox>
+				<Lod>
+					<minLodPixels>512</minLodPixels>
+					<maxLodPixels>-1</maxLodPixels>
+					<minFadeExtent>0</minFadeExtent>
+					<maxFadeExtent>0</maxFadeExtent>
+				</Lod>
+			</Region>
+			<Point>
+				<coordinates>13.3442949,52.4788777,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark id="1.3.2.2.3">
+			<name>Bei Wexstraße links abbiegen</name>
+			<description>Bei Wexstraße links abbiegen</description>
+			<LookAt>
+				<longitude>13.3440154</longitude>
+				<latitude>52.4786662</latitude>
+				<altitude>0</altitude>
+				<heading>-142.80885</heading>
+				<tilt>45</tilt>
+				<range>360</range>
+			</LookAt>
+			<styleUrl>#dir_step</styleUrl>
+			<Region>
+				<LatLonAltBox>
+					<north>52.5786662</north>
+					<south>52.3786662</south>
+					<east>13.4440154</east>
+					<west>13.2440154</west>
+					<minAltitude>0</minAltitude>
+					<maxAltitude>0</maxAltitude>
+					<altitudeMode>absolute</altitudeMode>
+				</LatLonAltBox>
+				<Lod>
+					<minLodPixels>512</minLodPixels>
+					<maxLodPixels>-1</maxLodPixels>
+					<minFadeExtent>0</minFadeExtent>
+					<maxFadeExtent>0</maxFadeExtent>
+				</Lod>
+			</Region>
+			<Point>
+				<coordinates>13.3440154,52.47866619999999,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark id="1.3.2.2.4">
+			<name>Die Auffahrt auf A 100 nehmen</name>
+			<description>Die Auffahrt auf A 100 nehmen</description>
+			<LookAt>
+				<longitude>13.3447144</longitude>
+				<latitude>52.4781195</latitude>
+				<altitude>0</altitude>
+				<heading>125.64699</heading>
+				<tilt>45</tilt>
+				<range>360</range>
+			</LookAt>
+			<styleUrl>#dir_step</styleUrl>
+			<Region>
+				<LatLonAltBox>
+					<north>52.5781195</north>
+					<south>52.3781195</south>
+					<east>13.4447144</east>
+					<west>13.2447144</west>
+					<minAltitude>0</minAltitude>
+					<maxAltitude>0</maxAltitude>
+					<altitudeMode>absolute</altitudeMode>
+				</LatLonAltBox>
+				<Lod>
+					<minLodPixels>512</minLodPixels>
+					<maxLodPixels>-1</maxLodPixels>
+					<minFadeExtent>0</minFadeExtent>
+					<maxFadeExtent>0</maxFadeExtent>
+				</Lod>
+			</Region>
+			<Point>
+				<coordinates>13.3447144,52.47811949999999,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark id="1.3.2.3.2">
+			<name>Auf A 100 fahren</name>
+			<description>Auf A 100 fahren</description>
+			<LookAt>
+				<longitude>13.3470558</longitude>
+				<latitude>52.4765589</latitude>
+				<altitude>0</altitude>
+				<heading>128.37863</heading>
+				<tilt>45</tilt>
+				<range>360</range>
+			</LookAt>
+			<styleUrl>#dir_step</styleUrl>
+			<Region>
+				<LatLonAltBox>
+					<north>52.5765589</north>
+					<south>52.3765589</south>
+					<east>13.4470558</east>
+					<west>13.2470558</west>
+					<minAltitude>0</minAltitude>
+					<maxAltitude>0</maxAltitude>
+					<altitudeMode>absolute</altitudeMode>
+				</LatLonAltBox>
+				<Lod>
+					<minLodPixels>512</minLodPixels>
+					<maxLodPixels>-1</maxLodPixels>
+					<minFadeExtent>0</minFadeExtent>
+					<maxFadeExtent>0</maxFadeExtent>
+				</Lod>
+			</Region>
+			<Point>
+				<coordinates>13.3470558,52.47655889999999,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark id="1.3.2.3.3">
+			<name>Am Autobahnkreuz 18-Kreuz Schöneberg rechts halten und den Schildern A103 in Richtung Steglitz folgen</name>
+			<description>Am Autobahnkreuz 18-Kreuz Schöneberg rechts halten und den Schildern A103 in Richtung Steglitz folgen</description>
+			<LookAt>
+				<longitude>13.3482546</longitude>
+				<latitude>52.475614</latitude>
+				<altitude>0</altitude>
+				<heading>138.3973</heading>
+				<tilt>45</tilt>
+				<range>360</range>
+			</LookAt>
+			<styleUrl>#dir_step</styleUrl>
+			<Region>
+				<LatLonAltBox>
+					<north>52.575614</north>
+					<south>52.375614</south>
+					<east>13.4482546</east>
+					<west>13.2482546</west>
+					<minAltitude>0</minAltitude>
+					<maxAltitude>0</maxAltitude>
+					<altitudeMode>absolute</altitudeMode>
+				</LatLonAltBox>
+				<Lod>
+					<minLodPixels>512</minLodPixels>
+					<maxLodPixels>-1</maxLodPixels>
+					<minFadeExtent>0</minFadeExtent>
+					<maxFadeExtent>0</maxFadeExtent>
+				</Lod>
+			</Region>
+			<Point>
+				<coordinates>13.3482546,52.475614,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark id="1.3.2.3.4">
+			<name>An der Gabelung linkshalten, auf A103 bleiben und der Beschilderung für Wolfensteindamm/Lichterfelde folgen</name>
+			<description>An der Gabelung linkshalten, auf A103 bleiben und der Beschilderung für Wolfensteindamm/Lichterfelde folgen</description>
+			<LookAt>
+				<longitude>13.3234181</longitude>
+				<latitude>52.4567512</latitude>
+				<altitude>0</altitude>
+				<heading>-141.95155</heading>
+				<tilt>45</tilt>
+				<range>360</range>
+			</LookAt>
+			<styleUrl>#dir_step</styleUrl>
+			<Region>
+				<LatLonAltBox>
+					<north>52.5567512</north>
+					<south>52.3567512</south>
+					<east>13.4234181</east>
+					<west>13.2234181</west>
+					<minAltitude>0</minAltitude>
+					<maxAltitude>0</maxAltitude>
+					<altitudeMode>absolute</altitudeMode>
+				</LatLonAltBox>
+				<Lod>
+					<minLodPixels>512</minLodPixels>
+					<maxLodPixels>-1</maxLodPixels>
+					<minFadeExtent>0</minFadeExtent>
+					<maxFadeExtent>0</maxFadeExtent>
+				</Lod>
+			</Region>
+			<Point>
+				<coordinates>13.3234181,52.4567512,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark id="1.3.2.4.2">
+			<name>Links abbiegen auf Schloßstraße/Wolfensteindamm (Schilder nach Lichterfelde)</name>
+			<description>Links abbiegen auf Schloßstraße/Wolfensteindamm (Schilder nach Lichterfelde)</description>
+			<LookAt>
+				<longitude>13.31909</longitude>
+				<latitude>52.4545116</latitude>
+				<altitude>0</altitude>
+				<heading>-109.66316</heading>
+				<tilt>45</tilt>
+				<range>360</range>
+			</LookAt>
+			<styleUrl>#dir_step</styleUrl>
+			<Region>
+				<LatLonAltBox>
+					<north>52.5545116</north>
+					<south>52.3545116</south>
+					<east>13.41909</east>
+					<west>13.21909</west>
+					<minAltitude>0</minAltitude>
+					<maxAltitude>0</maxAltitude>
+					<altitudeMode>absolute</altitudeMode>
+				</LatLonAltBox>
+				<Lod>
+					<minLodPixels>512</minLodPixels>
+					<maxLodPixels>-1</maxLodPixels>
+					<minFadeExtent>0</minFadeExtent>
+					<maxFadeExtent>0</maxFadeExtent>
+				</Lod>
+			</Region>
+			<Point>
+				<coordinates>13.31909,52.4545116,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark id="1.3.2.4.3">
+			<name>Leicht links abbiegen auf Birkbuschstraße</name>
+			<description>Leicht links abbiegen auf Birkbuschstraße</description>
+			<LookAt>
+				<longitude>13.3195005</longitude>
+				<latitude>52.4528903</latitude>
+				<altitude>0</altitude>
+				<heading>170.02567</heading>
+				<tilt>45</tilt>
+				<range>360</range>
+			</LookAt>
+			<styleUrl>#dir_step</styleUrl>
+			<Region>
+				<LatLonAltBox>
+					<north>52.5528903</north>
+					<south>52.3528903</south>
+					<east>13.4195005</east>
+					<west>13.2195005</west>
+					<minAltitude>0</minAltitude>
+					<maxAltitude>0</maxAltitude>
+					<altitudeMode>absolute</altitudeMode>
+				</LatLonAltBox>
+				<Lod>
+					<minLodPixels>512</minLodPixels>
+					<maxLodPixels>-1</maxLodPixels>
+					<minFadeExtent>0</minFadeExtent>
+					<maxFadeExtent>0</maxFadeExtent>
+				</Lod>
+			</Region>
+			<Point>
+				<coordinates>13.3195005,52.4528903,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark id="1.3.2.4.4">
+			<name>Rechts abbiegen auf Teltowkanalstraße</name>
+			<description>Rechts abbiegen auf Teltowkanalstraße</description>
+			<LookAt>
+				<longitude>13.3314573</longitude>
+				<latitude>52.4435474</latitude>
+				<altitude>0</altitude>
+				<heading>159.99455</heading>
+				<tilt>45</tilt>
+				<range>360</range>
+			</LookAt>
+			<styleUrl>#dir_step</styleUrl>
+			<Region>
+				<LatLonAltBox>
+					<north>52.5435474</north>
+					<south>52.3435474</south>
+					<east>13.4314573</east>
+					<west>13.2314573</west>
+					<minAltitude>0</minAltitude>
+					<maxAltitude>0</maxAltitude>
+					<altitudeMode>absolute</altitudeMode>
+				</LatLonAltBox>
+				<Lod>
+					<minLodPixels>512</minLodPixels>
+					<maxLodPixels>-1</maxLodPixels>
+					<minFadeExtent>0</minFadeExtent>
+					<maxFadeExtent>0</maxFadeExtent>
+				</Lod>
+			</Region>
+			<Point>
+				<coordinates>13.3314573,52.4435474,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark id="1.3.2.4.5">
+			<name>Links abbiegen auf Am Elsenbruch</name>
+			<description>Links abbiegen auf Am Elsenbruch</description>
+			<LookAt>
+				<longitude>13.329932</longitude>
+				<latitude>52.4431648</latitude>
+				<altitude>0</altitude>
+				<heading>-112.36773</heading>
+				<tilt>45</tilt>
+				<range>360</range>
+			</LookAt>
+			<styleUrl>#dir_step</styleUrl>
+			<Region>
+				<LatLonAltBox>
+					<north>52.5431648</north>
+					<south>52.3431648</south>
+					<east>13.429932</east>
+					<west>13.229932</west>
+					<minAltitude>0</minAltitude>
+					<maxAltitude>0</maxAltitude>
+					<altitudeMode>absolute</altitudeMode>
+				</LatLonAltBox>
+				<Lod>
+					<minLodPixels>512</minLodPixels>
+					<maxLodPixels>-1</maxLodPixels>
+					<minFadeExtent>0</minFadeExtent>
+					<maxFadeExtent>0</maxFadeExtent>
+				</Lod>
+			</Region>
+			<Point>
+				<coordinates>13.329932,52.4431648,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark id="1.3.2">
+			<name>Route</name>
+			<styleUrl>#dir_route</styleUrl>
+			<LineString>
+				<coordinates>
+					13.3442949,52.4788777,0 13.3442949,52.4788777,0 13.3441756,52.4787971,0 13.3440731,52.478719,0 13.3440154,52.47866619999999,0 13.3439249,52.47858300000001,0 13.343826,52.4784877,0 13.343787,52.4784503,0 13.3439488,52.4784088,0 13.3441257,52.47835049999999,0 13.3442863,52.4782877,0 13.3443982,52.4782501,0 13.3444721,52.4782251,0 13.3445313,52.47820400000001,0 13.3445899,52.4781809,0 13.3446282,52.47816540000001,0 13.344676,52.4781412,0 13.3447144,52.47811949999999,0 13.3448473,52.4780337,0 13.3450155,52.47791830000001,0 13.3452537,52.4777742,0 13.3452975,52.4777475,0 13.3456614,52.47750509999999,0 13.345774,52.47742610000001,0 13.3460454,52.4772358,0 13.3461559,52.4771518,0 13.3463281,52.477024,0 13.3463767,52.4769871,0 13.3464063,52.4769649,0 13.3464465,52.4769351,0 13.346532,52.4768727,0 13.3467321,52.4767356,0 13.3468449,52.4766562,0 13.3469218,52.4766159,0 13.3470558,52.47655889999999,0 13.3471773,52.4764483,0 13.3474915,52.4761854,0 13.3477061,52.47601050000001,0 13.3479298,52.4758406,0 13.3480492,52.4757549,0 13.3482546,52.475614,0 13.3482919,52.4755163,0 13.3483003,52.4754895,0 13.34831,52.4754658,0 13.3483395,52.4753992,0 13.3483919,52.4753473,0 13.3484501,52.4752827,0 13.3485685,52.4751004,0 13.3486116,52.47500430000001,0 13.3486401,52.4749144,0 13.3486582,52.4748124,0 13.3486712,52.4747145,0 13.34867,52.47469510000001,0 13.3485959,52.4744734,0 13.3485704,52.4743631,0 13.3485328,52.474213,0 13.3484943,52.47413139999999,0 13.3484339,52.4740303,0 13.3483815,52.4739514,0 13.3483231,52.473876,0 13.3482582,52.47379519999999,0 13.3481879,52.4737166,0 13.3481673,52.4736936,0 13.3480657,52.47359970000001,0 13.3479672,52.4735094,0 13.3478053,52.4733818,0 13.347683,52.47329909999999,0 13.3475652,52.47322629999999,0 13.3474435,52.473157,0 13.3473137,52.4730868,0 13.347247,52.4730565,0 13.3468851,52.4729217,0 13.3467936,52.47288949999999,0 13.3466303,52.4728345,0 13.3466191,52.4728312,0 13.3465007,52.472796,0 13.3464001,52.4727661,0 13.3462068,52.4727136,0 13.3458524,52.4726246,0 13.3457934,52.4726089,0 13.3457597,52.4725966,0 13.3457037,52.472569,0 13.3455706,52.4725401,0 13.345351,52.4724833,0 13.3451219,52.4724202,0 13.3449397,52.4723688,0 13.3447648,52.4723042,0 13.3447014,52.47227480000001,0 13.3446063,52.47223579999999,0 13.344485,52.4721789,0 13.3443513,52.4721307,0 13.3442836,52.4721043,0 13.3441556,52.47205450000001,0 13.343962,52.4719719,0 13.3438504,52.4719236,0 13.343775,52.4718884,0 13.343772,52.471887,0 13.343594,52.4717943,0 13.3433133,52.4716272,0 13.3432588,52.471569,0 13.3432083,52.4714788,0 13.3430587,52.4713833,0 13.3428279,52.4712179,0 13.3427606,52.4711695,0 13.3425939,52.4710421,0 13.342465,52.47094389999999,0 13.3424553,52.4709362,0 13.3419959,52.4705716,0 13.3417819,52.4703974,0 13.3415565,52.4702182,0 13.3413678,52.4700665,0 13.3411648,52.4699056,0 13.3410207,52.46978550000001,0 13.3408767,52.4696654,0 13.3407509,52.4695699,0 13.340635,52.469475,0 13.3404965,52.4693644,0 13.3404567,52.4693335,0 13.3400768,52.4690354,0 13.3399611,52.4689408,0 13.3399176,52.4688992,0 13.339584,52.4686329,0 13.3395764,52.4686267,0 13.3393522,52.46844190000001,0 13.3392874,52.4683894,0 13.3390253,52.46817309999999,0 13.3386314,52.4678531,0 13.3384401,52.4676967,0 13.3379103,52.4672646,0 13.3378014,52.4671755,0 13.3374753,52.46690349999999,0 13.3372951,52.46675460000001,0 13.3371617,52.4666447,0 13.3368218,52.4663648,0 13.3367022,52.4662669,0 13.3364157,52.4660318,0 13.3363152,52.4659491,0 13.3362352,52.4658842,0 13.3361723,52.46583,0 13.3360724,52.4657471,0 13.3358997,52.4656075,0 13.3357242,52.4654732,0 13.3355688,52.465358,0 13.3355687,52.4653579,0 13.3354431,52.4652693,0 13.335254,52.46514880000001,0 13.335127,52.4650719,0 13.3349028,52.46496450000001,0 13.33469,52.4648706,0 13.3345278,52.4648055,0 13.334328,52.46473309999999,0 13.3341652,52.46467880000001,0 13.3340405,52.4646385,0 13.3339503,52.4646108,0 13.3337296,52.4645435,0 13.3334777,52.4644721,0 13.3333648,52.4644367,0 13.3332462,52.4644002,0 13.3331267,52.4643586,0 13.3330074,52.4643166,0 13.3329394,52.464294,0 13.3327287,52.4642144,0 13.332611,52.4641674,0 13.3324645,52.464104,0 13.3323658,52.4640567,0 13.3322574,52.4640032,0 13.3321879,52.4639655,0 13.3320993,52.4639158,0 13.3319746,52.4638407,0 13.3318315,52.4637452,0 13.3317552,52.4636906,0 13.3316744,52.46363,0 13.3315739,52.46355100000001,0 13.3315162,52.4635017,0 13.3314691,52.4634625,0 13.3313914,52.4633937,0 13.3313516,52.4633577,0 13.3313276,52.4633335,0 13.3312363,52.46324240000001,0 13.3306437,52.4626757,0 13.330606,52.4626377,0 13.3305772,52.4626114,0 13.3304947,52.4625338,0 13.3303462,52.46239670000001,0 13.3301819,52.46224720000001,0 13.3301019,52.4621765,0 13.3299825,52.46206399999999,0 13.3299588,52.46204349999999,0 13.3297904,52.4618984,0 13.3296676,52.461792,0 13.3295531,52.4616923,0 13.3294794,52.4616288,0 13.3293584,52.461525,0 13.3292056,52.4613941,0 13.3291015,52.4613058,0 13.3289531,52.4611804,0 13.3288331,52.4610799,0 13.3287333,52.4609976,0 13.3286627,52.4609387,0 13.3286201,52.46090349999999,0 13.3284996,52.4608051,0 13.3284086,52.4607306,0 13.3283056,52.4606456,0 13.3282105,52.46056500000001,0 13.3278969,52.4603097,0 13.3278198,52.4602497,0 13.3276659,52.4601288,0 13.3276261,52.4600989,0 13.3275753,52.4600593,0 13.3274813,52.4599854,0 13.3273722,52.4598986,0 13.3272349,52.4597896,0 13.3271688,52.4597369,0 13.3271313,52.4597069,0 13.3270309,52.4596268,0 13.3269349,52.4595505,0 13.3268115,52.4594509,0 13.3267091,52.4593672,0 13.3262252,52.458978,0 13.3259745,52.45878350000001,0 13.3259742,52.4587833,0 13.3257742,52.45862289999999,0 13.3256366,52.4585141,0 13.3255929,52.4584808,0 13.3255472,52.45844629999999,0 13.3253257,52.45827179999999,0 13.3252981,52.4582495,0 13.3250961,52.4580871,0 13.3250355,52.4580375,0 13.3249115,52.4579371,0 13.324767,52.45781819999999,0 13.3245896,52.4576742,0 13.3244922,52.4575973,0 13.3243733,52.4575055,0 13.3240024,52.45722,0 13.3238491,52.4570958,0 13.323748,52.45701709999999,0 13.3235596,52.4568589,0 13.323456,52.4567767,0 13.3234181,52.4567512,0 13.3231971,52.45655190000001,0 13.3230581,52.45644100000001,0 13.3229191,52.4563303,0 13.3227399,52.45618739999999,0 13.3226623,52.45612270000001,0 13.322561,52.4560441,0 13.3224442,52.4559539,0 13.3223971,52.4559176,0 13.3223375,52.4558728,0 13.3222769,52.4558287,0 13.3222195,52.4557863,0 13.3221657,52.4557467,0 13.3221053,52.4557054,0 13.3219968,52.4556306,0 13.3219315,52.4555885,0 13.3218778,52.4555532,0 13.3218056,52.4555134,0 13.3217594,52.455484,0 13.3217541,52.45548060000001,0 13.3216292,52.4554032,0 13.3215005,52.4553247,0 13.321384,52.4552582,0 13.321311,52.4552175,0 13.3212023,52.4551606,0 13.3211538,52.4551344,0 13.321121,52.455112,0 13.3210292,52.4550622,0 13.3209688,52.4550314,0 13.3209031,52.4549982,0 13.3208376,52.4549658,0 13.3207931,52.45494550000001,0 13.3207344,52.4549177,0 13.320651,52.45488310000001,0 13.3205642,52.4548493,0 13.3204878,52.454821,0 13.3204165,52.4547976,0 13.3202466,52.4547432,0 13.3201768,52.4547242,0 13.3200777,52.4546997,0 13.3199994,52.4546814,0 13.3197975,52.4546645,0 13.3195632,52.4546151,0 13.3191793,52.4545306,0 13.31909,52.4545116,0 13.3188441,52.4544566,0 13.3186423,52.4544136,0 13.3186143,52.45436,0 13.3185974,52.4543054,0 13.3185934,52.4542695,0 13.3185934,52.4542286,0 13.3185974,52.4541853,0 13.3186081,52.4541502,0 13.3186253,52.4541193,0 13.3186718,52.4540413,0 13.3188539,52.4538239,0 13.3191095,52.4535187,0 13.3192813,52.4533116,0 13.3193336,52.4532495,0 13.3193913,52.4531694,0 13.3194436,52.453082,0 13.3194731,52.45300759999999,0 13.3194879,52.4529479,0 13.3195005,52.4528903,0 13.3195643,52.4528011,0 13.3195966,52.4527625,0 13.3196329,52.4527343,0 13.3196688,52.4527111,0 13.3197072,52.45268480000001,0 13.3198013,52.4526584,0 13.3198914,52.4526344,0 13.3199746,52.4526009,0 13.3200107,52.4525774,0 13.3200483,52.45254919999999,0 13.3201257,52.4524691,0 13.3202499,52.4523292,0 13.3204631,52.4520836,0 13.3206387,52.4518879,0 13.3207509,52.4517603,0 13.3208362,52.4516834,0 13.3208805,52.4516491,0 13.3209214,52.45162029999999,0 13.3209582,52.4515991,0 13.3210878,52.4515404,0 13.3213996,52.4512933,0 13.3218373,52.4509591,0 13.3223291,52.450579,0 13.3233272,52.44984060000001,0 13.3237701,52.4495066,0 13.324442,52.448992,0 13.3247517,52.4487595,0 13.3248557,52.4486794,0 13.3249323,52.448621,0 13.3252872,52.4483508,0 13.3253956,52.4482629,0 13.3254966,52.4481846,0 13.3255444,52.44815029999999,0 13.3263416,52.4475422,0 13.3272045,52.44692030000001,0 13.3279744,52.4465449,0 13.3284346,52.4463107,0 13.3284635,52.44629449999999,0 13.3289351,52.4460465,0 13.3294052,52.44579900000001,0 13.3295418,52.44573559999999,0 13.3296464,52.4456803,0 13.3297401,52.4456323,0 13.3298295,52.4455851,0 13.3299085,52.4455408,0 13.3300047,52.4454813,0 13.3300815,52.4454282,0 13.3301653,52.4453677,0 13.3302325,52.4453184,0 13.330279,52.4452815,0 13.3303496,52.4452302,0 13.3303941,52.4451957,0 13.3304521,52.44514530000001,0 13.3304727,52.4451234,0 13.3305257,52.44507209999999,0 13.3305841,52.4450051,0 13.3306618,52.4449091,0 13.3307296,52.44481360000001,0 13.3307739,52.4447486,0 13.3307748,52.4447472,0 13.3308092,52.4446888,0 13.3308526,52.4446175,0 13.3309455,52.4444418,0 13.3310642,52.4442287,0 13.3311647,52.4440574,0 13.3312625,52.4438828,0 13.3313876,52.44366099999999,0 13.3314573,52.4435474,0 13.329932,52.4431648,0 13.3300489,52.4429787,0 13.3301913,52.4427423,0 13.3303524,52.4424926,0 13.3303764,52.44245529999999,0 13.3304724,52.4423517,0 13.3305071,52.4423238,0 13.3306023,52.4422475,0 
+				</coordinates>
+			</LineString>
+		</Placemark>
+	</Folder>
+	<Folder id="1.4">
+		<name>Grazer Damm</name>
+		<visibility>0</visibility>
+		<Style id="dir_route">
+			<LineStyle>
+				<color>7fa00000</color>
+				<colorMode>normal</colorMode>
+				<width>6</width>
+			</LineStyle>
+		</Style>
+		<Placemark id="1.4.2.2.2">
+			<name>Auf Hauptstraße/Innsbrucker Platz nach Südwesten Richtung Wexstraße starten</name>
+			<description>Auf Hauptstraße/Innsbrucker Platz nach Südwesten Richtung Wexstraße starten</description>
+			<LookAt>
+				<longitude>13.3442949</longitude>
+				<latitude>52.4788777</latitude>
+				<altitude>0</altitude>
+				<heading>-139.3147</heading>
+				<tilt>45</tilt>
+				<range>360</range>
+			</LookAt>
+			<styleUrl>#dir_step</styleUrl>
+			<Region>
+				<LatLonAltBox>
+					<north>52.5788777</north>
+					<south>52.3788777</south>
+					<east>13.4442949</east>
+					<west>13.2442949</west>
+					<minAltitude>0</minAltitude>
+					<maxAltitude>0</maxAltitude>
+					<altitudeMode>absolute</altitudeMode>
+				</LatLonAltBox>
+				<Lod>
+					<minLodPixels>512</minLodPixels>
+					<maxLodPixels>-1</maxLodPixels>
+					<minFadeExtent>0</minFadeExtent>
+					<maxFadeExtent>0</maxFadeExtent>
+				</Lod>
+			</Region>
+			<Point>
+				<coordinates>13.3442949,52.4788777,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark id="1.4.2.2.3">
+			<name>Bei Wexstraße links abbiegen</name>
+			<description>Bei Wexstraße links abbiegen</description>
+			<LookAt>
+				<longitude>13.3440154</longitude>
+				<latitude>52.4786662</latitude>
+				<altitude>0</altitude>
+				<heading>-142.80885</heading>
+				<tilt>45</tilt>
+				<range>360</range>
+			</LookAt>
+			<styleUrl>#dir_step</styleUrl>
+			<Region>
+				<LatLonAltBox>
+					<north>52.5786662</north>
+					<south>52.3786662</south>
+					<east>13.4440154</east>
+					<west>13.2440154</west>
+					<minAltitude>0</minAltitude>
+					<maxAltitude>0</maxAltitude>
+					<altitudeMode>absolute</altitudeMode>
+				</LatLonAltBox>
+				<Lod>
+					<minLodPixels>512</minLodPixels>
+					<maxLodPixels>-1</maxLodPixels>
+					<minFadeExtent>0</minFadeExtent>
+					<maxFadeExtent>0</maxFadeExtent>
+				</Lod>
+			</Region>
+			<Point>
+				<coordinates>13.3440154,52.47866619999999,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark id="1.4.2.2.4">
+			<name>Die Auffahrt auf A 100 nehmen</name>
+			<description>Die Auffahrt auf A 100 nehmen</description>
+			<LookAt>
+				<longitude>13.3447144</longitude>
+				<latitude>52.4781195</latitude>
+				<altitude>0</altitude>
+				<heading>125.64699</heading>
+				<tilt>45</tilt>
+				<range>360</range>
+			</LookAt>
+			<styleUrl>#dir_step</styleUrl>
+			<Region>
+				<LatLonAltBox>
+					<north>52.5781195</north>
+					<south>52.3781195</south>
+					<east>13.4447144</east>
+					<west>13.2447144</west>
+					<minAltitude>0</minAltitude>
+					<maxAltitude>0</maxAltitude>
+					<altitudeMode>absolute</altitudeMode>
+				</LatLonAltBox>
+				<Lod>
+					<minLodPixels>512</minLodPixels>
+					<maxLodPixels>-1</maxLodPixels>
+					<minFadeExtent>0</minFadeExtent>
+					<maxFadeExtent>0</maxFadeExtent>
+				</Lod>
+			</Region>
+			<Point>
+				<coordinates>13.3447144,52.47811949999999,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark id="1.4.2.2.5">
+			<name>Am Autobahnkreuz 18-Kreuz Schöneberg rechts halten und den Schildern Grazer Damm folgen</name>
+			<description>Am Autobahnkreuz 18-Kreuz Schöneberg rechts halten und den Schildern Grazer Damm folgen</description>
+			<LookAt>
+				<longitude>13.3482546</longitude>
+				<latitude>52.475614</latitude>
+				<altitude>0</altitude>
+				<heading>138.3973</heading>
+				<tilt>45</tilt>
+				<range>360</range>
+			</LookAt>
+			<styleUrl>#dir_step</styleUrl>
+			<Region>
+				<LatLonAltBox>
+					<north>52.575614</north>
+					<south>52.375614</south>
+					<east>13.4482546</east>
+					<west>13.2482546</west>
+					<minAltitude>0</minAltitude>
+					<maxAltitude>0</maxAltitude>
+					<altitudeMode>absolute</altitudeMode>
+				</LatLonAltBox>
+				<Lod>
+					<minLodPixels>512</minLodPixels>
+					<maxLodPixels>-1</maxLodPixels>
+					<minFadeExtent>0</minFadeExtent>
+					<maxFadeExtent>0</maxFadeExtent>
+				</Lod>
+			</Region>
+			<Point>
+				<coordinates>13.3482546,52.475614,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark id="1.4.2.2.6">
+			<name>Weiter auf Grazer Damm</name>
+			<description>Weiter auf Grazer Damm</description>
+			<LookAt>
+				<longitude>13.3472386</longitude>
+				<latitude>52.4706243</latitude>
+				<altitude>0</altitude>
+				<heading>-161.92787</heading>
+				<tilt>45</tilt>
+				<range>360</range>
+			</LookAt>
+			<styleUrl>#dir_step</styleUrl>
+			<Region>
+				<LatLonAltBox>
+					<north>52.5706243</north>
+					<south>52.3706243</south>
+					<east>13.4472386</east>
+					<west>13.2472386</west>
+					<minAltitude>0</minAltitude>
+					<maxAltitude>0</maxAltitude>
+					<altitudeMode>absolute</altitudeMode>
+				</LatLonAltBox>
+				<Lod>
+					<minLodPixels>512</minLodPixels>
+					<maxLodPixels>-1</maxLodPixels>
+					<minFadeExtent>0</minFadeExtent>
+					<maxFadeExtent>0</maxFadeExtent>
+				</Lod>
+			</Region>
+			<Point>
+				<coordinates>13.3472386,52.47062429999999,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark id="1.4.2.2.7">
+			<name>Weiter auf Munsterdamm</name>
+			<description>Weiter auf Munsterdamm</description>
+			<LookAt>
+				<longitude>13.34854</longitude>
+				<latitude>52.4591168</latitude>
+				<altitude>0</altitude>
+				<heading>-176.13243</heading>
+				<tilt>45</tilt>
+				<range>360</range>
+			</LookAt>
+			<styleUrl>#dir_step</styleUrl>
+			<Region>
+				<LatLonAltBox>
+					<north>52.5591168</north>
+					<south>52.3591168</south>
+					<east>13.44854</east>
+					<west>13.24854</west>
+					<minAltitude>0</minAltitude>
+					<maxAltitude>0</maxAltitude>
+					<altitudeMode>absolute</altitudeMode>
+				</LatLonAltBox>
+				<Lod>
+					<minLodPixels>512</minLodPixels>
+					<maxLodPixels>-1</maxLodPixels>
+					<minFadeExtent>0</minFadeExtent>
+					<maxFadeExtent>0</maxFadeExtent>
+				</Lod>
+			</Region>
+			<Point>
+				<coordinates>13.34854,52.4591168,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark id="1.4.2.2.8">
+			<name>Geradeaus auf Halskestraße</name>
+			<description>Geradeaus auf Halskestraße</description>
+			<LookAt>
+				<longitude>13.3466385</longitude>
+				<latitude>52.4500174</latitude>
+				<altitude>0</altitude>
+				<heading>-137.4082</heading>
+				<tilt>45</tilt>
+				<range>360</range>
+			</LookAt>
+			<styleUrl>#dir_step</styleUrl>
+			<Region>
+				<LatLonAltBox>
+					<north>52.5500174</north>
+					<south>52.3500174</south>
+					<east>13.4466385</east>
+					<west>13.2466385</west>
+					<minAltitude>0</minAltitude>
+					<maxAltitude>0</maxAltitude>
+					<altitudeMode>absolute</altitudeMode>
+				</LatLonAltBox>
+				<Lod>
+					<minLodPixels>512</minLodPixels>
+					<maxLodPixels>-1</maxLodPixels>
+					<minFadeExtent>0</minFadeExtent>
+					<maxFadeExtent>0</maxFadeExtent>
+				</Lod>
+			</Region>
+			<Point>
+				<coordinates>13.3466385,52.45001739999999,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark id="1.4.2.2.9">
+			<name>Weiter auf Siemensstraße</name>
+			<description>Weiter auf Siemensstraße</description>
+			<LookAt>
+				<longitude>13.3425144</longitude>
+				<latitude>52.4470061</latitude>
+				<altitude>0</altitude>
+				<heading>-138.2779</heading>
+				<tilt>45</tilt>
+				<range>360</range>
+			</LookAt>
+			<styleUrl>#dir_step</styleUrl>
+			<Region>
+				<LatLonAltBox>
+					<north>52.5470061</north>
+					<south>52.34700609999999</south>
+					<east>13.4425144</east>
+					<west>13.2425144</west>
+					<minAltitude>0</minAltitude>
+					<maxAltitude>0</maxAltitude>
+					<altitudeMode>absolute</altitudeMode>
+				</LatLonAltBox>
+				<Lod>
+					<minLodPixels>512</minLodPixels>
+					<maxLodPixels>-1</maxLodPixels>
+					<minFadeExtent>0</minFadeExtent>
+					<maxFadeExtent>0</maxFadeExtent>
+				</Lod>
+			</Region>
+			<Point>
+				<coordinates>13.3425144,52.44700609999999,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark id="1.4.2.3.2">
+			<name>Rechts abbiegen auf Am Elsenbruch</name>
+			<description>Rechts abbiegen auf Am Elsenbruch</description>
+			<LookAt>
+				<longitude>13.3309112</longitude>
+				<latitude>52.4419997</latitude>
+				<altitude>0</altitude>
+				<heading>-132.62758</heading>
+				<tilt>45</tilt>
+				<range>360</range>
+			</LookAt>
+			<styleUrl>#dir_step</styleUrl>
+			<Region>
+				<LatLonAltBox>
+					<north>52.5419997</north>
+					<south>52.3419997</south>
+					<east>13.4309112</east>
+					<west>13.2309112</west>
+					<minAltitude>0</minAltitude>
+					<maxAltitude>0</maxAltitude>
+					<altitudeMode>absolute</altitudeMode>
+				</LatLonAltBox>
+				<Lod>
+					<minLodPixels>512</minLodPixels>
+					<maxLodPixels>-1</maxLodPixels>
+					<minFadeExtent>0</minFadeExtent>
+					<maxFadeExtent>0</maxFadeExtent>
+				</Lod>
+			</Region>
+			<Point>
+				<coordinates>13.3309112,52.4419997,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark id="1.4.2">
+			<name>Route</name>
+			<styleUrl>#dir_route</styleUrl>
+			<LineString>
+				<coordinates>
+					13.3442949,52.4788777,0 13.3442949,52.4788777,0 13.3441756,52.4787971,0 13.3440731,52.478719,0 13.3440154,52.47866619999999,0 13.3439249,52.47858300000001,0 13.343826,52.4784877,0 13.343787,52.4784503,0 13.3439488,52.4784088,0 13.3441257,52.47835049999999,0 13.3442863,52.4782877,0 13.3443982,52.4782501,0 13.3444721,52.4782251,0 13.3445313,52.47820400000001,0 13.3445899,52.4781809,0 13.3446282,52.47816540000001,0 13.344676,52.4781412,0 13.3447144,52.47811949999999,0 13.3448473,52.4780337,0 13.3450155,52.47791830000001,0 13.3452537,52.4777742,0 13.3452975,52.4777475,0 13.3456614,52.47750509999999,0 13.345774,52.47742610000001,0 13.3460454,52.4772358,0 13.3461559,52.4771518,0 13.3463281,52.477024,0 13.3463767,52.4769871,0 13.3464063,52.4769649,0 13.3464465,52.4769351,0 13.346532,52.4768727,0 13.3467321,52.4767356,0 13.3468449,52.4766562,0 13.3469218,52.4766159,0 13.3470558,52.47655889999999,0 13.3471773,52.4764483,0 13.3474915,52.4761854,0 13.3477061,52.47601050000001,0 13.3479298,52.4758406,0 13.3480492,52.4757549,0 13.3482546,52.475614,0 13.3482919,52.4755163,0 13.3483003,52.4754895,0 13.34831,52.4754658,0 13.3483395,52.4753992,0 13.3483919,52.4753473,0 13.3484501,52.4752827,0 13.3485685,52.4751004,0 13.3486116,52.47500430000001,0 13.3486401,52.4749144,0 13.3486582,52.4748124,0 13.3486712,52.4747145,0 13.34867,52.47469510000001,0 13.3486607,52.4743834,0 13.348648,52.4742848,0 13.348631,52.4741958,0 13.3486187,52.4741311,0 13.3485877,52.4740205,0 13.3485505,52.4738467,0 13.3485279,52.4737553,0 13.3484839,52.47358040000001,0 13.3484115,52.47331899999999,0 13.3483484,52.4731189,0 13.3481993,52.4726978,0 13.348154,52.4725699,0 13.3481015,52.4724289,0 13.3480582,52.472326,0 13.3480245,52.47223519999999,0 13.3479357,52.4720384,0 13.347871,52.4719123,0 13.3478559,52.4718185,0 13.3477696,52.4716249,0 13.3477546,52.47159730000001,0 13.3476616,52.47141329999999,0 13.3475203,52.4711347,0 13.3474625,52.4710578,0 13.3474083,52.4709678,0 13.3473704,52.4708862,0 13.3472893,52.4707029,0 13.3472804,52.4706868,0 13.3472386,52.47062429999999,0 13.3472365,52.470538,0 13.3472308,52.4704951,0 13.3472116,52.4703721,0 13.347208,52.4702789,0 13.3472232,52.47021710000001,0 13.3472266,52.4701812,0 13.3472358,52.4700694,0 13.3472404,52.46999709999999,0 13.3472525,52.46988210000001,0 13.3472917,52.4695895,0 13.3472941,52.4695724,0 13.3472975,52.4695235,0 13.3473032,52.4694705,0 13.3473436,52.4691617,0 13.3474791,52.46812139999999,0 13.3475361,52.4677078,0 13.3475423,52.4676372,0 13.3476253,52.4670008,0 13.3476309,52.4669347,0 13.3477008,52.4663814,0 13.3477936,52.46564730000001,0 13.3478719,52.46502799999999,0 13.3479761,52.4641629,0 13.3480238,52.4636813,0 13.348049,52.463462,0 13.3480641,52.4633312,0 13.3481068,52.4630038,0 13.3481468,52.46266689999999,0 13.3481656,52.46251920000001,0 13.348216,52.462121,0 13.3482415,52.461906,0 13.3482465,52.46182540000001,0 13.3482543,52.4617834,0 13.3482757,52.4616976,0 13.3483591,52.4610536,0 13.3483676,52.4610002,0 13.3484978,52.4599156,0 13.3485312,52.45963810000001,0 13.3485635,52.4593725,0 13.3485629,52.4593232,0 13.34854,52.4591168,0 13.3485459,52.4590141,0 13.3485584,52.458901,0 13.3486007,52.4586379,0 13.3486595,52.45823049999999,0 13.3486897,52.4580534,0 13.3487058,52.4579243,0 13.3487275,52.4577306,0 13.3487343,52.4575651,0 13.3487407,52.4574112,0 13.3487556,52.4571343,0 13.3487546,52.4568458,0 13.3487545,52.45682930000001,0 13.3487395,52.45647,0 13.3487353,52.45634139999999,0 13.3487299,52.4562328,0 13.3487184,52.45609409999999,0 13.3487058,52.4559019,0 13.3486975,52.45577389999999,0 13.3486788,52.45558719999999,0 13.3486558,52.4554251,0 13.3486365,52.4552641,0 13.3486324,52.4552297,0 13.3486143,52.4550847,0 13.348612,52.4550666,0 13.3485953,52.4549346,0 13.3485753,52.4548124,0 13.348552,52.4546655,0 13.3485208,52.4544459,0 13.3484632,52.4540847,0 13.3484246,52.4538705,0 13.3484125,52.4537944,0 13.3483857,52.4536145,0 13.3483329,52.4532574,0 13.348269,52.4528469,0 13.3482219,52.45252989999999,0 13.348202,52.45238340000001,0 13.3481943,52.4523265,0 13.3481763,52.4522042,0 13.3481667,52.4521385,0 13.3481392,52.4519617,0 13.348099,52.4517667,0 13.3480688,52.45163959999999,0 13.3480435,52.4515487,0 13.3480332,52.4514903,0 13.3480299,52.4514525,0 13.3480102,52.4514073,0 13.3479581,52.451298,0 13.3479347,52.4512718,0 13.3479128,52.45124130000001,0 13.3478759,52.4511718,0 13.3478178,52.4510788,0 13.3476964,52.4509087,0 13.3475513,52.45074040000001,0 13.3474763,52.45066,0 13.3473764,52.4505661,0 13.347301,52.4504893,0 13.3472262,52.4504285,0 13.3471226,52.4503484,0 13.3470707,52.4503083,0 13.3469542,52.4502257,0 13.3468243,52.4501407,0 13.3467645,52.4501016,0 13.3466385,52.45001739999999,0 13.346519,52.44994069999999,0 13.3464437,52.4498713,0 13.3464343,52.4498525,0 13.3464188,52.4497712,0 13.3460125,52.4494769,0 13.3455767,52.4491728,0 13.3451325,52.4488532,0 13.344986,52.4487509,0 13.3447964,52.44861849999999,0 13.3443089,52.4482643,0 13.3437855,52.44789680000001,0 13.3435535,52.44773450000001,0 13.3434936,52.44769219999999,0 13.3427454,52.44716399999999,0 13.3425144,52.4470061,0 13.3424261,52.446948,0 13.3421801,52.4467757,0 13.3420547,52.44668539999999,0 13.3420045,52.44664920000001,0 13.3416992,52.4464268,0 13.3415113,52.4462943,0 13.3409001,52.4458593,0 13.3408375,52.44581469999999,0 13.3407519,52.4457535,0 13.3406222,52.4456604,0 13.3403783,52.4454813,0 13.3402844,52.44541850000001,0 13.3398438,52.44510460000001,0 13.3394602,52.4448312,0 13.3393917,52.4447839,0 13.3393591,52.444757,0 13.3393092,52.4447158,0 13.339242,52.4446582,0 13.3392206,52.4446463,0 13.3392102,52.4446402,0 13.3390699,52.4445155,0 13.3389212,52.444389,0 13.3388436,52.44434889999999,0 13.3386023,52.4442242,0 13.3385544,52.4441994,0 13.3380031,52.4439523,0 13.3379169,52.4439206,0 13.3377866,52.4438763,0 13.3376634,52.4438297,0 13.3367656,52.4435799,0 13.3366968,52.4435637,0 13.3363322,52.443463,0 13.3349809,52.4431104,0 13.3334446,52.4427037,0 13.3328928,52.4426121,0 13.3328354,52.4426023,0 13.3327634,52.4425892,0 13.3320929,52.44243250000001,0 13.331658,52.442334,0 13.3315722,52.4423132,0 13.3314913,52.4422878,0 13.3314198,52.4422646,0 13.3313555,52.442237,0 13.3313008,52.4422105,0 13.3311593,52.4421389,0 13.3309112,52.4419997,0 13.3307522,52.44212720000001,0 13.3306023,52.4422475,0 
+				</coordinates>
+			</LineString>
+		</Placemark>
+	</Folder>
+	<Folder id="1.5">
+		<name>A103 und Klingsorstraße</name>
+		<visibility>0</visibility>
+		<Style id="dir_route">
+			<LineStyle>
+				<color>7fa00000</color>
+				<colorMode>normal</colorMode>
+				<width>6</width>
+			</LineStyle>
+		</Style>
+		<Placemark id="1.5.2.2.2">
+			<name>Auf Hauptstraße/Innsbrucker Platz nach Südwesten Richtung Wexstraße starten</name>
+			<description>Auf Hauptstraße/Innsbrucker Platz nach Südwesten Richtung Wexstraße starten</description>
+			<LookAt>
+				<longitude>13.3442949</longitude>
+				<latitude>52.4788777</latitude>
+				<altitude>0</altitude>
+				<heading>-139.3147</heading>
+				<tilt>45</tilt>
+				<range>360</range>
+			</LookAt>
+			<styleUrl>#dir_step</styleUrl>
+			<Region>
+				<LatLonAltBox>
+					<north>52.5788777</north>
+					<south>52.3788777</south>
+					<east>13.4442949</east>
+					<west>13.2442949</west>
+					<minAltitude>0</minAltitude>
+					<maxAltitude>0</maxAltitude>
+					<altitudeMode>absolute</altitudeMode>
+				</LatLonAltBox>
+				<Lod>
+					<minLodPixels>512</minLodPixels>
+					<maxLodPixels>-1</maxLodPixels>
+					<minFadeExtent>0</minFadeExtent>
+					<maxFadeExtent>0</maxFadeExtent>
+				</Lod>
+			</Region>
+			<Point>
+				<coordinates>13.3442949,52.4788777,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark id="1.5.2.2.3">
+			<name>Bei Wexstraße links abbiegen</name>
+			<description>Bei Wexstraße links abbiegen</description>
+			<LookAt>
+				<longitude>13.3440154</longitude>
+				<latitude>52.4786662</latitude>
+				<altitude>0</altitude>
+				<heading>-142.80885</heading>
+				<tilt>45</tilt>
+				<range>360</range>
+			</LookAt>
+			<styleUrl>#dir_step</styleUrl>
+			<Region>
+				<LatLonAltBox>
+					<north>52.5786662</north>
+					<south>52.3786662</south>
+					<east>13.4440154</east>
+					<west>13.2440154</west>
+					<minAltitude>0</minAltitude>
+					<maxAltitude>0</maxAltitude>
+					<altitudeMode>absolute</altitudeMode>
+				</LatLonAltBox>
+				<Lod>
+					<minLodPixels>512</minLodPixels>
+					<maxLodPixels>-1</maxLodPixels>
+					<minFadeExtent>0</minFadeExtent>
+					<maxFadeExtent>0</maxFadeExtent>
+				</Lod>
+			</Region>
+			<Point>
+				<coordinates>13.3440154,52.47866619999999,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark id="1.5.2.2.4">
+			<name>Die Auffahrt auf A 100 nehmen</name>
+			<description>Die Auffahrt auf A 100 nehmen</description>
+			<LookAt>
+				<longitude>13.3447144</longitude>
+				<latitude>52.4781195</latitude>
+				<altitude>0</altitude>
+				<heading>125.64699</heading>
+				<tilt>45</tilt>
+				<range>360</range>
+			</LookAt>
+			<styleUrl>#dir_step</styleUrl>
+			<Region>
+				<LatLonAltBox>
+					<north>52.5781195</north>
+					<south>52.3781195</south>
+					<east>13.4447144</east>
+					<west>13.2447144</west>
+					<minAltitude>0</minAltitude>
+					<maxAltitude>0</maxAltitude>
+					<altitudeMode>absolute</altitudeMode>
+				</LatLonAltBox>
+				<Lod>
+					<minLodPixels>512</minLodPixels>
+					<maxLodPixels>-1</maxLodPixels>
+					<minFadeExtent>0</minFadeExtent>
+					<maxFadeExtent>0</maxFadeExtent>
+				</Lod>
+			</Region>
+			<Point>
+				<coordinates>13.3447144,52.47811949999999,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark id="1.5.2.2.5">
+			<name>Am Autobahnkreuz 18-Kreuz Schöneberg rechts halten und den Schildern A103 in Richtung Steglitz folgen</name>
+			<description>Am Autobahnkreuz 18-Kreuz Schöneberg rechts halten und den Schildern A103 in Richtung Steglitz folgen</description>
+			<LookAt>
+				<longitude>13.3482546</longitude>
+				<latitude>52.475614</latitude>
+				<altitude>0</altitude>
+				<heading>138.3973</heading>
+				<tilt>45</tilt>
+				<range>360</range>
+			</LookAt>
+			<styleUrl>#dir_step</styleUrl>
+			<Region>
+				<LatLonAltBox>
+					<north>52.575614</north>
+					<south>52.375614</south>
+					<east>13.4482546</east>
+					<west>13.2482546</west>
+					<minAltitude>0</minAltitude>
+					<maxAltitude>0</maxAltitude>
+					<altitudeMode>absolute</altitudeMode>
+				</LatLonAltBox>
+				<Lod>
+					<minLodPixels>512</minLodPixels>
+					<maxLodPixels>-1</maxLodPixels>
+					<minFadeExtent>0</minFadeExtent>
+					<maxFadeExtent>0</maxFadeExtent>
+				</Lod>
+			</Region>
+			<Point>
+				<coordinates>13.3482546,52.475614,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark id="1.5.2.2.6">
+			<name>Ausfahrt Richtung Filandastraße</name>
+			<description>Ausfahrt Richtung Filandastraße</description>
+			<LookAt>
+				<longitude>13.3312363</longitude>
+				<latitude>52.4632424</latitude>
+				<altitude>0</altitude>
+				<heading>-147.99028</heading>
+				<tilt>45</tilt>
+				<range>360</range>
+			</LookAt>
+			<styleUrl>#dir_step</styleUrl>
+			<Region>
+				<LatLonAltBox>
+					<north>52.5632424</north>
+					<south>52.3632424</south>
+					<east>13.4312363</east>
+					<west>13.2312363</west>
+					<minAltitude>0</minAltitude>
+					<maxAltitude>0</maxAltitude>
+					<altitudeMode>absolute</altitudeMode>
+				</LatLonAltBox>
+				<Lod>
+					<minLodPixels>512</minLodPixels>
+					<maxLodPixels>-1</maxLodPixels>
+					<minFadeExtent>0</minFadeExtent>
+					<maxFadeExtent>0</maxFadeExtent>
+				</Lod>
+			</Region>
+			<Point>
+				<coordinates>13.3312363,52.46324240000001,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark id="1.5.2.2.7">
+			<name>Links abbiegen auf Joachim-Tiburtius-Brücke</name>
+			<description>Links abbiegen auf Joachim-Tiburtius-Brücke</description>
+			<LookAt>
+				<longitude>13.3277994</longitude>
+				<latitude>52.4605402</latitude>
+				<altitude>0</altitude>
+				<heading>-143.25348</heading>
+				<tilt>45</tilt>
+				<range>360</range>
+			</LookAt>
+			<styleUrl>#dir_step</styleUrl>
+			<Region>
+				<LatLonAltBox>
+					<north>52.5605402</north>
+					<south>52.3605402</south>
+					<east>13.4277994</east>
+					<west>13.2277994</west>
+					<minAltitude>0</minAltitude>
+					<maxAltitude>0</maxAltitude>
+					<altitudeMode>absolute</altitudeMode>
+				</LatLonAltBox>
+				<Lod>
+					<minLodPixels>512</minLodPixels>
+					<maxLodPixels>-1</maxLodPixels>
+					<minFadeExtent>0</minFadeExtent>
+					<maxFadeExtent>0</maxFadeExtent>
+				</Lod>
+			</Region>
+			<Point>
+				<coordinates>13.3277994,52.46054019999999,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark id="1.5.2.2.8">
+			<name>Weiter auf Filandastraße</name>
+			<description>Weiter auf Filandastraße</description>
+			<LookAt>
+				<longitude>13.3323665</longitude>
+				<latitude>52.4583433</latitude>
+				<altitude>0</altitude>
+				<heading>133.55118</heading>
+				<tilt>45</tilt>
+				<range>360</range>
+			</LookAt>
+			<styleUrl>#dir_step</styleUrl>
+			<Region>
+				<LatLonAltBox>
+					<north>52.5583433</north>
+					<south>52.35834329999999</south>
+					<east>13.4323665</east>
+					<west>13.2323665</west>
+					<minAltitude>0</minAltitude>
+					<maxAltitude>0</maxAltitude>
+					<altitudeMode>absolute</altitudeMode>
+				</LatLonAltBox>
+				<Lod>
+					<minLodPixels>512</minLodPixels>
+					<maxLodPixels>-1</maxLodPixels>
+					<minFadeExtent>0</minFadeExtent>
+					<maxFadeExtent>0</maxFadeExtent>
+				</Lod>
+			</Region>
+			<Point>
+				<coordinates>13.3323665,52.4583433,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark id="1.5.2.2.9">
+			<name>Weiter auf Neue Filandastraße</name>
+			<description>Weiter auf Neue Filandastraße</description>
+			<LookAt>
+				<longitude>13.3324297</longitude>
+				<latitude>52.4551069</latitude>
+				<altitude>0</altitude>
+				<heading>-173.18489</heading>
+				<tilt>45</tilt>
+				<range>360</range>
+			</LookAt>
+			<styleUrl>#dir_step</styleUrl>
+			<Region>
+				<LatLonAltBox>
+					<north>52.5551069</north>
+					<south>52.3551069</south>
+					<east>13.4324297</east>
+					<west>13.2324297</west>
+					<minAltitude>0</minAltitude>
+					<maxAltitude>0</maxAltitude>
+					<altitudeMode>absolute</altitudeMode>
+				</LatLonAltBox>
+				<Lod>
+					<minLodPixels>512</minLodPixels>
+					<maxLodPixels>-1</maxLodPixels>
+					<minFadeExtent>0</minFadeExtent>
+					<maxFadeExtent>0</maxFadeExtent>
+				</Lod>
+			</Region>
+			<Point>
+				<coordinates>13.3324297,52.4551069,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark id="1.5.2.2.10">
+			<name>Geradeaus auf Klingsorstraße</name>
+			<description>Geradeaus auf Klingsorstraße</description>
+			<LookAt>
+				<longitude>13.3311263</longitude>
+				<latitude>52.4532186</latitude>
+				<altitude>0</altitude>
+				<heading>-150.84216</heading>
+				<tilt>45</tilt>
+				<range>360</range>
+			</LookAt>
+			<styleUrl>#dir_step</styleUrl>
+			<Region>
+				<LatLonAltBox>
+					<north>52.5532186</north>
+					<south>52.3532186</south>
+					<east>13.4311263</east>
+					<west>13.2311263</west>
+					<minAltitude>0</minAltitude>
+					<maxAltitude>0</maxAltitude>
+					<altitudeMode>absolute</altitudeMode>
+				</LatLonAltBox>
+				<Lod>
+					<minLodPixels>512</minLodPixels>
+					<maxLodPixels>-1</maxLodPixels>
+					<minFadeExtent>0</minFadeExtent>
+					<maxFadeExtent>0</maxFadeExtent>
+				</Lod>
+			</Region>
+			<Point>
+				<coordinates>13.3311263,52.4532186,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark id="1.5.2.2.11">
+			<name>Links abbiegen auf Birkbuschstraße</name>
+			<description>Links abbiegen auf Birkbuschstraße</description>
+			<LookAt>
+				<longitude>13.3263416</longitude>
+				<latitude>52.4475422</latitude>
+				<altitude>0</altitude>
+				<heading>-148.73534</heading>
+				<tilt>45</tilt>
+				<range>360</range>
+			</LookAt>
+			<styleUrl>#dir_step</styleUrl>
+			<Region>
+				<LatLonAltBox>
+					<north>52.5475422</north>
+					<south>52.3475422</south>
+					<east>13.4263416</east>
+					<west>13.2263416</west>
+					<minAltitude>0</minAltitude>
+					<maxAltitude>0</maxAltitude>
+					<altitudeMode>absolute</altitudeMode>
+				</LatLonAltBox>
+				<Lod>
+					<minLodPixels>512</minLodPixels>
+					<maxLodPixels>-1</maxLodPixels>
+					<minFadeExtent>0</minFadeExtent>
+					<maxFadeExtent>0</maxFadeExtent>
+				</Lod>
+			</Region>
+			<Point>
+				<coordinates>13.3263416,52.4475422,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark id="1.5.2.3.2">
+			<name>Rechts abbiegen auf Teltowkanalstraße</name>
+			<description>Rechts abbiegen auf Teltowkanalstraße</description>
+			<LookAt>
+				<longitude>13.3314573</longitude>
+				<latitude>52.4435474</latitude>
+				<altitude>0</altitude>
+				<heading>159.99455</heading>
+				<tilt>45</tilt>
+				<range>360</range>
+			</LookAt>
+			<styleUrl>#dir_step</styleUrl>
+			<Region>
+				<LatLonAltBox>
+					<north>52.5435474</north>
+					<south>52.3435474</south>
+					<east>13.4314573</east>
+					<west>13.2314573</west>
+					<minAltitude>0</minAltitude>
+					<maxAltitude>0</maxAltitude>
+					<altitudeMode>absolute</altitudeMode>
+				</LatLonAltBox>
+				<Lod>
+					<minLodPixels>512</minLodPixels>
+					<maxLodPixels>-1</maxLodPixels>
+					<minFadeExtent>0</minFadeExtent>
+					<maxFadeExtent>0</maxFadeExtent>
+				</Lod>
+			</Region>
+			<Point>
+				<coordinates>13.3314573,52.4435474,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark id="1.5.2.3.3">
+			<name>Links abbiegen auf Am Elsenbruch</name>
+			<description>Links abbiegen auf Am Elsenbruch</description>
+			<LookAt>
+				<longitude>13.329932</longitude>
+				<latitude>52.4431648</latitude>
+				<altitude>0</altitude>
+				<heading>-112.36773</heading>
+				<tilt>45</tilt>
+				<range>360</range>
+			</LookAt>
+			<styleUrl>#dir_step</styleUrl>
+			<Region>
+				<LatLonAltBox>
+					<north>52.5431648</north>
+					<south>52.3431648</south>
+					<east>13.429932</east>
+					<west>13.229932</west>
+					<minAltitude>0</minAltitude>
+					<maxAltitude>0</maxAltitude>
+					<altitudeMode>absolute</altitudeMode>
+				</LatLonAltBox>
+				<Lod>
+					<minLodPixels>512</minLodPixels>
+					<maxLodPixels>-1</maxLodPixels>
+					<minFadeExtent>0</minFadeExtent>
+					<maxFadeExtent>0</maxFadeExtent>
+				</Lod>
+			</Region>
+			<Point>
+				<coordinates>13.329932,52.4431648,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark id="1.5.2">
+			<name>Route</name>
+			<styleUrl>#dir_route</styleUrl>
+			<LineString>
+				<coordinates>
+					13.3442949,52.4788777,0 13.3442949,52.4788777,0 13.3441756,52.4787971,0 13.3440731,52.478719,0 13.3440154,52.47866619999999,0 13.3439249,52.47858300000001,0 13.343826,52.4784877,0 13.343787,52.4784503,0 13.3439488,52.4784088,0 13.3441257,52.47835049999999,0 13.3442863,52.4782877,0 13.3443982,52.4782501,0 13.3444721,52.4782251,0 13.3445313,52.47820400000001,0 13.3445899,52.4781809,0 13.3446282,52.47816540000001,0 13.344676,52.4781412,0 13.3447144,52.47811949999999,0 13.3448473,52.4780337,0 13.3450155,52.47791830000001,0 13.3452537,52.4777742,0 13.3452975,52.4777475,0 13.3456614,52.47750509999999,0 13.345774,52.47742610000001,0 13.3460454,52.4772358,0 13.3461559,52.4771518,0 13.3463281,52.477024,0 13.3463767,52.4769871,0 13.3464063,52.4769649,0 13.3464465,52.4769351,0 13.346532,52.4768727,0 13.3467321,52.4767356,0 13.3468449,52.4766562,0 13.3469218,52.4766159,0 13.3470558,52.47655889999999,0 13.3471773,52.4764483,0 13.3474915,52.4761854,0 13.3477061,52.47601050000001,0 13.3479298,52.4758406,0 13.3480492,52.4757549,0 13.3482546,52.475614,0 13.3482919,52.4755163,0 13.3483003,52.4754895,0 13.34831,52.4754658,0 13.3483395,52.4753992,0 13.3483919,52.4753473,0 13.3484501,52.4752827,0 13.3485685,52.4751004,0 13.3486116,52.47500430000001,0 13.3486401,52.4749144,0 13.3486582,52.4748124,0 13.3486712,52.4747145,0 13.34867,52.47469510000001,0 13.3485959,52.4744734,0 13.3485704,52.4743631,0 13.3485328,52.474213,0 13.3484943,52.47413139999999,0 13.3484339,52.4740303,0 13.3483815,52.4739514,0 13.3483231,52.473876,0 13.3482582,52.47379519999999,0 13.3481879,52.4737166,0 13.3481673,52.4736936,0 13.3480657,52.47359970000001,0 13.3479672,52.4735094,0 13.3478053,52.4733818,0 13.347683,52.47329909999999,0 13.3475652,52.47322629999999,0 13.3474435,52.473157,0 13.3473137,52.4730868,0 13.347247,52.4730565,0 13.3468851,52.4729217,0 13.3467936,52.47288949999999,0 13.3466303,52.4728345,0 13.3466191,52.4728312,0 13.3465007,52.472796,0 13.3464001,52.4727661,0 13.3462068,52.4727136,0 13.3458524,52.4726246,0 13.3457934,52.4726089,0 13.3457597,52.4725966,0 13.3457037,52.472569,0 13.3455706,52.4725401,0 13.345351,52.4724833,0 13.3451219,52.4724202,0 13.3449397,52.4723688,0 13.3447648,52.4723042,0 13.3447014,52.47227480000001,0 13.3446063,52.47223579999999,0 13.344485,52.4721789,0 13.3443513,52.4721307,0 13.3442836,52.4721043,0 13.3441556,52.47205450000001,0 13.343962,52.4719719,0 13.3438504,52.4719236,0 13.343775,52.4718884,0 13.343772,52.471887,0 13.343594,52.4717943,0 13.3433133,52.4716272,0 13.3432588,52.471569,0 13.3432083,52.4714788,0 13.3430587,52.4713833,0 13.3428279,52.4712179,0 13.3427606,52.4711695,0 13.3425939,52.4710421,0 13.342465,52.47094389999999,0 13.3424553,52.4709362,0 13.3419959,52.4705716,0 13.3417819,52.4703974,0 13.3415565,52.4702182,0 13.3413678,52.4700665,0 13.3411648,52.4699056,0 13.3410207,52.46978550000001,0 13.3408767,52.4696654,0 13.3407509,52.4695699,0 13.340635,52.469475,0 13.3404965,52.4693644,0 13.3404567,52.4693335,0 13.3400768,52.4690354,0 13.3399611,52.4689408,0 13.3399176,52.4688992,0 13.339584,52.4686329,0 13.3395764,52.4686267,0 13.3393522,52.46844190000001,0 13.3392874,52.4683894,0 13.3390253,52.46817309999999,0 13.3386314,52.4678531,0 13.3384401,52.4676967,0 13.3379103,52.4672646,0 13.3378014,52.4671755,0 13.3374753,52.46690349999999,0 13.3372951,52.46675460000001,0 13.3371617,52.4666447,0 13.3368218,52.4663648,0 13.3367022,52.4662669,0 13.3364157,52.4660318,0 13.3363152,52.4659491,0 13.3362352,52.4658842,0 13.3361723,52.46583,0 13.3360724,52.4657471,0 13.3358997,52.4656075,0 13.3357242,52.4654732,0 13.3355688,52.465358,0 13.3355687,52.4653579,0 13.3354431,52.4652693,0 13.335254,52.46514880000001,0 13.335127,52.4650719,0 13.3349028,52.46496450000001,0 13.33469,52.4648706,0 13.3345278,52.4648055,0 13.334328,52.46473309999999,0 13.3341652,52.46467880000001,0 13.3340405,52.4646385,0 13.3339503,52.4646108,0 13.3337296,52.4645435,0 13.3334777,52.4644721,0 13.3333648,52.4644367,0 13.3332462,52.4644002,0 13.3331267,52.4643586,0 13.3330074,52.4643166,0 13.3329394,52.464294,0 13.3327287,52.4642144,0 13.332611,52.4641674,0 13.3324645,52.464104,0 13.3323658,52.4640567,0 13.3322574,52.4640032,0 13.3321879,52.4639655,0 13.3320993,52.4639158,0 13.3319746,52.4638407,0 13.3318315,52.4637452,0 13.3317552,52.4636906,0 13.3316744,52.46363,0 13.3315739,52.46355100000001,0 13.3315162,52.4635017,0 13.3314691,52.4634625,0 13.3313914,52.4633937,0 13.3313516,52.4633577,0 13.3313276,52.4633335,0 13.3312363,52.46324240000001,0 13.3310531,52.4631733,0 13.3310145,52.4631468,0 13.330803,52.4629582,0 13.3306068,52.46279319999999,0 13.3305285,52.46271360000001,0 13.3304836,52.46268109999999,0 13.3302584,52.4624964,0 13.3301532,52.4624127,0 13.3299804,52.4622714,0 13.3299306,52.4622321,0 13.3296236,52.4619839,0 13.3294246,52.4618229,0 13.3291949,52.4616384,0 13.3290518,52.4615214,0 13.3288906,52.46139260000001,0 13.328621,52.4611863,0 13.3285208,52.4611165,0 13.3283938,52.4610124,0 13.328273,52.4609221,0 13.328154,52.4608238,0 13.3281067,52.4607859,0 13.3279743,52.46068300000001,0 13.3279341,52.4606513,0 13.3277994,52.46054019999999,0 13.3276865,52.46044460000001,0 13.32782,52.4603865,0 13.3279604,52.4603228,0 13.3281008,52.460259,0 13.3283066,52.46017429999999,0 13.3284502,52.4601112,0 13.3284981,52.4600901,0 13.3286895,52.4600059,0 13.3289499,52.4598885,0 13.3292103,52.45977100000001,0 13.3294501,52.4596661,0 13.3294614,52.4596612,0 13.3294673,52.4596586,0 13.3296114,52.4595947,0 13.3297007,52.4595514,0 13.3300409,52.4593915,0 13.3301008,52.4593635,0 13.3303391,52.4592574,0 13.3304895,52.4591904,0 13.3308748,52.4590182,0 13.3310555,52.4589402,0 13.3311241,52.4589106,0 13.3311998,52.45887789999999,0 13.3313066,52.4588312,0 13.3313224,52.4588243,0 13.3314133,52.4587844,0 13.3315919,52.4587129,0 13.3317705,52.45864129999999,0 13.3319281,52.4585764,0 13.3320669,52.4585125,0 13.3322493,52.4584161,0 13.3323665,52.4583433,0 13.3324615,52.4582548,0 13.3325093,52.4582051,0 13.3325625,52.45813449999999,0 13.3326008,52.45807240000001,0 13.3326346,52.4579848,0 13.3326482,52.45790379999999,0 13.3326584,52.457808,0 13.3326589,52.4576939,0 13.3326505,52.45757210000001,0 13.3326484,52.4575145,0 13.332645,52.45746690000001,0 13.3326366,52.45734980000001,0 13.3326176,52.4571089,0 13.3325869,52.4567204,0 13.3325823,52.4566446,0 13.3325338,52.4559174,0 13.3325186,52.4557535,0 13.3324914,52.4554724,0 13.3324711,52.45532750000001,0 13.3324544,52.4552174,0 13.3324473,52.45518450000001,0 13.3324297,52.4551069,0 13.3323832,52.4550023,0 13.3323488,52.4549144,0 13.3323068,52.45479540000001,0 13.3322564,52.4546709,0 13.3322017,52.4545594,0 13.3321439,52.4544549,0 13.3320907,52.45436279999999,0 13.3319847,52.454214,0 13.3318693,52.45406830000001,0 13.3317892,52.4539722,0 13.3315716,52.453717,0 13.3312605,52.4533648,0 13.3311263,52.4532186,0 13.3310375,52.4531171,0 13.3308799,52.45292199999999,0 13.3308191,52.45281800000001,0 13.3307189,52.4526428,0 13.3306982,52.4526003,0 13.3306791,52.4524717,0 13.3305543,52.4523087,0 13.3304717,52.4522009,0 13.3299243,52.451569,0 13.3295943,52.45118720000001,0 13.3285665,52.4499992,0 13.3284993,52.4499228,0 13.3279459,52.4492843,0 13.3274183,52.44867259999999,0 13.3273408,52.4486044,0 13.3270135,52.4482521,0 13.3268989,52.4481243,0 13.3267844,52.4479964,0 13.3265247,52.447726,0 13.3263416,52.4475422,0 13.3272045,52.44692030000001,0 13.3279744,52.4465449,0 13.3284346,52.4463107,0 13.3284635,52.44629449999999,0 13.3289351,52.4460465,0 13.3294052,52.44579900000001,0 13.3295418,52.44573559999999,0 13.3296464,52.4456803,0 13.3297401,52.4456323,0 13.3298295,52.4455851,0 13.3299085,52.4455408,0 13.3300047,52.4454813,0 13.3300815,52.4454282,0 13.3301653,52.4453677,0 13.3302325,52.4453184,0 13.330279,52.4452815,0 13.3303496,52.4452302,0 13.3303941,52.4451957,0 13.3304521,52.44514530000001,0 13.3304727,52.4451234,0 13.3305257,52.44507209999999,0 13.3305841,52.4450051,0 13.3306618,52.4449091,0 13.3307296,52.44481360000001,0 13.3307739,52.4447486,0 13.3307748,52.4447472,0 13.3308092,52.4446888,0 13.3308526,52.4446175,0 13.3309455,52.4444418,0 13.3310642,52.4442287,0 13.3311647,52.4440574,0 13.3312625,52.4438828,0 13.3313876,52.44366099999999,0 13.3314573,52.4435474,0 13.329932,52.4431648,0 13.3300489,52.4429787,0 13.3301913,52.4427423,0 13.3303524,52.4424926,0 13.3303764,52.44245529999999,0 13.3304724,52.4423517,0 13.3305071,52.4423238,0 13.3306023,52.4422475,0 
+				</coordinates>
+			</LineString>
+		</Placemark>
+	</Folder>
+</Folder>
+</kml>
