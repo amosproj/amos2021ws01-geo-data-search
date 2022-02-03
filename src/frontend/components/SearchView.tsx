@@ -11,7 +11,7 @@ import SearchResults from './SearchResults';
 import SearchResultDetail from './SearchResultDetail';
 import SearchTips from './SearchTips';
 
-const SearchView = () => {
+const SearchView = ({ logoSrc }: { logoSrc: string }) => {
   const [searchValue, setSearchValue] = useState('');
   const [errorData, setErrorData] = useState<SearchError | null>(null);
   const [results, setResults] = useAtom(searchResultsAtom);
@@ -115,14 +115,14 @@ const SearchView = () => {
     <div className="my-4">
       <form onSubmit={onFormSubmit}>
         <div className="flex items-center w-full">
-          <div className="h-20 w-20 mr-2 sm:hidden">
+          <div className="h-20 w-20 mr-2 sm:hidden flex items-center justify-center">
             <Image
               className="sm:hidden"
               priority
-              layout="responsive"
+              layout="intrinsic"
               width="150"
               height="142"
-              src="/images/logo.png"
+              src={logoSrc}
               alt="Geo Data Search Logo"
             />
           </div>

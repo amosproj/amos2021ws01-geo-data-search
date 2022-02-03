@@ -6,7 +6,7 @@ type Props = { result: SearchResult; onBackClick: () => void };
 
 const SearchResultDetail = ({ result, onBackClick }: Props) => {
   return (
-    <div className="sm:mt-4">
+    <div className="sm:mt-4 dark:text-gray-300">
       <div className="flex">
         <button
           aria-label="Close current search result"

@@ -19,7 +19,7 @@ const SearchListResult = ({ result, onClick, isRoutePart }: Props) => {
     <li
       aria-label="Select search result"
       className={cc([
-        'p-2 flex items-center hover:bg-[#E6F2F8] cursor-pointer',
+        'p-2 flex items-center hover:bg-[#E6F2F8] dark:hover:bg-[#394F58] cursor-pointer dark:text-gray-300',
         isRoutePart
           ? 'first:rounded-b-none last:rounded-t-none first:rounded-t last:rounded-b'
           : 'rounded',

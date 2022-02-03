@@ -15,7 +15,7 @@ function Modal({ open, onClose, children, title }: Props) {
       <div className="flex items-center justify-center min-h-screen">
         <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
 
-        <div className="relative bg-white rounded-lg max-w-lg w-full mx-auto p-6">
+        <div className="relative bg-white dark:bg-[#394F58] dark:text-gray-300 rounded-lg max-w-lg w-full mx-auto p-6">
           <button className='absolute top-0 right-0 p-2 hover:opacity-50' onClick={onClose}>
             <XIcon className="h-8 w-8" />
           </button>

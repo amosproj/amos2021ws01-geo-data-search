@@ -20,7 +20,8 @@
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-leaflet": "^3.2.2",
-    "swr": "^1.0.1"
+    "swr": "^1.0.1",
+    "use-dark-mode": "^2.3.1"
   },
   "devDependencies": {
     "@svgr/webpack": "^6.1.1",
@@ -30,12 +31,12 @@
     "@types/leaflet": "^1.7.8",
     "@types/node": "16.11.6",
     "@types/react": "17.0.33",
-    "autoprefixer": "^10.4.0",
+    "autoprefixer": "^10.4.2",
     "eslint": "7",
     "eslint-config-next": "12.0.2",
     "jest": "^27.4.7",
-    "postcss": "^8.3.11",
-    "tailwindcss": "^2.2.19",
+    "postcss": "^8.4.6",
+    "tailwindcss": "^3.0.18",
     "typescript": "4.4.4"
   }
 }
