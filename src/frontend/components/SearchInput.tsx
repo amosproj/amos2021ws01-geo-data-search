@@ -26,10 +26,10 @@ const SearchInput = ({ value, onChange, onCancelSearchRequest, placeholder, load
   const searchTermEmpty = value.trim().length === 0;
 
   return (
-    <div className="flex rounded w-full border-2 border-solid border-[#DAE5EA]">
+    <div className="flex rounded w-full border-2 border-solid border-[#DAE5EA] overflow-hidden">
       <div className={cc(['relative w-full'])}>
         <input
-          className="border-solid rounded-l p-2 pr-8 w-full focus:outline-none"
+          className="border-solid p-2 pr-8 w-full focus:outline-none dark:bg-gray-200"
           aria-label="Search term"
           name="searchValue"
           type="text"
@@ -49,7 +49,7 @@ const SearchInput = ({ value, onChange, onCancelSearchRequest, placeholder, load
       </div>
       <button
         aria-label='Search'
-        className="bg-red-500 text-white rounded-r px-3 disabled:opacity-70 disabled:cursor-default"
+        className="bg-red-500 text-white px-3 disabled:opacity-70 disabled:cursor-default"
         type="submit"
         disabled={searchTermEmpty || loading}
       >

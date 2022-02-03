@@ -2,7 +2,9 @@
   outline: none;
 }
 
-html, body, #__next {
+html,
+body,
+#__next {
   height: 100%;
 }
 
@@ -11,7 +13,8 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-#root, #__next {
+#root,
+#__next {
   isolation: isolate;
 }
 
@@ -19,31 +22,46 @@ body {
 @tailwind components;
 @tailwind utilities;
 
-.leaflet-container .leaflet-tooltip { 
+.leaflet-container .leaflet-tooltip {
   box-shadow: none;
   border: 0;
   background: none;
   font-weight: bold;
-  text-shadow:
-   -1px -1px 0 #fff,  
-    1px -1px 0 #fff,
-    -1px 1px 0 #fff,
-     1px 1px 0 #fff;
+  text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;
 }
 
-.leaflet-container .leaflet-tooltip::before { 
+.leaflet-container .leaflet-tooltip::before {
   display: none;
 }
 
-.results--route { 
+.results--route {
   position: relative;
 }
 
-.results--route::before { 
-  content: "";
+.results--route::before {
+  content: '';
   position: absolute;
   top: 35px;
   left: 13px;
   bottom: 35px;
   border-left: 2px solid red;
+}
+
+:root {
+  --map-tiles-filter: brightness(0.6) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3)
+    brightness(0.7);
+}
+
+.dark .map-tiles {
+  filter: var(--map-tiles-filter, none);
+}
+
+.dark .leaflet-container .leaflet-bar a { 
+  background: #232F34;
+  color: #fff;
+}
+
+.dark .leaflet-container .leaflet-bar a:hover { 
+  background: #394F58;
+  color: #fff;
 }

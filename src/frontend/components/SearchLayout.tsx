@@ -8,6 +8,7 @@ import { motion } from 'framer-motion';
 import useMediaQuery from '@lib/useMediaQuery';
 import { useAtom } from 'jotai';
 import { currentSearchResultAtom } from '@lib/store';
+import useDarkMode from 'use-dark-mode';
 
 const MapViewNoSSR = dynamic(() => import('./MapView'), { ssr: false });
 
@@ -17,6 +18,8 @@ const SearchLayout = () => {
   const [expanded, setExpanded] = useState(false);
   const isDesktop = useMediaQuery('(min-width: 640px)');
   const isMobile = !isDesktop;
+  const { value: darkMode } = useDarkMode(true);
+  const logoSrc = darkMode ? '/images/logo-dark.png' : '/images/logo.png';
 
   useEffect(() => {
     if (currentSearchResult && isMobile) {
@@ -43,7 +46,7 @@ const SearchLayout = () => {
             'w-full sm:max-w-[320px] lg:max-w-[400px]',
             'sm:overflow-y-auto z-20 shadow-3xl',
             isMobile && (expanded ? 'overflow-y-auto' : 'overflow-hidden'),
-            currentSearchResult ? 'bg-white' : 'bg-[#DAE5EA]',
+            currentSearchResult ? 'bg-white dark:bg-[#546A74]' : 'bg-[#DAE5EA] dark:bg-[#232F34]',
           ])}
           animate={
             isMobile
@@ -64,7 +67,7 @@ const SearchLayout = () => {
                 className="flex items-center text-center mx-auto pt-1"
                 onClick={toggleFullScreen}
               >
-                <span className="bg-black w-16 h-[2px]" />
+                <span className="bg-black dark:bg-white w-16 h-[2px]" />
               </button>
             )}
 
@@ -74,12 +77,12 @@ const SearchLayout = () => {
                 layout="fixed"
                 width="150"
                 height="142"
-                src="/images/logo.png"
+                src={logoSrc}
                 alt="Geo Data Search Logo"
               />
             </div>
 
-            <SearchView />
+            <SearchView logoSrc={logoSrc} />
 
             {(expanded || isDesktop) && (
               <nav className="mt-auto pb-2 text-center">
