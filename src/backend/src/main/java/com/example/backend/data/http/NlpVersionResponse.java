@@ -1,8 +1,6 @@
 package com.example.backend.data.http;
 
 import com.example.backend.data.HttpResponse;
-import com.example.backend.data.nlp.RouteAttributes;
-import com.google.gson.annotations.SerializedName;
 
 /**
  * The data structure to hold the response from the NLP component.

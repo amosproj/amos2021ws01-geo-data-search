@@ -11,11 +11,13 @@ import com.example.backend.data.kml.KML;
 import com.example.backend.data.kml.KMLPlaceMark;
 import com.example.backend.data.kml.KMLRoute;
 import com.example.backend.helpers.*;
+import com.example.backend.helpers.FileNotFoundException;
 import com.google.gson.Gson;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,9 +35,11 @@ import java.util.List;
 public class FrontendController {
 
     public static final String BACKEND_VERSION = "0.12.0";
+    public static final String MEDIA_TYPE_KML = "application/vnd.google-earth.kml+xml";
     private final NlpClient nlpClient;
     private final ApiController apiController;
     private final Logger logger = LogManager.getLogger("FRONTEND_CONTROLLER");
+    private final BackendFileManager manager = new BackendFileManager();
 
     public FrontendController(NlpClient nlpClient, OsmApiClient osmApiClient, HereApiRestService hereApiRestService) {
         this.nlpClient = nlpClient;
@@ -76,43 +80,34 @@ public class FrontendController {
         }
 
         ResultResponse response = prepareResponse(apiQueryResults);
-        if (!logger.isDebugEnabled()) {
-            logger.info("Sending this respond to FRONTEND:\n" + response.toStringWithoutPolyline());
-        }
 
         KML kml = null;
-        if (!response.getResult().isEmpty() && response.getResult().get(0) instanceof NodeInfo) {
-            //OSM node info results
-            kml = new KMLPlaceMark.Builder().from(response.getResult());
-        } else if (!response.getResult().isEmpty()) {
-            //Here Api Routing result
-            kml = new KMLRoute.Builder().from(response.getResult());
-        }
-        logger.debug("Here is the generated KML file: \n " + kml);
-        logger.debug("Sending this respond to FRONTEND:\n" + response.toStringWithPolyline());
-        File file = searchAndGetFile("example.kml");
-        logger.info(file.toString());
-        if (false) {
-            StringBuilder content = new StringBuilder();
-            InputStreamReader streamReader;
-            BufferedReader reader;
-            FileInputStream inputStream = null;
-            try {
-                if (file.exists() && !file.isDirectory()) {
-                    inputStream = new FileInputStream(file);
-                    streamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
-                    reader = new BufferedReader(streamReader);
-                    String currentLine = "";
-                    while ((currentLine = reader.readLine()) != null) {
-                        content.append(currentLine + "\n");
-                    }
-                } else {
-                    // nix
-                }
-            } catch (NullPointerException | IOException e) {
-                logger.error(e.getMessage());
+        if (response.getResult() != null) {
+            if (!response.getResult().isEmpty() && response.getResult().get(0) instanceof NodeInfo) {
+                //OSM node info results
+                kml = new KMLPlaceMark.Builder().from(response.getResult());
+            } else if (!response.getResult().isEmpty()) {
+                //Here Api Routing result
+                kml = new KMLRoute.Builder().from(response.getResult());
             }
-            logger.info("CONTENT=" + content.toString());
+            logger.debug("Here is the generated KML file: \n " + kml);
+        } else {
+            logger.error("No KML-File generation possible, because we have an empty response from API! Check log above for detailed information.");
+        }
+
+        try {
+            if (kml != null) {
+                String fileName = manager.saveKmlFileAndReturnFileName(kml);
+                response.setFileName(fileName);
+            }
+        } catch (IOException e) {
+            handleError(e);
+        }
+
+        if (!logger.isDebugEnabled()) {
+            logger.info("Sending this respond to FRONTEND:\n" + response.toStringWithoutPolyline());
+        } else {
+            logger.debug("Sending this respond to FRONTEND:\n" + response.toStringWithPolyline());
         }
         logger.info("+ -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +");
         return response;
@@ -171,20 +166,19 @@ public class FrontendController {
         return new VersionResponse(Version.createVersion(BACKEND_VERSION, nlpVersion));
     }
 
-    private File searchAndGetFile(String filename) {
-        String SEP = File.separator;
-        // TODO Replace hardcoded filename with parameter
-        return new File(SEP + "app" + SEP + "BOOT-INF" + SEP + "classes" + SEP + "example.kml");
-    }
-
-    // http://localhost:8080/kml?fileName=example.kml
-    // Using ResponseEntity<ByteArrayResource>
     @GetMapping("/kml")
     public ResponseEntity<ByteArrayResource> downloadKmlFile(
-            @RequestParam(defaultValue = "example.kml") String fileName) throws IOException {
-        logger.info("KML file request received!");
-        logger.info("fileName: " + fileName);
-        Path path = searchAndGetFile(fileName).toPath();
+            @RequestParam String fileName) throws IOException {
+        logger.info("File request received for: " + fileName);
+        Path path;
+        try {
+            path = manager.searchForFileAndGetPath(fileName);
+        } catch (WrongFileTypeException | FileNotFoundException e) {
+            logger.error(e.getMessage());
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(null);
+        }
         byte[] data = Files.readAllBytes(path);
         ByteArrayResource resource = new ByteArrayResource(data);
 
@@ -192,7 +186,7 @@ public class FrontendController {
                 // Content-Disposition
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + path.getFileName().toString())
                 // Content-Type
-                .contentType(MediaType.parseMediaType("application/vnd.google-earth.kml+xml")) //
+                .contentType(MediaType.parseMediaType(MEDIA_TYPE_KML)) //
                 // Content-Length
                 .contentLength(data.length) //
                 .body(resource);

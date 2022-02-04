@@ -14,6 +14,7 @@ public class OSMSearchResult {
         return searchResults;
     }
 
+    @SuppressWarnings("unused")
     public void setSearchResults(ArrayList<NodeInfo> searchResults) {
         this.searchResults = searchResults;
     }

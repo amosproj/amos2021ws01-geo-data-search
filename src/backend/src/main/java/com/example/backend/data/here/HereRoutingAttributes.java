@@ -12,7 +12,6 @@ import org.apache.logging.log4j.Logger;
 
 public class HereRoutingAttributes {
 
-    private static final String LOCATIONS_SEPARATOR = ",";
     private final static String DELIMITER = "&";
     private static final RoutingWaypoint DEFAULT_START_LOCATION = new RoutingWaypoint("IAV GmbH", 52.522876680682884, 13.321046275244608);
 

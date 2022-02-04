@@ -21,15 +21,15 @@ public class KMLRoute extends KML {
             super();
         }
 
-        public Builder addStartingPoint(PlaceMark point) {
-            return addPlaceMark(point);
+        public void addStartingPoint(PlaceMark point) {
+            addPlaceMark(point);
         }
 
-        public Builder addTargetPoint(PlaceMark point) {
-            return addPlaceMark(point);
+        public void addTargetPoint(PlaceMark point) {
+            addPlaceMark(point);
         }
 
-        private Builder addRoute(String listOfCoordinates) {
+        private void addRoute(String listOfCoordinates) {
             Element placeMarkElement = new Element("Placemark", getNamespace());
             Element nameElement = new Element("name", getNamespace()).setText("Route");
             placeMarkElement.addContent(nameElement);
@@ -41,10 +41,9 @@ public class KMLRoute extends KML {
 
             placeMarkElement.addContent(lineString);
             getRootDoc().addContent(placeMarkElement);
-            return this;
         }
 
-        private Builder addPlaceMark(PlaceMark placeMark) {
+        private void addPlaceMark(PlaceMark placeMark) {
             Element placeMarkElement = new Element("Placemark", getNamespace());
             Element nameElement = new Element("name", getNamespace()).setText(placeMark.getName());
             placeMarkElement.addContent(nameElement);
@@ -56,7 +55,6 @@ public class KMLRoute extends KML {
 
             placeMarkElement.addContent(point);
             getRootDoc().addContent(placeMarkElement);
-            return this;
         }
 
         @Override
@@ -68,10 +66,9 @@ public class KMLRoute extends KML {
          * adds Start, Target PlaceMarkers and add the route to the KML
          *
          * @param apiResultList result list
-         * @return generated KML object
          */
         @Override
-        protected KML forRoute(List<ApiResult> apiResultList) {
+        protected void forRoute(List<ApiResult> apiResultList) {
             findStartTargetPoints(apiResultList);
             //Add Start Point
             addStartingPoint(startingPoint);
@@ -80,12 +77,11 @@ public class KMLRoute extends KML {
             //Add Route
             findRoute(apiResultList);
             addRoute(coordinatesString);
-            return this.build();
+            this.build();
         }
 
         @Override
-        protected KML forElevation(List<ApiResult> apiResultList) {
-            return null;
+        protected void forElevation(List<ApiResult> apiResultList) {
         }
 
         /**
@@ -114,12 +110,10 @@ public class KMLRoute extends KML {
             List<PolylineEncoderDecoder.LatLngZ> decodedPath = PolylineEncoderDecoder.decode(polyLine);
 
             StringBuilder sBuilder = new StringBuilder();
-            for (int i = 0; i < decodedPath.size(); i++) {
-                PolylineEncoderDecoder.LatLngZ path = decodedPath.get(i);
-                sBuilder.append("" + path.lng + "," + path.lat + " ");
+            for (PolylineEncoderDecoder.LatLngZ path : decodedPath) {
+                sBuilder.append(path.lng).append(",").append(path.lat).append(" ");
             }
             coordinatesString = sBuilder.toString();
         }
     }
-
 }

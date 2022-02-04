@@ -11,19 +11,19 @@ import java.util.List;
 public class ResultResponse implements HttpResponse {
 
     private static final String SUPER_TAB = "\t\t\t\t\t\t\t\t\t\t\t";
-    List<ApiResult> result;
-    String fileName = "example.kml";
+    private final List<ApiResult> result;
+    private String fileName;
 
     public ResultResponse(List<ApiResult> result) {
         this.result = result;
     }
 
-    public List<ApiResult> getResult() {
-        return result;
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 
-    public String getFileName() {
-        return fileName;
+    public List<ApiResult> getResult() {
+        return result;
     }
 
     public String toStringWithPolyline() {

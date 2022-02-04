@@ -2,8 +2,6 @@ package com.example.backend.data.nlp;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.Objects;
-
 public class RouteAttributes {
 
     @SerializedName("height")
