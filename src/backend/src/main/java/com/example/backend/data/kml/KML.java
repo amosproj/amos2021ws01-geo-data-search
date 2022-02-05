@@ -1,7 +1,7 @@
 package com.example.backend.data.kml;
 
 import com.example.backend.data.ApiResult;
-import com.example.backend.data.api.NodeInfo;
+import com.example.backend.data.osm.NodeInfo;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.Namespace;

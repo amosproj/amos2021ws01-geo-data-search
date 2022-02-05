@@ -1,4 +1,4 @@
-package com.example.backend.data.http;
+package com.example.backend.helpers;
 
 public class Version {
     private final String backend;

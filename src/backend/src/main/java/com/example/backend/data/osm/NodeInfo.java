@@ -1,4 +1,4 @@
-package com.example.backend.data.api;
+package com.example.backend.data.osm;
 
 import com.example.backend.data.ApiResult;
 import org.springframework.web.bind.annotation.ResponseBody;

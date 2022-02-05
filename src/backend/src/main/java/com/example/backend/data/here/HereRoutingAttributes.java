@@ -1,7 +1,6 @@
 package com.example.backend.data.here;
 
 import com.example.backend.controllers.HereApiRestService;
-import com.example.backend.data.api.HereApiGeocodeResponse;
 import com.example.backend.data.http.NlpQueryResponse;
 import com.example.backend.helpers.InvalidCalculationRequest;
 import com.example.backend.helpers.LocationNotFoundException;

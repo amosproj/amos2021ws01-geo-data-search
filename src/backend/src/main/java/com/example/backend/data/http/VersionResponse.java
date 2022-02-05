@@ -1,6 +1,7 @@
 package com.example.backend.data.http;
 
 import com.example.backend.data.HttpResponse;
+import com.example.backend.helpers.Version;
 
 public class VersionResponse implements HttpResponse {
     private final Version version;

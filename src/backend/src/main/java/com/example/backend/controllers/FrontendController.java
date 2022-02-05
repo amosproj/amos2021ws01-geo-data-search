@@ -4,8 +4,8 @@ import com.example.backend.clients.NlpClient;
 import com.example.backend.clients.OsmApiClient;
 import com.example.backend.data.ApiResult;
 import com.example.backend.data.HttpResponse;
-import com.example.backend.data.api.NodeInfo;
-import com.example.backend.data.http.Error;
+import com.example.backend.data.osm.NodeInfo;
+import com.example.backend.helpers.Error;
 import com.example.backend.data.http.*;
 import com.example.backend.data.kml.KML;
 import com.example.backend.data.kml.KMLPlaceMark;
@@ -58,29 +58,54 @@ public class FrontendController {
     @ResponseBody
     public HttpResponse handleQueryRequest(@RequestBody String query) {
         logger.info("+ -- + -- + START + -- + -- + START + -- + -- + START + -- + -- + START + -- + -- + START + -- + -- + START + -- + -- + START + -- + -- + START + -- + -- + START + -- + -- +");
-        logger.info("New query received! Query = \"" + query + "\"");
 
+        logger.info("New query received! Query = \"" + query + "\"");
         query = prepareQuery(query);
 
+        //  Sending query to NLP and receiving its response
         NlpQueryResponse nlpQueryResponse;
         try {
-            // Sending the query to the NLP and receiving its response here
             nlpQueryResponse = getNlpQueryResponse(query);
         } catch (Throwable throwable) {
-            throwable.printStackTrace();
             return handleError(throwable);
         }
 
-        List<ApiResult> apiQueryResults = null;
+        // Decision which API to use, sending the query and receiving its response
+        List<ApiResult> apiQueryResults;
         try {
-            // The API decision and calling happens here:
             apiQueryResults = apiController.querySearch(nlpQueryResponse);
-        } catch (MissingLocationException | UnknownQueryObjectException | NoPreferredApiFoundException | LocationNotFoundException | InvalidCalculationRequest e) {
-            handleError(e);
+        } catch (MissingLocationException | UnknownQueryObjectException | NoPreferredApiFoundException | LocationNotFoundException | InvalidCalculationRequest | EmptyResultException e) {
+            return handleError(e);
         }
 
-        ResultResponse response = prepareResponse(apiQueryResults);
+        ResultResponse response = new ResultResponse(apiQueryResults);
+        generateKmlAndSaveFile(response);
+        logResponseToFrontend(response);
+        logger.info("+ -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +");
+        return response;
+    }
 
+    private void logResponseToFrontend(ResultResponse response) {
+        if (!logger.isDebugEnabled()) {
+            logger.info("Sending this respond to FRONTEND:\n" + response.toStringWithoutPolyline());
+        } else {
+            logger.debug("Sending this respond to FRONTEND:\n" + response.toStringWithPolyline());
+        }
+    }
+
+    private void generateKmlAndSaveFile(ResultResponse response) {
+        KML kml = generateKml(response);
+        try {
+            if (kml != null) {
+                String fileName = manager.saveKmlFileAndReturnFileName(kml);
+                response.setFileName(fileName);
+            }
+        } catch (IOException e) {
+            handleError(e);
+        }
+    }
+
+    private KML generateKml(ResultResponse response) {
         KML kml = null;
         if (response.getResult() != null) {
             if (!response.getResult().isEmpty() && response.getResult().get(0) instanceof NodeInfo) {
@@ -94,23 +119,7 @@ public class FrontendController {
         } else {
             logger.error("No KML-File generation possible, because we have an empty response from API! Check log above for detailed information.");
         }
-
-        try {
-            if (kml != null) {
-                String fileName = manager.saveKmlFileAndReturnFileName(kml);
-                response.setFileName(fileName);
-            }
-        } catch (IOException e) {
-            handleError(e);
-        }
-
-        if (!logger.isDebugEnabled()) {
-            logger.info("Sending this respond to FRONTEND:\n" + response.toStringWithoutPolyline());
-        } else {
-            logger.debug("Sending this respond to FRONTEND:\n" + response.toStringWithPolyline());
-        }
-        logger.info("+ -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +  END  + -- + -- +");
-        return response;
+        return kml;
     }
 
     private String prepareQuery(String query) {
@@ -133,20 +142,15 @@ public class FrontendController {
         return nlpQueryResponse;
     }
 
-    // TODO Maybe we should throw an exception in the case of an empty response?
-    private ResultResponse prepareResponse(List<ApiResult> apiQueryResults) {
-        if (apiQueryResults == null || apiQueryResults.isEmpty()) {
-            return new ResultResponse(null);
-        } else {
-            return new ResultResponse(apiQueryResults);
-        }
-    }
-
     private ErrorResponse handleError(Throwable throwable) {
-        logger.error("...ERROR!" + "\n" + "\t" + throwable.toString());
+        logger.error(throwable.toString());
         return new ErrorResponse(Error.createError(throwable.getMessage(), Arrays.toString(throwable.getStackTrace())));
     }
 
+    /**
+     * This method will be called when Frontend requests the current version numbers of NLP and backend
+     * @return The current versions of NLP and backend
+     */
     @GetMapping("/version")
     @ResponseBody
     public HttpResponse handleVersionRequest() {
@@ -166,6 +170,12 @@ public class FrontendController {
         return new VersionResponse(Version.createVersion(BACKEND_VERSION, nlpVersion));
     }
 
+    /**
+     * This method will be called when Frontend requests a specific KML-file
+     * @param fileName the name of the specific KML-file
+     * @return Returns the file to be opened or downloaded by the user
+     * @throws IOException All kind of file-reading exceptions
+     */
     @GetMapping("/kml")
     public ResponseEntity<ByteArrayResource> downloadKmlFile(
             @RequestParam String fileName) throws IOException {

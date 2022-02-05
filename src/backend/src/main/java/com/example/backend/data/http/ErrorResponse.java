@@ -1,6 +1,7 @@
 package com.example.backend.data.http;
 
 import com.example.backend.data.HttpResponse;
+import com.example.backend.helpers.Error;
 
 public class ErrorResponse implements HttpResponse {
 

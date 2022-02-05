@@ -2,9 +2,9 @@ package com.example.backend.controllers;
 
 import com.example.backend.clients.OsmApiClient;
 import com.example.backend.data.ApiResult;
-import com.example.backend.data.api.NodeInfo;
-import com.example.backend.data.api.OSMQuery;
-import com.example.backend.data.api.OSMSearchResult;
+import com.example.backend.data.osm.NodeInfo;
+import com.example.backend.data.osm.OSMQuery;
+import com.example.backend.data.osm.OSMSearchResult;
 import com.example.backend.data.http.NlpQueryResponse;
 import com.example.backend.helpers.*;
 import com.example.backend.helpers.ApiSelectionHelper.ApiType;
@@ -45,9 +45,14 @@ public class ApiController {
      *
      * @param nlpQueryResponse the answer from NLP containing information from the query
      * @return the results from the called API's
-     * @throws MissingLocationException if Routing is selected and the location is empty, this Exception will be thrown
+     * @throws MissingLocationException     if Routing is selected and the location is empty, this Exception will be thrown
+     * @throws UnknownQueryObjectException  if the queryObject is unknown to us
+     * @throws NoPreferredApiFoundException when we could not decide on which API to use
+     * @throws LocationNotFoundException    If the location for routing could not be retrieved from NLP-Response
+     * @throws InvalidCalculationRequest    If the random route point could not be calculated by our algorithm
+     * @throws EmptyResultException         when the response from API was empty
      */
-    public List<ApiResult> querySearch(NlpQueryResponse nlpQueryResponse) throws MissingLocationException, UnknownQueryObjectException, NoPreferredApiFoundException, LocationNotFoundException, InvalidCalculationRequest {
+    public List<ApiResult> querySearch(NlpQueryResponse nlpQueryResponse) throws MissingLocationException, UnknownQueryObjectException, NoPreferredApiFoundException, LocationNotFoundException, InvalidCalculationRequest, EmptyResultException {
         ApiType preferredApi = ApiSelectionHelper.getApiPreference(nlpQueryResponse);
         List<ApiResult> result = new ArrayList<>();
         if (preferredApi == ApiType.OSM_API) {
@@ -61,6 +66,9 @@ public class ApiController {
             throw new NoPreferredApiFoundException("No preferred API to use based on this query_object: \"" + nlpQueryResponse.getQueryObject() + "\"");
         }
         adjustTypeValues(result, nlpQueryResponse);
+        if (result.isEmpty()) {
+            throw new EmptyResultException("The \"" + preferredApi.name() + "\" answered with an empty response!");
+        }
         return result;
     }
 

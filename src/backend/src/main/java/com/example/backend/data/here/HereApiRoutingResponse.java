@@ -1,4 +1,4 @@
-package com.example.backend.data.api;
+package com.example.backend.data.here;
 
 import com.example.backend.data.here.Route;
 import com.google.gson.annotations.SerializedName;

@@ -1,4 +1,4 @@
-package com.example.backend.data.api;
+package com.example.backend.data.osm;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
