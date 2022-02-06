@@ -10,6 +10,7 @@ const SearchResultDetail = ({ result, onBackClick }: Props) => {
       <div className="flex">
         <button
           aria-label="Close current search result"
+          title="Close current search result"
           className="pr-2 py-2"
           onClick={onBackClick}
         >
@@ -22,10 +23,10 @@ const SearchResultDetail = ({ result, onBackClick }: Props) => {
           <p className="text-sm capitalize">{result.type}</p>
         </div>
       </div>
-      
+
       <h3 className="font-bold mt-4 text-sm">Details</h3>
       <p>{getSearchResultDescription(result)}</p>
-      
+
       {result.api && (
         <>
           <h3 className="font-bold mt-4 text-sm">API</h3>

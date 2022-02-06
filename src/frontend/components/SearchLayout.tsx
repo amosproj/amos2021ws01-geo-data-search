@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import Image from 'next/image';
 import AboutModal from './AboutModal';
 import SearchView from './SearchView';
 import dynamic from 'next/dynamic';
@@ -8,7 +7,8 @@ import { motion } from 'framer-motion';
 import useMediaQuery from '@lib/useMediaQuery';
 import { useAtom } from 'jotai';
 import { currentSearchResultAtom } from '@lib/store';
-import useDarkMode from 'use-dark-mode';
+import DarkModeToggle from './DarkModeToggle';
+import Logo from './Logo';
 
 const MapViewNoSSR = dynamic(() => import('./MapView'), { ssr: false });
 
@@ -16,10 +16,10 @@ const SearchLayout = () => {
   const [currentSearchResult] = useAtom(currentSearchResultAtom);
   const [showAbout, setShowAbout] = useState(false);
   const [expanded, setExpanded] = useState(false);
-  const isDesktop = useMediaQuery('(min-width: 640px)');
+  const isDesktop = useMediaQuery('(min-width: 640px)', {
+    defaultMatches: true,
+  });
   const isMobile = !isDesktop;
-  const { value: darkMode } = useDarkMode(true);
-  const logoSrc = darkMode ? '/images/logo-dark.png' : '/images/logo.png';
 
   useEffect(() => {
     if (currentSearchResult && isMobile) {
@@ -58,7 +58,12 @@ const SearchLayout = () => {
           transition={{ type: 'spring', bounce: 0, duration: 0.5 }}
         >
           {isMobile && !expanded && (
-            <button className="absolute inset-0 z-10 w-full h-full" onClick={handleFullscreen} />
+            <button
+              className="absolute inset-0 z-10 w-full h-full"
+              onClick={handleFullscreen}
+              aria-label="Open fullscreen"
+              title="Open fullscreen"
+            />
           )}
 
           <div className="flex flex-col p-5 h-full">
@@ -66,29 +71,25 @@ const SearchLayout = () => {
               <button
                 className="flex items-center text-center mx-auto pt-1"
                 onClick={toggleFullScreen}
+                title="Toggle fullscreen"
+                aria-label="Toggle fullscreen"
               >
                 <span className="bg-black dark:bg-white w-16 h-[2px]" />
               </button>
             )}
 
             <div className="justify-center hidden sm:flex">
-              <Image
-                priority
-                layout="fixed"
-                width="150"
-                height="142"
-                src={logoSrc}
-                alt="Geo Data Search Logo"
-              />
+              <Logo />
             </div>
 
-            <SearchView logoSrc={logoSrc} />
+            <SearchView />
 
             {(expanded || isDesktop) && (
-              <nav className="mt-auto pb-2 text-center">
+              <nav className="mt-auto pb-2 text-center flex justify-between">
                 <button className="underline text-gray-600" onClick={() => setShowAbout(true)}>
                   About
                 </button>
+                <DarkModeToggle />
               </nav>
             )}
           </div>

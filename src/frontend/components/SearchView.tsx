@@ -1,5 +1,4 @@
 import React, { FormEvent, useRef, useState } from 'react';
-import Image from 'next/image';
 import apiClient, { CancelablePromise } from '@lib/api-client';
 import SearchInput from './SearchInput';
 import ErrorMessage from './ErrorMessage';
@@ -10,8 +9,9 @@ import { currentSearchResultAtom, searchResultsAtom } from '@lib/store';
 import SearchResults from './SearchResults';
 import SearchResultDetail from './SearchResultDetail';
 import SearchTips from './SearchTips';
+import Logo from './Logo';
 
-const SearchView = ({ logoSrc }: { logoSrc: string }) => {
+const SearchView = () => {
   const [searchValue, setSearchValue] = useState('');
   const [errorData, setErrorData] = useState<SearchError | null>(null);
   const [results, setResults] = useAtom(searchResultsAtom);
@@ -116,15 +116,7 @@ const SearchView = ({ logoSrc }: { logoSrc: string }) => {
       <form onSubmit={onFormSubmit}>
         <div className="flex items-center w-full">
           <div className="h-20 w-20 mr-2 sm:hidden flex items-center justify-center">
-            <Image
-              className="sm:hidden"
-              priority
-              layout="intrinsic"
-              width="150"
-              height="142"
-              src={logoSrc}
-              alt="Geo Data Search Logo"
-            />
+            <Logo />
           </div>
 
           <SearchInput

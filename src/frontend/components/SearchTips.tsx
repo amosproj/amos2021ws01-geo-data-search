@@ -2,15 +2,7 @@ import { useState } from 'react';
 import Modal from './Modal';
 import { AnimatePresence, motion } from 'framer-motion';
 import useInterval from '@lib/useInterval';
-
-const searchTermExamples = [
-  'Zeige mir Berge in Berlin',
-  // 'Zeige mir einen Weg von Essen nach Köln',
-  'Wie komme ich von Essaouira nach Ourzazate?',
-  'Plane mir eine Route von Berlin nach Paris mit Stromtankstellen',
-  'Gibt es hohe Hügel in Garmisch-Partenkirchen',
-  'Route von Cannes nach Nizza ohne Mautstraßen',
-];
+import { searchTermExamples } from '@lib/config';
 
 type Props = { onSearchTipSelected: (searchTerm: string) => void };
 
@@ -32,7 +24,12 @@ const SearchTips = ({ onSearchTipSelected }: Props) => {
   return (
     <>
       <div className="mt-2 mb-4 ml-2">
-        <button onClick={onOpen} className="text-gray-500 flex items-center group">
+        <button
+          aria-label="Open example queries"
+          title="Open example queries"
+          onClick={onOpen}
+          className="text-gray-500 flex items-center group"
+        >
           <span className="mr-2 font-bold text-sm rounded-full border-2 border-gray-500 h-5 w-5 flex items-center justify-center">
             ?
           </span>
@@ -42,7 +39,7 @@ const SearchTips = ({ onSearchTipSelected }: Props) => {
               key={currentIndex}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="italic group-hover:underline truncate max-w-[250px]"
+              className="italic group-hover:underline truncate max-w-[250px] sm:max-w-[200px] lg:max-w-[300px]"
             >
               {searchTermExamples[currentIndex]}
             </motion.span>

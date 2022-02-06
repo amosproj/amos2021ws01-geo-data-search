@@ -39,12 +39,12 @@ const SearchResults = ({ results }: { results: SearchResult[] | null }) => {
 
     return (
       <div className="">
-        <h2 className="text-lg mt-2">
+        <h2 className="text-lg mt-2 dark:text-gray-300">
           Route from <span className="font-bold">{start?.name}</span> to{' '}
           <span className="font-bold">{finish?.name}</span>
         </h2>
 
-        <ul aria-label="Search results" className="sm:mt-2 bg-white rounded results--route">
+        <ul aria-label="Search results" className="sm:mt-2 bg-white dark:bg-transparent dark:border dark:border-gray-700 rounded results--route">
           {renderSearchResults()}
         </ul>
       </div>
