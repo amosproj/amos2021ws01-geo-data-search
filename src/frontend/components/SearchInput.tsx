@@ -39,6 +39,7 @@ const SearchInput = ({ value, onChange, onCancelSearchRequest, placeholder, load
         />
         <button
           aria-label='Clear search term'
+          title='Clear search term'
           disabled={!value}
           type="button"
           className="px-2 text-black disabled:text-gray-400 disabled:cursor-default absolute top-0 right-0 h-full"
@@ -49,6 +50,7 @@ const SearchInput = ({ value, onChange, onCancelSearchRequest, placeholder, load
       </div>
       <button
         aria-label='Search'
+        title='Search'
         className="bg-red-500 text-white px-3 disabled:opacity-70 disabled:cursor-default"
         type="submit"
         disabled={searchTermEmpty || loading}
