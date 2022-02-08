@@ -6,7 +6,7 @@ logging.basicConfig(format='%(asctime)s %(levelname)s %(name)s : %(message)s',
                     encoding='utf-8',
                     stream=sys.stdout,
                     level=logging.INFO)
-LOGGER = logging.getLogger("[STRING INTERPRETER][UTILS]")
+LOGGER = logging.getLogger("src.api.utils")
 
 import itertools
 import os
@@ -39,12 +39,12 @@ def parse_synonyms(is_entity: bool = True, chatette_file_path: str = None,
     # read synonyms from chatette file
     if chatette_file_path is None:
         default_path = f"{CURRENT_DIR}{SEP}..{SEP}models{SEP}data{SEP}chatette-slots{SEP}{title}.chatette"
-        LOGGER.info(f"No Chatette file was specified, trying {default_path}")
+        LOGGER.info("No Chatette file was specified, trying %s", default_path)
         chatette_file_path = default_path
 
     chatette_file_path = pathlib.Path(chatette_file_path)
     if not chatette_file_path.exists():
-        LOGGER.error(f"Couldn't find file {chatette_file_path}")
+        LOGGER.error(f"Couldn't find file %s", chatette_file_path)
 
     with open(chatette_file_path, encoding="UTF-8") as file:
         synonyms = {}
@@ -113,7 +113,7 @@ def parse_synonyms(is_entity: bool = True, chatette_file_path: str = None,
                     for sub_part in sub_parts:
                         if sub_part.strip().isalpha():
                             values.append(sub_part.lower().strip())
-                            LOGGER.debug(f"Added {sub_part} as synonym for {key}")
+                            LOGGER.debug("Added %s as synonym for %s", sub_part, key)
     synonyms[key] = values
     return synonyms
 
@@ -173,13 +173,13 @@ def get_keyword_from_synonyms(string: str, default_keyword: str, synonyms: dict,
     for keyword in synonyms.keys():
         if string.lower() in synonyms[keyword]:
             if log_results:
-                logging.warning(f"[NLP COMPONENT][STRING INTERPRETER] Found matching keyword {keyword} for {string}")
+                LOGGER.debug("Found matching keyword %s for %s", keyword, string)
             return keyword
 
     if log_results:
-        logging.warning(
-            f"[NLP COMPONENT][STRING INTERPRETER] Couldn't find a matching keyword for {string}, "
-            f"using default keyword {default_keyword}"
+        LOGGER.warning(
+            "Couldn't find a matching keyword for %s, "
+            "using default keyword %s", string, default_keyword
         )
     return default_keyword
 

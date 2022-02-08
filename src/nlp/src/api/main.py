@@ -1,7 +1,9 @@
 import logging
-logging.basicConfig(format='%(asctime)s %(levelname)s %(name)s: %(message)s',
+import sys
+logging.basicConfig(format='%(asctime)s %(levelname)s : %(name)s : %(message)s',
                     datefmt='%d.%m.%Y %H:%M:%S',
                     encoding='utf-8',
+                    stream=sys.stdout,
                     level=logging.INFO)
 LOGGER = logging.getLogger("src.api.main")
 

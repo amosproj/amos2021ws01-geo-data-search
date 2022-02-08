@@ -1,13 +1,14 @@
 import logging
+import sys
 logging.basicConfig(format='%(asctime)s %(levelname)s : %(name)s : %(message)s',
                     datefmt='%d.%m.%Y %H:%M:%S',
                     encoding='utf-8',
-                    level=logging.DEBUG)
+                    stream=sys.stdout,
+                    level=logging.INFO)
 LOGGER = logging.getLogger("src.main")
 
 import os
 import pathlib
-import subprocess
 
 from models.data.training_data import generate_data
 from models.train_model import train
