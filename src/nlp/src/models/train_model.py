@@ -40,6 +40,3 @@ def train(train_data_path="./data/output/train_output.json", base_model=spacy.lo
     base_model.meta["name"] = "trained_model"  # rename model
     base_model.to_disk(model_path)
     logger.info("[NLP COMPONENT][TRAIN MODEL] Saved trained model to " + model_path)
-
-if __name__ == "__main__":
-    train() 
