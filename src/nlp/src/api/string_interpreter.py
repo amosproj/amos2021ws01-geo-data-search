@@ -102,36 +102,39 @@ def get_query(string: str) -> object:
 
     # determines the type of location(e.g, start location) for routes found by the default model
     if result.query_object == "route":
-        query_tokens = []
         locations = {}
-        # adds query tokens to query_tokens and replaces tokens labeled as location with default string "location"
-        for index in range(len(default_tokens)):
-            token = default_tokens[index]
-            if token.ent_type_ == "LOC":
-                query_tokens.append("location")
+        char_index_additions = 0
+        index_additions = 0
+        # adds query tokens to query_tokens
+        # and replaces tokens labeled as location with default string "location"
+        loc_query = str(default_tokens[:])
+        for ent in default_tokens.ents:
+            if ent.label_ == "LOC":
+                loc_query = str(loc_query[:ent.start_char + char_index_additions]) \
+                            + "location" \
+                            + str(loc_query[ent.end_char + char_index_additions:])
+                char_index_additions += len("location") - len(str(ent))
 
-                # saves index of location token
-                locations[index] = token.lemma_
-            else:
-                query_tokens.append(token.text)
+                # saves start index of location span
+                locations[ent.start + index_additions] = ent.lemma_
+                index_additions += 1 - len(ent)
 
-        # composes the array of tokens to a string
-        query = ' '.join(map(str, query_tokens))
-        location_tokens = ner_model(query)
+        location_tokens = ner_model(loc_query)
 
-        # saves the token to the corresponding attribute in query object
-        for index in range(len(location_tokens)):
-            token = location_tokens[index]
-            if token.ent_type_ == "regionStart":
-                result.route_attributes.location_start = default_tokens[index].lemma_
-            elif token.ent_type_ == "regionEnd":
-                result.route_attributes.location_end = default_tokens[index].lemma_
-            elif token.ent_type_ == "region":
-                result.route_attributes.location_start = default_tokens[index].lemma_
+        for start_index, location in locations.items():
+            if location_tokens[start_index].ent_type_ == "regionStart":
+                result.route_attributes.location_start = location
+
+            elif location_tokens[start_index].ent_type_ == "regionEnd":
+                result.route_attributes.location_end = location
+
+            elif location_tokens[start_index].ent_type_ == "region":
+                result.route_attributes.location_start = location
+
     else:
-        for token in default_tokens:
-            if token.ent_type_ == "LOC":
-                result.location = token.lemma_
+        for part in default_tokens.ents:
+            if part.label_ == "LOC":
+                result.location = part.lemma_
 
     return resolve_extracted_query_parameters(result, token_keywords)
 
@@ -293,7 +296,7 @@ def get_query_parameters(origin: int, tokens: [spacy.tokens.token.Token]) -> (st
             elif lemma == "rechtskurve":
                 param_2 = "curves_right"
 
-    print("Dependencies for", tokens[origin], ":", dependencies, "->", param_1, param_2, unit)
+    LOGGER.debug("Dependencies for", tokens[origin], ":", dependencies, "->", param_1, param_2, unit)
 
     return param_1, param_2, unit
 
@@ -518,4 +521,9 @@ class TokenKeywords:
 # print(get_query("Plane mir eine Route nach Paris mit einer länge von mindestens 100 km"))
 # print(get_query("Finde eine Strecke in Italien mit mindestens 10 meilen länge in einer lage über 1000  mit einem Anteil von 500 kilometer Linkskurven mit einem Anteil von 600m Steigung über 7% auf einer Höhe von maximal 10"))
 # print(get_query("Plane mir eine Route nach Paris mit einem Anteil von 500 meter Steigung von maximal 7% mit eine Ladestationen") )
-print(get_query("Zeige mir Berge in Hamburg mit einer Höhe von 1 kilometern"))
+# print(get_query("Zeige mir eine Strecke in Frankfurt am Main mit einer Höhe von 1 kilometern bis nach Hamburg"))
+# print(get_query("Strecke Berlin Hamm"))
+# print(get_query("Plane mir eine Route von Berlin nach Rom mit Stromtankstellen"))
+# print(get_query("Plane mir eine Route nach Paris mit Berlin als Startort"))
+# print(get_query("Zeige mir einen Weg von Baden-Württemberg nach Köln mit einer Steigung von maximal 7"))
+# print(get_query("Straße ab Bremerhaven"))
