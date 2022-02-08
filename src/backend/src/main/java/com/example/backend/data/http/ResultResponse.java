@@ -26,6 +26,10 @@ public class ResultResponse implements HttpResponse {
         return result;
     }
 
+    public String getFileName() {
+        return fileName;
+    }
+
     public String toStringWithPolyline() {
         String output = SUPER_TAB + "ResultResponse: ";
         if (result == null) {
