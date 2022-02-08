@@ -49,8 +49,6 @@ def process_string(string: str) -> object:
 
 
 def get_query(string: str) -> object:
-    LOGGER.info("Received Request \"%s\"", string)
-
     default_tokens = nlp_default(string.replace("?", "").replace("!", "").strip() + " ")
     result = Query()
 
@@ -181,8 +179,6 @@ def resolve_extracted_query_parameters(result, token_keywords: []) -> object:
     # try to apply unresolved keywords with additional information
     apply_query_parameters(unresolved_keywords, result, False)
 
-    LOGGER.info("Send %s", result)
-
     return result
 
 
@@ -257,7 +253,7 @@ def apply_query_parameters(token_keywords: [], query: object, require_units=True
         unresolved_keywords.append(keywords)
 
     if len(unresolved_keywords) != 0:
-        print("Failed to resolve", len(unresolved_keywords), "extracted query parameters")
+        LOGGER.info("Failed to resolve %s extracted query parameters", len(unresolved_keywords))
 
     return unresolved_keywords
 
@@ -295,7 +291,7 @@ def get_query_parameters(origin: int, tokens: [spacy.tokens.token.Token]) -> (st
             elif lemma == "rechtskurve":
                 param_2 = "curves_right"
 
-    LOGGER.debug("Dependencies for", tokens[origin], ":", dependencies, "->", param_1, param_2, unit)
+    LOGGER.debug("Dependencies for %s: %s -> %s %s %s", tokens[origin], dependencies, param_1, param_2, unit)
 
     return param_1, param_2, unit
 
