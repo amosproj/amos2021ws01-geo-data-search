@@ -1,6 +1,6 @@
 import logging
 
-LOGGER = logging.getLogger("[STRING INTERPRETER]")
+LOGGER = logging.getLogger("src.api.string_interpreter")
 
 import os
 import pathlib
