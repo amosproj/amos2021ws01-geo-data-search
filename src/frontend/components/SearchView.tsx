@@ -5,7 +5,7 @@ import ErrorMessage from './ErrorMessage';
 import { SearchQueryResponse, SearchError } from '@lib/types/search';
 import { isDevelopment } from '@lib/config';
 import { useAtom } from 'jotai';
-import { currentSearchResultAtom, searchResultsAtom } from '@lib/store';
+import { currentSearchResultAtom, kmlFileAtom, searchResultsAtom } from '@lib/store';
 import SearchResults from './SearchResults';
 import SearchResultDetail from './SearchResultDetail';
 import SearchTips from './SearchTips';
@@ -16,6 +16,7 @@ const SearchView = () => {
   const [errorData, setErrorData] = useState<SearchError | null>(null);
   const [results, setResults] = useAtom(searchResultsAtom);
   const [currentSearchResult, setCurrentSearchResult] = useAtom(currentSearchResultAtom);
+  const [, setKmlFile] = useAtom(kmlFileAtom);
   const [loading, setLoading] = useState(false);
   const searchQueryPromise = useRef<CancelablePromise<any> | null>(null);
 
@@ -34,6 +35,7 @@ const SearchView = () => {
       setLoading(true);
       setErrorData(null);
       setResults(null);
+      setKmlFile(null);
 
       // Search request promise
       const promise = apiClient('/user_query', {
@@ -48,17 +50,20 @@ const SearchView = () => {
       const response = await promise;
 
       if (response.ok) {
-        const { result, error }: SearchQueryResponse = await response.json();
-        console.log('Search result', result);
+        const { result, error, fileName }: SearchQueryResponse = await response.json();
 
         if (error) {
           setErrorData(error);
         } else if (result) {
-          if (!result[0].lon && result[0].lat) { 
-            result[0].lon = result[0].lat.split(',')[1]
-            result[0].lat = result[0].lat.split(',')[0]
+          if (!result[0].lon && result[0].lat) {
+            result[0].lon = result[0].lat.split(',')[1];
+            result[0].lat = result[0].lat.split(',')[0];
           }
           setResults(result);
+
+          if (fileName) {
+            setKmlFile(fileName);
+          }
         } else {
           setErrorData({
             type: 'system',

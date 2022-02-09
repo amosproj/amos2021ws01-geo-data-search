@@ -27,4 +27,5 @@ export type SearchResult = {
 export type SearchQueryResponse = {
   result?: SearchResult[];
   error?: SearchError;
+  fileName?: string
 };
