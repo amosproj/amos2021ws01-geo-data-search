@@ -47,15 +47,15 @@ To run the tests enter the following in the terminal:
 docker compose run nlp pytest
 ```
 
-### Artifact export
+## Artifact export
 ```shell
 docker compose build
 docker save amos2021ws01-geo-data-search_nlp:latest > export/nlp.tar
 docker save amos2021ws01-geo-data-search_frontend:latest > export/frontend.tar
 docker save amos2021ws01-geo-data-search_backend:latest > export/backend.tar
 ```
-Upload the files to https://gigamove.rwth-aachen.de/en
-### Artifact import
+Upload the files to https://gigamove.rwth-aachen.de
+## Artifact import
 Download the files in a new folder
 ```shell
 docker load -i nlp.tar

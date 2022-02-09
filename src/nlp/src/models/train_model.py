@@ -1,18 +1,23 @@
 import logging
+import sys
+logging.basicConfig(format='%(asctime)s %(levelname)s : %(name)s : %(message)s',
+                    datefmt='%d.%m.%Y %H:%M:%S',
+                    encoding='utf-8',
+                    stream=sys.stdout,
+                    level=logging.INFO)
+LOGGER = logging.getLogger("src.models.train_model")
+
+
 import pickle
 import random
 
 import spacy
 from spacy.training.example import Example
 
-# Logging
-logger = logging.getLogger()
-logging.basicConfig(level=logging.INFO)
-
 
 def train(train_data_path="./data/output/train_output.json", base_model=spacy.load("de_core_news_sm"), n_iter=5, model_path="./training/"):
     train_data = pickle.load(open(train_data_path, "rb"))
-    logger.debug("[NLP Component][TRAIN MODEL] Loaded dataset from " + train_data_path)
+    LOGGER.debug("Loaded dataset from %s", train_data_path)
 
     ner = base_model.get_pipe("ner")
     for _, annotations in train_data:
@@ -23,7 +28,7 @@ def train(train_data_path="./data/output/train_output.json", base_model=spacy.lo
     # adding a named entity label
     ner = base_model.get_pipe("ner")
     with base_model.disable_pipes(*other_pipes):
-        logger.debug("[NLP COMPONENT][TRAIN MODEL] Start training")
+        LOGGER.debug("Start training")
         for itn in range(n_iter):
             random.shuffle(train_data)
             losses = {}
@@ -36,10 +41,7 @@ def train(train_data_path="./data/output/train_output.json", base_model=spacy.lo
                     example = Example.from_dict(doc, {"entities": list(set(annotations["entities"]))})
                     # Update the model
                     base_model.update([example], losses=losses, drop=0.3)
-    logger.debug("[NLP COMPONENT][TRAIN MODEL] Finished training NER model")
+    LOGGER.debug("Finished training NER model")
     base_model.meta["name"] = "trained_model"  # rename model
     base_model.to_disk(model_path)
-    logger.info("[NLP COMPONENT][TRAIN MODEL] Saved trained model to " + model_path)
-
-if __name__ == "__main__":
-    train() 
+    LOGGER.info("Saved trained model to " + model_path)

@@ -1,9 +1,11 @@
 import logging
-logging.basicConfig(format='%(asctime)s %(levelname)s %(name)s: %(message)s',
+import sys
+logging.basicConfig(format='%(asctime)s %(levelname)s : %(name)s : %(message)s',
                     datefmt='%d.%m.%Y %H:%M:%S',
                     encoding='utf-8',
+                    stream=sys.stdout,
                     level=logging.INFO)
-LOGGER = logging.getLogger("[NLP API]")
+LOGGER = logging.getLogger("src.api.main")
 
 import pathlib
 import os
@@ -54,8 +56,10 @@ async def get_version():
     response_model=Query
 )
 async def request(text: str):
-    write_log_to_file(f'Received Request \"{text}\"')
+    write_log_to_file(f'Received request \"{text}\"')
+    LOGGER.info("Received request \"%s\"", text)
 
     answer = process_string(text)
     write_log_to_file(f'Send \"{answer}\"')
+    LOGGER.info("Send %s", answer)
     return answer

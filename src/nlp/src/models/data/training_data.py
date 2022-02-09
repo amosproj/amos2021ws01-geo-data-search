@@ -1,13 +1,18 @@
 import logging
+import sys
+logging.basicConfig(format='%(asctime)s %(levelname)s : %(name)s : %(message)s',
+                    datefmt='%d.%m.%Y %H:%M:%S',
+                    encoding='utf-8',
+                    stream=sys.stdout,
+                    level=logging.INFO)
+logger = logging.getLogger("src.models.training_data")
+
 import os
 import pickle
 from pathlib import Path
 
 from .spacy_formatter import format_chatette_output
 
-# Logging
-logger = logging.getLogger()
-logging.basicConfig(level=logging.INFO)
 
 SEP = os.path.sep
 
@@ -27,9 +32,9 @@ def generate_data(chatette_path="") -> None:
 
 
 def parse_data(name: str, chatette_path="") -> None:
+    path_spacy = f"{chatette_path}output{SEP}"
     try:
         path_nlu = f"{chatette_path}output{SEP}{name}{SEP}"
-        path_spacy = f"{chatette_path}output{SEP}"
 
         # ensure that output path exists
         Path(path_nlu).mkdir(parents=True, exist_ok=True)
@@ -43,10 +48,10 @@ def parse_data(name: str, chatette_path="") -> None:
             # write resulting json to file
 
             pickle.dump(training_data, open(path_spacy + name + "_" + file, "wb"))
-            logger.info("[NLP COMPONENT][TRAINING DATA] Generated " + path_spacy + name + "_" + file)
+            logger.info("Generated " + path_spacy + name + "_" + file)
 
     except FileNotFoundError:
-        logger.error(f"[NLP COMPONENT][TRAINING DATA] Could not find directory \"{name}\" in \"{path_spacy}\"")
+        logger.error("Could not find directory \"%s\" in \"%s\"", name, path_spacy)
 
 
 # parse training and test data

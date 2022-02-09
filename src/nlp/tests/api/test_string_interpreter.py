@@ -29,7 +29,7 @@ def get_keyword_test_data():
     queries = [
         ["Plane mir eine Route nach Paris mit einer Steigung von maximal 7%", "route"],
         ["Gibt's Routen von der Arktis zur Antarktis", "route"],
-        ["Straße ab Bremershaven", "route"],
+        ["Straße ab Bremerhaven", "route"],
         ["Ort in NRW", "place"],
         ["Zeige mir Seen auf der Mecklenburger Seenplatte", "place"],
         ["Wo liegt der bayrische Wald", "place"],
@@ -132,6 +132,19 @@ def get_query_test_data():
     query.route_attributes.location_end = "Lübeck"
     query.query_object = "route"
     queries.append(["Wie komme ich von Bremerhaven nach Lübeck?", query])
+
+    query = Query()
+    query.route_attributes.location_start = "Frankfurt am Main"
+    query.route_attributes.location_end = "Lübeck"
+    query.query_object = "route"
+    queries.append(["Wie komme ich von Frankfurt am Main nach Lübeck?", query])
+
+    query = Query()
+    query.route_attributes.location_start = "Paris"
+    query.route_attributes.location_end = "Lille"
+    query.query_object = "route"
+    queries.append(["Wie komme ich von Paris nach Lille?", query])
+
     return queries
 
 
