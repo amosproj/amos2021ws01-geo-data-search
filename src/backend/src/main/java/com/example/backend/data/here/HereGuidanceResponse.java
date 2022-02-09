@@ -1,6 +1,4 @@
-package com.example.backend.data.api;
-
-import com.example.backend.data.here.Route;
+package com.example.backend.data.here;
 
 import java.util.List;
 

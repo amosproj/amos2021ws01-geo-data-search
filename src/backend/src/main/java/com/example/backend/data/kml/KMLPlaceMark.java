@@ -9,7 +9,6 @@ public class KMLPlaceMark extends KML {
 
     private KMLPlaceMark(Builder builder) {
         super(builder);
-        setPlaceMarks(builder.getPlaceMarks());
     }
 
     public static class Builder extends KML.Builder {
@@ -17,7 +16,7 @@ public class KMLPlaceMark extends KML {
             super();
         }
 
-        public Builder addPlaceMark(PlaceMark placeMarkObj) {
+        public void addPlaceMark(PlaceMark placeMarkObj) {
             getPlaceMarks().add(placeMarkObj);
             Element placeMarkElement = new Element("Placemark", getNamespace());
             Element nameElement = new Element("name", getNamespace()).setText(placeMarkObj.getName());
@@ -33,7 +32,6 @@ public class KMLPlaceMark extends KML {
 
             placeMarkElement.addContent(point);
             getRootDoc().addContent(placeMarkElement);
-            return this;
         }
 
         @Override
@@ -42,17 +40,16 @@ public class KMLPlaceMark extends KML {
         }
 
         @Override
-        protected KML forRoute(List<ApiResult> apiResultList) {
-            return null;
+        protected void forRoute(List<ApiResult> apiResultList) {
         }
 
         @Override
-        protected KML forElevation(List<ApiResult> apiResultList) {
+        protected void forElevation(List<ApiResult> apiResultList) {
             for (ApiResult apiResult : apiResultList) {
                 PlaceMark placeMark = new PlaceMark(apiResult.getName(), apiResult.getType(), apiResult.getLat(), apiResult.getLon());
                 addPlaceMark(placeMark);
             }
-            return this.build();
+            this.build();
         }
     }
 }

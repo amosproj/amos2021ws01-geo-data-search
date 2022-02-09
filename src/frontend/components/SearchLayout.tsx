@@ -6,9 +6,10 @@ import { cc } from '@lib/common';
 import { motion } from 'framer-motion';
 import useMediaQuery from '@lib/useMediaQuery';
 import { useAtom } from 'jotai';
-import { currentSearchResultAtom } from '@lib/store';
+import { currentSearchResultAtom, kmlFileAtom } from '@lib/store';
 import DarkModeToggle from './DarkModeToggle';
 import Logo from './Logo';
+import { DocumentDownloadIcon, InformationCircleIcon } from '@heroicons/react/outline';
 
 const MapViewNoSSR = dynamic(() => import('./MapView'), { ssr: false });
 
@@ -19,6 +20,7 @@ const SearchLayout = () => {
   const isDesktop = useMediaQuery('(min-width: 640px)', {
     defaultMatches: true,
   });
+  const [kmlFile] = useAtom(kmlFileAtom);
   const isMobile = !isDesktop;
 
   useEffect(() => {
@@ -86,9 +88,29 @@ const SearchLayout = () => {
 
             {(expanded || isDesktop) && (
               <nav className="mt-auto pb-2 text-center flex justify-between">
-                <button className="underline text-gray-600" onClick={() => setShowAbout(true)}>
+                <button
+                  type="button"
+                  className="flex items-center text-gray-600 dark:text-gray-300"
+                  onClick={() => setShowAbout(true)}
+                >
+                  <InformationCircleIcon className="w-6 h-6 mr-1" />
                   About
                 </button>
+
+                <a
+                  aria-label="Download KML file with results"
+                  title="Download KML file with results"
+                  className={cc([
+                    'flex items-center text-gray-600 dark:text-gray-300',
+                    kmlFile === null && 'cursor-not-allowed opacity-50',
+                  ])}
+                  href={kmlFile ? `/api/kml?fileName=${kmlFile}` : undefined}
+                  download
+                >
+                  <DocumentDownloadIcon className="h-6 w-6 mr-1" />
+                  KML
+                </a>
+
                 <DarkModeToggle />
               </nav>
             )}

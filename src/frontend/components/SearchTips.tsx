@@ -39,7 +39,7 @@ const SearchTips = ({ onSearchTipSelected }: Props) => {
               key={currentIndex}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="italic group-hover:underline truncate max-w-[250px] sm:max-w-[200px] lg:max-w-[300px]"
+              className="italic group-hover:underline truncate max-w-[220px] sm:max-w-[200px] lg:max-w-[300px]"
             >
               {searchTermExamples[currentIndex]}
             </motion.span>

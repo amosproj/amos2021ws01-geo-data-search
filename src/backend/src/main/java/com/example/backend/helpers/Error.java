@@ -1,4 +1,4 @@
-package com.example.backend.data.http;
+package com.example.backend.helpers;
 
 public class Error {
     private final String type;
@@ -11,26 +11,21 @@ public class Error {
         this.type = type;
     }
 
-    public static Error createError(String message) {
-        return new Error(message, "NO_TRACE_AVAILABLE", "system");
-    }
-
     public static Error createError(String message, String trace) {
         return new Error(message, trace, "system");
     }
 
-    public static Error createError(String message, String trace, String type) {
-        return new Error(message, trace, type);
-    }
-
+    @SuppressWarnings("unused")
     public String getType() {
         return type;
     }
 
+    @SuppressWarnings("unused")
     public String getMessage() {
         return message;
     }
 
+    @SuppressWarnings("unused")
     public String getTrace() {
         return trace;
     }

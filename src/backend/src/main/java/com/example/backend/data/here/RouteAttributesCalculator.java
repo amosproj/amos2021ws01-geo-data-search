@@ -1,7 +1,6 @@
 package com.example.backend.data.here;
 
 import com.example.backend.controllers.HereApiRestService;
-import com.example.backend.data.api.HereApiRoutingResponse;
 import com.example.backend.data.nlp.RouteAttributes;
 import com.example.backend.helpers.InvalidCalculationRequest;
 import org.apache.logging.log4j.LogManager;

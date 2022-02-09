@@ -17,10 +17,7 @@ public class PolylineEncoderDecoder {
 
     public static final byte FORMAT_VERSION = 1;
 
-    //Base64 URL-safe characters
-    public static final char[] ENCODING_TABLE = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_".toCharArray();
-
-    public static final  int[] DECODING_TABLE = {
+    public static final int[] DECODING_TABLE = {
             62, -1, -1, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, -1, -1, -1, -1, -1, -1, -1,
             0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
             22, 23, 24, 25, -1, -1, -1, -1, 63, -1, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35,
@@ -29,12 +26,12 @@ public class PolylineEncoderDecoder {
 
     /**
      * Decode the encoded input {@link String} to {@link List} of coordinate triples.<BR><BR>
+     *
      * @param encoded URL-safe encoded {@link String}
      * @return {@link List} of coordinate triples that are decoded from input
-     *
      * @see LatLngZ
      */
-    public static final List<LatLngZ> decode(String encoded) {
+    public static List<LatLngZ> decode(String encoded) {
 
         if (encoded == null || encoded.trim().isEmpty()) {
             throw new IllegalArgumentException("Invalid argument!");
@@ -43,13 +40,13 @@ public class PolylineEncoderDecoder {
         Decoder dec = new Decoder(encoded);
         AtomicReference<Double> lat = new AtomicReference<>(0d);
         AtomicReference<Double> lng = new AtomicReference<>(0d);
-        AtomicReference<Double> z   = new AtomicReference<>(0d);
+        AtomicReference<Double> z = new AtomicReference<>(0d);
 
         while (dec.decodeOne(lat, lng, z)) {
             result.add(new LatLngZ(lat.get(), lng.get(), z.get()));
             lat = new AtomicReference<>(0d);
             lng = new AtomicReference<>(0d);
-            z   = new AtomicReference<>(0d);
+            z = new AtomicReference<>(0d);
         }
         return result;
     }
@@ -68,7 +65,6 @@ public class PolylineEncoderDecoder {
         private int precision;
         private int thirdDimPrecision;
         private ThirdDimension thirdDimension;
-
 
         public Decoder(String encoded) {
             this.encoded = encoded.toCharArray();
@@ -96,19 +92,18 @@ public class PolylineEncoderDecoder {
             AtomicLong value = new AtomicLong(0);
 
             // Decode the header version
-            if(!Converter.decodeUnsignedVarint(encoded, index, value)) {
+            if (Converter.decodeUnsignedVariant(encoded, index, value)) {
                 throw new IllegalArgumentException("Invalid encoding");
             }
             if (value.get() != FORMAT_VERSION) {
                 throw new IllegalArgumentException("Invalid format version");
             }
             // Decode the polyline header
-            if(!Converter.decodeUnsignedVarint(encoded, index, value)) {
+            if (Converter.decodeUnsignedVariant(encoded, index, value)) {
                 throw new IllegalArgumentException("Invalid encoding");
             }
             header.set(value.get());
         }
-
 
         private boolean decodeOne(AtomicReference<Double> lat,
                                   AtomicReference<Double> lng,
@@ -116,14 +111,14 @@ public class PolylineEncoderDecoder {
             if (index.get() == encoded.length) {
                 return false;
             }
-            if (!latConverter.decodeValue(encoded, index, lat)) {
+            if (latConverter.decodeValue(encoded, index, lat)) {
                 throw new IllegalArgumentException("Invalid encoding");
             }
-            if (!lngConverter.decodeValue(encoded, index, lng)) {
+            if (lngConverter.decodeValue(encoded, index, lng)) {
                 throw new IllegalArgumentException("Invalid encoding");
             }
             if (hasThirdDimension()) {
-                if (!zConverter.decodeValue(encoded, index, z)) {
+                if (zConverter.decodeValue(encoded, index, z)) {
                     throw new IllegalArgumentException("Invalid encoding");
                 }
             }
@@ -156,21 +151,12 @@ public class PolylineEncoderDecoder {
         }
 
         private void setPrecision(int precision) {
-            multiplier = (long) Math.pow(10, Double.valueOf(precision));
+            multiplier = (long) Math.pow(10, precision);
         }
 
-        private static void encodeUnsignedVarint(long value, StringBuilder result) {
-            while (value > 0x1F) {
-                byte pos =  (byte) ((value & 0x1F) | 0x20);
-                result.append(ENCODING_TABLE[pos]);
-                value >>= 5;
-            }
-            result.append(ENCODING_TABLE[(byte) value]);
-        }
-
-        private static boolean decodeUnsignedVarint(char[] encoded,
-                                                    AtomicInteger index,
-                                                    AtomicLong result) {
+        private static boolean decodeUnsignedVariant(char[] encoded,
+                                                     AtomicInteger index,
+                                                     AtomicLong result) {
             short shift = 0;
             long delta = 0;
             long value;
@@ -178,22 +164,18 @@ public class PolylineEncoderDecoder {
             while (index.get() < encoded.length) {
                 value = decodeChar(encoded[index.get()]);
                 if (value < 0) {
-                    return false;
+                    return true;
                 }
                 index.incrementAndGet();
                 delta |= (value & 0x1F) << shift;
                 if ((value & 0x20) == 0) {
                     result.set(delta);
-                    return true;
+                    return false;
                 } else {
                     shift += 5;
                 }
             }
-
-            if (shift > 0) {
-                return false;
-            }
-            return true;
+            return shift > 0;
         }
 
         //Decode single coordinate (say lat|lng|z) starting at index
@@ -201,32 +183,25 @@ public class PolylineEncoderDecoder {
                             AtomicInteger index,
                             AtomicReference<Double> coordinate) {
             AtomicLong delta = new AtomicLong();
-            if (!decodeUnsignedVarint(encoded, index, delta)) {
-                return false;
+            if (decodeUnsignedVariant(encoded, index, delta)) {
+                return true;
             }
             if ((delta.get() & 1) != 0) {
                 delta.set(~delta.get());
             }
-            delta.set(delta.get()>>1);
+            delta.set(delta.get() >> 1);
             lastValue += delta.get();
-            coordinate.set(((double)lastValue / multiplier));
-            return true;
-        }
-
-        // Overloaded version for backwards compatibility
-        boolean decodeValue(String encoded,
-                            AtomicInteger index,
-                            AtomicReference<Double> coordinate) {
-            return decodeValue(encoded.toCharArray(), index, coordinate);
+            coordinate.set(((double) lastValue / multiplier));
+            return false;
         }
     }
 
     /**
-     * 	3rd dimension specification.
-     *  Example a level, altitude, elevation or some other custom value.
-     *  ABSENT is default when there is no third dimension en/decoding required.
+     * 3rd dimension specification.
+     * Example a level, altitude, elevation or some other custom value.
+     * ABSENT is default when there is no third dimension en/decoding required.
      */
-    public static enum ThirdDimension {
+    public enum ThirdDimension {
         ABSENT(0),
         LEVEL(1),
         ALTITUDE(2),
@@ -236,7 +211,7 @@ public class PolylineEncoderDecoder {
         CUSTOM1(6),
         CUSTOM2(7);
 
-        private int num;
+        private final int num;
 
         ThirdDimension(int num) {
             this.num = num;
@@ -264,14 +239,10 @@ public class PolylineEncoderDecoder {
         public final double lng;
         public final double z;
 
-        public LatLngZ (double latitude, double longitude) {
-            this(latitude, longitude, 0);
-        }
-
-        public LatLngZ (double latitude, double longitude, double thirdDimension) {
+        public LatLngZ(double latitude, double longitude, double thirdDimension) {
             this.lat = latitude;
             this.lng = longitude;
-            this.z   = thirdDimension;
+            this.z = thirdDimension;
         }
 
         @Override
@@ -285,10 +256,8 @@ public class PolylineEncoderDecoder {
                 return true;
             }
             if (anObject instanceof LatLngZ) {
-                LatLngZ passed = (LatLngZ)anObject;
-                if(passed.lat == this.lat && passed.lng == this.lng && passed.z == this.z) {
-                    return true;
-                }
+                LatLngZ passed = (LatLngZ) anObject;
+                return passed.lat == this.lat && passed.lng == this.lng && passed.z == this.z;
             }
             return false;
         }

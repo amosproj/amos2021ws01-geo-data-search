@@ -1,4 +1,4 @@
-package com.example.backend.data.api;
+package com.example.backend.data.osm;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -14,6 +14,7 @@ public class OSMSearchResult {
         return searchResults;
     }
 
+    @SuppressWarnings("unused")
     public void setSearchResults(ArrayList<NodeInfo> searchResults) {
         this.searchResults = searchResults;
     }

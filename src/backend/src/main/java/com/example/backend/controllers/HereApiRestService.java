@@ -1,8 +1,8 @@
 package com.example.backend.controllers;
 
 import com.example.backend.data.ApiResult;
-import com.example.backend.data.api.HereApiRoutingResponse;
-import com.example.backend.data.api.HereGuidanceResponse;
+import com.example.backend.data.here.HereApiRoutingResponse;
+import com.example.backend.data.here.HereGuidanceResponse;
 import com.example.backend.data.here.*;
 import com.example.backend.data.http.NlpQueryResponse;
 import com.example.backend.helpers.*;
