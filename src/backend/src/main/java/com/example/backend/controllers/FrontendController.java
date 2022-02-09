@@ -1,17 +1,18 @@
 package com.example.backend.controllers;
 
+import com.example.backend.clients.HereApiRestService;
 import com.example.backend.clients.NlpClient;
 import com.example.backend.clients.OsmApiClient;
-import com.example.backend.data.ApiResult;
-import com.example.backend.data.HttpResponse;
-import com.example.backend.data.osm.NodeInfo;
+import com.example.backend.api.ApiResult;
+import com.example.backend.responses.HttpResponse;
+import com.example.backend.api.osm.NodeInfo;
 import com.example.backend.helpers.Error;
-import com.example.backend.data.http.*;
-import com.example.backend.data.kml.KML;
-import com.example.backend.data.kml.KMLPlaceMark;
-import com.example.backend.data.kml.KMLRoute;
+import com.example.backend.kml.KML;
+import com.example.backend.kml.KMLPlaceMark;
+import com.example.backend.kml.KMLRoute;
 import com.example.backend.helpers.*;
 import com.example.backend.helpers.FileNotFoundException;
+import com.example.backend.responses.*;
 import com.google.gson.Gson;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

@@ -1,6 +1,6 @@
 package com.example.backend.helpers;
 
-import com.example.backend.data.http.NlpQueryResponse;
+import com.example.backend.responses.NlpQueryResponse;
 
 public class ApiSelectionHelper {
 

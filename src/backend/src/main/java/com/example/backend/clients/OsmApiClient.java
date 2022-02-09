@@ -1,7 +1,7 @@
 package com.example.backend.clients;
 
-import com.example.backend.data.osm.NodeInfo;
-import com.example.backend.data.osm.OSMSearchResult;
+import com.example.backend.api.osm.NodeInfo;
+import com.example.backend.api.osm.OSMSearchResult;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 

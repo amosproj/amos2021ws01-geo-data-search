@@ -1,6 +1,6 @@
 package com.example.backend.helpers;
 
-import com.example.backend.data.kml.KML;
+import com.example.backend.kml.KML;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jdom2.output.Format;
