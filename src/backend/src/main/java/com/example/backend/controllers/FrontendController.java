@@ -107,7 +107,7 @@ public class FrontendController {
 
     private KML generateKml(ResultResponse response) {
         KML kml = null;
-        if (response.getResult() != null) {
+        if (response.getResult() != null && !response.getResult().isEmpty()) {
             if (!response.getResult().isEmpty() && response.getResult().get(0) instanceof NodeInfo) {
                 //OSM node info results
                 kml = new KMLPlaceMark.Builder().from(response.getResult());
