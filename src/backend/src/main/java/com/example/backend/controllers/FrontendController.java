@@ -35,7 +35,7 @@ import java.util.List;
 @RequestMapping("/backend")
 public class FrontendController {
 
-    public static final String BACKEND_VERSION = "0.12.0";
+    public static final String BACKEND_VERSION = "1.0.0";
     public static final String MEDIA_TYPE_KML = "application/vnd.google-earth.kml+xml";
     private final NlpClient nlpClient;
     private final ApiController apiController;

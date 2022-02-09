@@ -1,5 +1,5 @@
 export const isDevelopment = process.env.ENVIRONMENT === 'development';
-export const FRONTEND_VERSION = '0.13.0';
+export const FRONTEND_VERSION = '1.0.0';
 
 export const searchTermExamples = [
   'Zeige mir Berge in Berlin',
