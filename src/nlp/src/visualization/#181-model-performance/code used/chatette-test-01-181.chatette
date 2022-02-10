@@ -1,0 +1,59 @@
+// Example sentences:
+//Liste Berge mit einer Höhe von mehr|weniger als 500 m
+//Finde eine Stadt die höher liegt als 220m
+//Zeige Wälder in Berlin
+//TODO: 500m lange Straße mit 30 Linkskurven in ~[region#single]
+//Zeige Orte über 500m in Brandenburg
+//Finde eine Straße mit einem Anstieg von 9%
+//Wie komme ich von Paris nach Berlin
+//Wie komme ich gebührenfrei von Paris nach Berlin
+//Finde eine Strecke von Berlin nach Paris mit Ladestationen
+
+
+// Training sentences
+%[erhebungen](150)
+   // ~[Finde] [mir?] ~[queryObjectscheme] [mit einer?] ~[attribute] [von?] ~[value] [in?] @[region#single]
+   ~[Finde?] @[queryObject#elevation] mit einer Höhe von ~[value] [in @[region#single]?]
+   ~[Finde?] ~[value] hohe @[queryObject#elevation] [in @[region#single]?]
+   ~[Finde?] @[queryObject#elevation][ der höher liegt als @[amount] ~[unit]?] [in @[region#single]?]
+
+%[orte](50)
+    Wo [sind|finde ich|findet man|gibt es|sind [überall?]] @[queryObject#place] in @[region#single]?
+
+%[routen](200)
+    ~[Finde?][ eine?] @[queryObject#route][ mit einem Anstieg von [@[amount#plural-number]\%|@[amount#plural-numeral] Prozent]?/70][ in @[region#single]?][ [mit|~[negation]] ~[charging_station]?]
+    ~[Finde?][ eine?] @[queryObject#route][ in einer Höhe[ von?] @[amount] ~[unit]?/70][ in @[region#single]?] [und?] [~[negation]|mit] ~[toll_road]
+    ~[Finde?][ eine?] @[queryObject#route][ mit einer Länge von @[amount] ~[unit]?/70][ in @[region#single]?] [[mit|~[negation]] ~[charging_station]?][ [mit|~[negation]] ~[toll_road]?]
+    ~[Finde?][ eine?] @[queryObject#route] von @[regionStart] bis @[regionEnd][ mit einer Länge von @[amount] ~[unit]?/70] [und?] [~[negation]|mit] ~[toll_road]
+    ~[Finde?][ eine?] @[queryObject#route] von @[regionStart] bis @[regionEnd][ mit einem Anstieg von [@[amount#plural-number]\%|@[amount#plural-numeral] Prozent]?/70] [[mit|~[negation]] ~[charging_station]?]
+    [~[Finde?][ eine?] [~[toll_free]?] @[queryObject#route]|Wie komme ich ~[toll_free?]] von @[regionStart] nach @[regionEnd] [[mit|~[negation]] ~[charging_station]?]
+    ~[Finde?][ eine?] @[queryObject#route] von @[regionStart] bis @[regionEnd][ [mit|~[negation]] ~[charging_station]?][ und?][ ~[negation]| mit] ~[toll_road]
+    ~[Finde?][ eine?] @[queryObject#route] von @[regionStart] nach @[regionEnd]
+
+%[routencomplex](80)
+    ~[Finde?][ eine?] @[queryObject#route] mit @[regionStart] als ~[start_location] und @[regionEnd] als ~[end_location]
+    ~[Finde?][ eine?] @[queryObject#route] [mit @[regionEnd] als ~[end_location]|nach @[regionEnd]|mit dem ~[end_location] @[regionEnd]] [und @[regionStart] als ~[end_location]|von @[regionStart]|[und|mit] [dem?] ~[start_location] @[regionStart]]
+    ~[Finde?][ eine?] @[queryObject#route] [mit @[regionStart] als ~[start_location]|von @[regionStart]|mit [dem?] ~[start_location] @[regionStart]] [und @[regionEnd] als ~[end_location]|nach @[regionEnd]|und als ~[end_location] @[regionEnd]]
+
+%[buzzwords](50)
+    @[queryObject#route] Länge @[amount#plural-number] Steigung @[amount#plural-number] \%
+    @[queryObject#route] Steigung @[amount#plural-number] \% Länge @[amount#plural-number]
+    ~[value] lange @[queryObject#route][ [[in|nahe|bei|in der Nähe von] @[region#single]|nach @[regionEnd]|ab @[regionStart]]?]
+    ~[Finde?][ eine?] @[queryObject#route] [[in|nahe|bei|in der Nähe von] @[region#single]|nach @[regionEnd]|ab @[regionStart]]
+
+
+// Test sentences
+%[routen-test](training:0, testing:100)
+    [~[Finde] mir?][ in @[region#single]?][ eine?] @[amount] ~[unit][ lange?] @[queryObject#route][ [mit|~[negation]] ~[charging_station]?][[ und?][ ~[negation]| mit] ~[toll_road]?]
+    [~[Finde][ mir?][ eine?]?] @[queryObject#route][ [[in|nahe|bei|in der Nähe von] @[region#single]|nach @[regionEnd]|ab @[regionStart]]?],[ die?] ~[value] lang ist
+
+%[elevation-test](training:0, testing:50)
+    Wo [sind|gibt es] @[queryObject#elevation] mit einer Höhe von ~[value] [[in|nahe|bei|in der Nähe von] @[region#single]?]?
+    [~[Finde][ mir?]?] ~[value] hohe @[queryObject#elevation] [[in|nahe|bei]  @[region#single]?]
+    [~[Finde][ mir?]?] @[queryObject#elevation][ [in|nahe|bei|in der Nähe von] @[region#single]?], die [~[value] hoch sind|eine Höhe von ~[value] haben]
+
+
+// imports
+|chatette-slots/aliases.chatette
+|chatette-slots/amount.chatette
+|chatette-slots/queryObject.chatette
